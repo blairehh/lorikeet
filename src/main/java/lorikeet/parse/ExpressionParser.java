@@ -140,10 +140,9 @@ public class ExpressionParser implements Parser<Expression> {
         return new LetParser(this.variableTable, this.typeParser)
             .parse(tokens.skip())
             .then((let, tokenSeq) -> {
-                System.out.println(tokenSeq.currentStr());
-            list.add(let);
-            this.variableTable.add(let);
-            return this.parse(tokenSeq, list);
+                list.add(let);
+                this.variableTable.add(let);
+                return this.parse(tokenSeq, list);
         });
     }
 }

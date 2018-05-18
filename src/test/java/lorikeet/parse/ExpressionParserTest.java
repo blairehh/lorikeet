@@ -117,13 +117,18 @@ public class ExpressionParserTest {
 
     @Test
     public void testBodyWithLetAndVar() {
-        final ExpressionParser parser = new ExpressionParser(varTable, typeParser, Arrays.asList("done"));
+        final ExpressionParser parser = new ExpressionParser(
+            varTable,
+            typeParser,
+            Arrays.asList("done")
+        );
         final String code = "let resp Bol = false\nresp\ndone";
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 2);
         expect(e, type("Bol", "lorikeet", "core"));
-        expect(e, 0, new BolLiteral("false"));
+        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), new BolLiteral("false")));
+        expect(e, 1, new Variable(false, "resp", type("Bol", "lorikeet", "core")));
     }
 
     Expression expect(Parse<Expression> parse) {
@@ -146,6 +151,10 @@ public class ExpressionParserTest {
 
     void expect(Expression e, int index, Value value) {
         assertThat(e.getChildren().get(index)).isEqualTo(value);
+    }
+
+    void expect(Expression e, int index, Let let) {
+        assertThat(e.getChildren().get(index)).isEqualTo(let);
     }
 
 
