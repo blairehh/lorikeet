@@ -5,9 +5,10 @@ import lorikeet.error.BadSyntax;
 import lorikeet.error.UnexpectedEof;
 import lorikeet.error.UnsupportedQuotation;
 import lorikeet.error.LiteralMismatch;
-import lorikeet.error.IntCannotBeDecimal;
+import lorikeet.error.TypeMismatch;
 import lorikeet.error.NotImplementedYet;
 import lorikeet.error.VariableNameConflict;
+import lorikeet.lang.Expression;
 import lorikeet.lang.Let;
 import lorikeet.lang.Package;
 import lorikeet.lang.Type;
@@ -28,15 +29,18 @@ public class LetParser implements Parser<Let> {
 
     private final TypeParser typeParser;
     private final VariableTable varTable;
+    private final ExpressionParser expressionParser;
 
     public LetParser(VariableTable varTable, TypeTable typeTable, Package pkg) {
         this.typeParser = new TypeParser(typeTable, pkg);
         this.varTable = varTable;
+        this.expressionParser = new ExpressionParser(varTable, this.typeParser);
     }
 
     public LetParser(VariableTable varTable, TypeParser typeParser) {
         this.typeParser = typeParser;
         this.varTable = varTable;
+        this.expressionParser = new ExpressionParser(varTable, this.typeParser);
     }
 
     @Override
@@ -56,56 +60,24 @@ public class LetParser implements Parser<Let> {
             if (!tokenSeq.current().isSymbol(Symbol.EQUAL)) {
                 return new Parse<Let>(new BadSyntax(tokenSeq, "="));
             }
-            return this.parse(tokenSeq.skip(), name, type);
+            return this.parseExpression(tokenSeq, name, type);
         });
     }
 
-    private Parse<Let> parse(TokenSeq tokens, String name, Type type) {
-        if (tokens.eof()) {
+    private Parse<Let> parseExpression(TokenSeq tokens, String name, Type type) {
+        if (tokens.skip().eof()) {
             return new Parse<Let>(new UnexpectedEof(tokens));
         }
-
-        if (tokens.current().getTokenType() == TokenType.QUOTATION) {
-            return this.parseQuotation(tokens, name, type);
-        }
-
-        if (tokens.current().getTokenType() == TokenType.NUMBER) {
-            return this.parseNumeric(tokens, name, type);
-        }
-
-        if (tokens.currentStr().equals("true") || tokens.currentStr().equals("false")) {
-            return this.parseBoolean(tokens, name, type);
-        }
-        return new Parse<Let>(new NotImplementedYet(tokens));
+        return this.expressionParser.parse(tokens.skip()).then((expression, tokenSeq) -> {
+            return this.checkTypes(tokens, tokenSeq, name, type, expression);
+        });
     }
 
-    private Parse<Let> parseQuotation(TokenSeq tokens, String name, Type type) {
-        QuotationToken token = (QuotationToken)tokens.current();
-        if (token.getQuote().equals("`")) {
-            return new Parse<Let>(new UnsupportedQuotation(tokens));
+    private Parse<Let> checkTypes(TokenSeq letTokens, TokenSeq tokens, String name, Type type, Expression expr) {
+        if (!expr.getType().equals(type)) {
+            return new Parse<Let>(new TypeMismatch(tokens, type, expr.getType()));
         }
-        if (!type.equals(Str.type())) {
-            return new Parse<Let>(new LiteralMismatch(tokens, type));
-        }
-        return new Parse<Let>(new Let(name, type, new StrLiteral(tokens.currentStr())), tokens.jump());
+        return new Parse<Let>(new Let(name, type, expr), tokens.jump());
     }
-
-    private Parse<Let> parseBoolean(TokenSeq tokens, String name, Type type) {
-        if (!type.equals(Bol.type())) {
-            return new Parse<Let>(new LiteralMismatch(tokens, type));
-        }
-        return new Parse<Let>(new Let(name, type, new BolLiteral(tokens.currentStr())), tokens.jump());
-    }
-
-    private Parse<Let> parseNumeric(TokenSeq tokens, String name, Type type) {
-        if (tokens.currentStr().contains(".")) {
-            if (type.equals(Int.type())) {
-                return new Parse<Let>(new IntCannotBeDecimal(tokens));
-            }
-            return new Parse<Let>(new Let(name, type, new DecLiteral(tokens.currentStr())), tokens.jump());
-        }
-        return new Parse<Let>(new Let(name, type, new IntLiteral(tokens.currentStr())), tokens.jump());
-    }
-
 
 }

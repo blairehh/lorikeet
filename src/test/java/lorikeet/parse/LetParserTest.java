@@ -3,7 +3,7 @@ package lorikeet.parse;
 import lorikeet.error.CompileError;
 import lorikeet.error.BadSyntax;
 import lorikeet.error.InvalidVariableName;
-import lorikeet.error.IntCannotBeDecimal;
+import lorikeet.error.TypeMismatch;
 import lorikeet.error.VariableNameConflict;
 import lorikeet.lang.Let;
 import lorikeet.lang.Package;
@@ -39,17 +39,6 @@ public class LetParserTest {
         expect(let, "name");
         expect(let, new Type(new Package("lorikeet", "core"), "Str"));
         expect(let, new StrLiteral("\"Bob\""));
-    }
-
-    @Test
-    public void testStrSingleQuote() {
-        final String code = "let name Str = 'John Doe'";
-        final TokenSeq tokens = tokenizer.tokenize(code).jump();
-
-        final Let let = expect(parser.parse(tokens));
-        expect(let, "name");
-        expect(let, new Type(new Package("lorikeet", "core"), "Str"));
-        expect(let, new StrLiteral("'John Doe'"));
     }
 
     @Test
@@ -104,10 +93,17 @@ public class LetParserTest {
     }
 
     @Test
+    public void testFailsIfTypeMismatch() {
+        final String code = "let min Dec = \"1.0\"";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+        expect(parser.parse(tokens), TypeMismatch.class);
+    }
+
+    @Test
     public void testIntCannotBeDec() {
         final String code = "let min Int = 0.56";
         final TokenSeq tokens = tokenizer.tokenize(code).jump();
-        expect(parser.parse(tokens), IntCannotBeDecimal.class);
+        expect(parser.parse(tokens), TypeMismatch.class);
     }
 
     @Test
@@ -137,6 +133,6 @@ public class LetParserTest {
     }
 
     void expect(Let let, Value value) {
-        assertThat(let.getValue()).isEqualTo(value);
+        assertThat(let.getExpression().getChildren().get(0)).isEqualTo(value);
     }
 }

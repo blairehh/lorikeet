@@ -31,6 +31,14 @@ public class ExpressionParserTest {
         return new Type(new Package(packages), name);
     }
 
+    Expression expression(Let let) {
+        return new Expression(Arrays.asList(let), let.getType());
+    }
+
+    Expression expression(Value value) {
+        return new Expression(Arrays.asList(value), value.getExpressionType().get());
+    }
+
     @Test
     public void testSingleCantBeLet() {
         final ExpressionParser parser = new ExpressionParser(varTable, typeParser);
@@ -86,7 +94,7 @@ public class ExpressionParserTest {
     @Test
     public void testVar() {
         final VariableTable vt = new VariableTable();
-        vt.add(new Let("foo", type("Str", "lorikeet", "core"), new StrLiteral("\"a\"")));
+        vt.add(new Let("foo", type("Str", "lorikeet", "core"), expression(new StrLiteral("\"a\""))));
         final ExpressionParser parser = new ExpressionParser(vt, typeParser);
         final String code = "foo";
         final TokenSeq tokens = tokenizer.tokenize(code);
@@ -127,7 +135,7 @@ public class ExpressionParserTest {
         final Expression e = expect(parser.parse(tokens));
         expect(e, 2);
         expect(e, type("Bol", "lorikeet", "core"));
-        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), new BolLiteral("false")));
+        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), expression(new BolLiteral("false"))));
         expect(e, 1, new Variable(false, "resp", type("Bol", "lorikeet", "core")));
     }
 

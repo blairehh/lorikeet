@@ -6,12 +6,12 @@ import java.util.Objects;
 public class Let implements Expressionable {
     private final String name;
     private final Type type;
-    private final Value value;
+    private final Expression expression;
 
-    public Let(String name, Type type, Value value) {
+    public Let(String name, Type type, Expression expression) {
         this.name = name;
         this.type = type;
-        this.value = value;
+        this.expression = expression;
     }
 
     public String getName() {
@@ -22,8 +22,8 @@ public class Let implements Expressionable {
         return this.type;
     }
 
-    public Value getValue() {
-        return this.value;
+    public Expression getExpression() {
+        return this.expression;
     }
 
     @Override
@@ -45,11 +45,11 @@ public class Let implements Expressionable {
 
         return Objects.equals(this.getName(), that.getName())
             && Objects.equals(this.getType(), that.getType())
-            && Objects.equals(this.getValue(), that.getValue());
+            && Objects.equals(this.getExpression(), that.getExpression());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.type, this.value);
+        return Objects.hash(this.name, this.type, this.expression);
     }
 }
