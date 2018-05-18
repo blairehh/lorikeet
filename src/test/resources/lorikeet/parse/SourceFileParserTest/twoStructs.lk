@@ -1,0 +1,10 @@
+package app
+
+struct User =
+    name Str
+    rank Dec
+    active Bol
+
+struct Credentials =
+    password Str
+    username Str

@@ -1,0 +1,12 @@
+package app
+
+struct User =
+    name Str
+    rank Dec
+    active Bol
+
+
+
+func User/isPro Bol =
+
+func Str/isNoob Bol =

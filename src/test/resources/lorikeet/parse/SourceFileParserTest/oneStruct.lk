@@ -1,0 +1,6 @@
+package app
+
+struct User =
+    name Str
+    rank Dec
+    active Bol

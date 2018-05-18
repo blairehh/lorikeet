@@ -1,0 +1,8 @@
+package app
+
+use Role of types
+
+struct User =
+    name Str
+    rank Dec
+    role Role

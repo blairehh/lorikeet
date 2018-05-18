@@ -1,0 +1,9 @@
+package app
+
+struct User =
+    name Str
+
+
+module main;
+
+func main/showUser (u User) =

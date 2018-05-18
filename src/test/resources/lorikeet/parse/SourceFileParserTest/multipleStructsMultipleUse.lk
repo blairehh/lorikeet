@@ -1,0 +1,13 @@
+package app.stuff
+
+use HashedPassword of security
+use Role of com.company.core
+
+struct User =
+    name Str
+    credentials Credentials
+    role Role
+
+struct Credentials =
+    password HashedPassword
+    username Str
