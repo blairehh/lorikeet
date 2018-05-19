@@ -47,4 +47,9 @@ public class Invoke {
     public int hashCode() {
         return Objects.hash(this.subject, this.funcName, this.arguments);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Invoke{subject=%s function=%s}", this.subject, this.funcName);    
+    }
 }

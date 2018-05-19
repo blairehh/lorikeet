@@ -6,6 +6,7 @@ import lorikeet.error.UnknownToken;
 import lorikeet.lang.Expression;
 import lorikeet.lang.Package;
 import lorikeet.lang.Let;
+import lorikeet.lang.Invoke;
 import lorikeet.lang.Type;
 import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
@@ -18,6 +19,7 @@ import lorikeet.token.TokenSeq;
 import lorikeet.token.Tokenizer;
 
 import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +34,14 @@ public class ExpressionParserTest {
         return new SpecType.Known(type);
     }
 
+    SpecType toBeKnown(Value value) {
+        return new SpecType.ToBeKnown(value);
+    }
+
+    Value invocation(Value value, String funcName, Value... args) {
+        return new Value.Invocation(new Invoke(value, funcName, Arrays.asList(args)));
+    }
+
     Type type(String name, String... packages) {
         return new Type(new Package(packages), name);
     }
@@ -42,6 +52,14 @@ public class ExpressionParserTest {
 
     Expression expression(Value value) {
         return new Expression(Arrays.asList(value), value.getExpressionType().get());
+    }
+
+    Variable variable(String name, String type, String... packages) {
+        return new Variable(false, name, known(type(type, packages)));
+    }
+
+    Value literal(long value) {
+        return new IntLiteral(String.valueOf(value));
     }
 
     @Test
@@ -126,6 +144,20 @@ public class ExpressionParserTest {
         final String code = "false\nend\ndone";
         final TokenSeq tokens = tokenizer.tokenize(code);
         expect(parser.parse(tokens), UnknownToken.class);
+    }
+
+    @Test
+    public void testInvoke() {
+        VariableTable vt = new VariableTable();
+        vt.add(new Variable(false, "foo", known(type("Str", "lorikeet", "core"))));
+        final ExpressionParser parser = new ExpressionParser(vt, typeParser);
+        final String code = "(foo sub 0 1)";
+        final TokenSeq tokens = tokenizer.tokenize(code);
+        final Expression e = expect(parser.parse(tokens));
+        expect(e, 1);
+        expect(e,
+            toBeKnown(invocation(variable("foo", "Str", "lorikeet", "core"),"sub", literal(0), literal(1)))
+        );
     }
 
     @Test

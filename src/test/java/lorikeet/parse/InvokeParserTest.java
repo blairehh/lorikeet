@@ -43,6 +43,10 @@ public class InvokeParserTest {
         return new Variable(false, name, known(type(type, packages)));
     }
 
+    IntLiteral intliteral(String value) {
+        return new IntLiteral(value);
+    }
+
     @Test
     public void testNoArgs() {
         final String code = "(foo toStr)";
@@ -78,6 +82,18 @@ public class InvokeParserTest {
         expect(invoke, 0, new IntLiteral("56"));
         expect(invoke, 1, variable("bar", "Bol", "lorikeet", "core"));
         expect(invoke, 2, new BolLiteral("true"));
+    }
+
+    @Test
+    public void testLiteral() {
+        final String code = "(6 + 6)";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        Invoke invoke = expect(parser.parse(tokens));
+        expect(invoke, intliteral("6"));
+        expect(invoke, "+");
+        expect(invoke, 1);
+        expect(invoke, 0, new IntLiteral("6"));
     }
 
     Invoke expect(Parse<Invoke> parse) {

@@ -239,4 +239,46 @@ public abstract class Value implements Expressionable {
         }
     }
 
+    public static class Invocation extends Value {
+        private final Invoke invoke;
+
+        public Invocation(Invoke invoke) {
+            this.invoke = invoke;
+        }
+
+        public Invoke getInvoke() {
+            return this.invoke;
+        }
+
+        @Override
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.ToBeKnown(this));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+
+            if (o == null || !this.getClass().equals(o.getClass())) {
+                return false;
+            }
+
+            Invocation that = (Invocation)o;
+
+            return Objects.equals(this.getInvoke(), that.getInvoke());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.invoke);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Invocation{invoke=%s}", this.invoke);
+        }
+    }
+
 }

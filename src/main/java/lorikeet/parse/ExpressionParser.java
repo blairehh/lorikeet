@@ -13,10 +13,12 @@ import lorikeet.lang.Value.StrLiteral;
 import lorikeet.lang.Value.IntLiteral;
 import lorikeet.lang.Value.DecLiteral;
 import lorikeet.lang.Value.BolLiteral;
+import lorikeet.lang.Value.Invocation;
 import lorikeet.lang.Value.Variable;
 import lorikeet.token.TokenSeq;
 import lorikeet.token.TokenType;
 import lorikeet.token.Keyword;
+import lorikeet.token.Symbol;
 import lorikeet.token.QuotationToken;
 
 import java.util.List;
@@ -85,6 +87,10 @@ public class ExpressionParser implements Parser<Expression> {
             return this.parseLet(tokens, list);
         }
 
+        if (tokens.current().isSymbol(Symbol.OPEN_ROUND)) {
+            return this.parseInvoke(tokens.skip(), list);
+        }
+
         return new Parse<Expression>(new UnknownToken(tokens));
     }
 
@@ -143,5 +149,13 @@ public class ExpressionParser implements Parser<Expression> {
                 this.variableTable.add(let);
                 return this.parse(tokenSeq, list);
         });
+    }
+
+    private Parse<Expression> parseInvoke(TokenSeq tokens, List<Expressionable> list) {
+        return new InvokeParser(this.variableTable, this.typeParser).parse(tokens)
+            .then((invoke, tokenSeq) -> {
+                list.add(new Invocation(invoke));
+                return this.parse(tokenSeq, list);
+            });
     }
 }

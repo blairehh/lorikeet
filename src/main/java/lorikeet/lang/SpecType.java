@@ -49,7 +49,7 @@ public abstract class SpecType {
         }
     }
 
-    public static class ToBeKnown {
+    public static class ToBeKnown extends SpecType {
         private final Value clue;
 
         public ToBeKnown(Value value) {
