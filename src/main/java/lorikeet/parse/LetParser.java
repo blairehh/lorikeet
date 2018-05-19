@@ -77,7 +77,7 @@ public class LetParser implements Parser<Let> {
         if (!expr.getType().equals(type)) {
             return new Parse<Let>(new TypeMismatch(tokens, type, expr.getType()));
         }
-        return new Parse<Let>(new Let(name, type, expr), tokens.jump());
+        return new Parse<Let>(new Let(name, type, expr), tokens);
     }
 
 }

@@ -100,7 +100,7 @@ public class ExpressionParser implements Parser<Expression> {
                     list,
                     list.get(list.size() - 1).getExpressionType().get()
                 ),
-                tokens.jump()
+                tokens
             );
         }
     }
@@ -137,8 +137,7 @@ public class ExpressionParser implements Parser<Expression> {
     }
 
     private Parse<Expression> parseLet(TokenSeq tokens, List<Expressionable> list) {
-        return new LetParser(this.variableTable, this.typeParser)
-            .parse(tokens.skip())
+        return new LetParser(this.variableTable, this.typeParser).parse(tokens.skip())
             .then((let, tokenSeq) -> {
                 list.add(let);
                 this.variableTable.add(let);

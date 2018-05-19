@@ -139,6 +139,30 @@ public class ExpressionParserTest {
         expect(e, 1, new Variable(false, "resp", type("Bol", "lorikeet", "core")));
     }
 
+    @Test
+    public void testBodyWithThreeValues() {
+        final ExpressionParser parser = new ExpressionParser(
+            varTable,
+            typeParser,
+            Arrays.asList("done")
+        );
+        final String code = "let resp Bol = false\nlet r Bol = resp\nr\ndone";
+        final TokenSeq tokens = tokenizer.tokenize(code);
+        final Expression e = expect(parser.parse(tokens));
+        expect(e, 3);
+        expect(e, type("Bol", "lorikeet", "core"));
+        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), expression(new BolLiteral("false"))));
+        expect(e, 1,
+            new Let(
+                "r",
+                type("Bol", "lorikeet", "core"),
+                expression(new Variable(false, "resp", type("Bol", "lorikeet", "core")))
+            )
+        );
+        expect(e, 2, new Variable(false, "r", type("Bol", "lorikeet", "core")));
+
+    }
+
     Expression expect(Parse<Expression> parse) {
         assertThat(parse.succeded()).isTrue();
         return parse.getResult();

@@ -64,6 +64,17 @@ public class LetParserTest {
     }
 
     @Test
+    public void testOnlyOneValue() {
+        final String code = "let isAwful Bol = false true";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        final Let let = expect(parser.parse(tokens), "true");
+        expect(let, "isAwful");
+        expect(let, new Type(new Package("lorikeet", "core"), "Bol"));
+        expect(let, new BolLiteral("false"));
+    }
+
+    @Test
     public void testFailsBadName() {
         final String code = "let Name Str = \"Bob\"";
         final TokenSeq tokens = tokenizer.tokenize(code).jump();
@@ -116,6 +127,12 @@ public class LetParserTest {
 
     Let expect(Parse<Let> parse) {
         assertThat(parse.succeded()).isTrue();
+        return parse.getResult();
+    }
+
+    Let expect(Parse<Let> parse, String token) {
+        assertThat(parse.succeded()).isTrue();
+        assertThat(parse.getTokenSeq().currentStr()).isEqualTo(token);
         return parse.getResult();
     }
 
