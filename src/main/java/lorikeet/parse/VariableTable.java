@@ -37,4 +37,9 @@ public class VariableTable {
         this.table.put(let.getName(), new Variable(false, let.getName(), let.getType()));
     }
 
+    // Only used for testing
+    public void add(Variable variable) {
+        this.table.put(variable.getName(), variable);
+    }
+
 }

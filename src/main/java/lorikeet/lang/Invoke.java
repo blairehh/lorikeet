@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class Invoke {
-    private final Expression subject;
+    private final Value subject;
     private final String funcName;
     private final List<Value> arguments;
 
-    public Invoke(Expression subject, String funcName, List<Value> args) {
+    public Invoke(Value subject, String funcName, List<Value> args) {
         this.subject = subject;
         this.funcName = funcName;
         this.arguments = args;
     }
 
-    public Expression getSubject() {
+    public Value getSubject() {
         return this.subject;
     }
 

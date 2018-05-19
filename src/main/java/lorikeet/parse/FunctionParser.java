@@ -14,6 +14,9 @@ import lorikeet.token.TokenSeq;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
+/*
+@TODO allow attributes to be specified on multiple lines
+*/
 public class FunctionParser implements Parser<Function> {
 
     private final Package pkg;

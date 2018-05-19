@@ -48,7 +48,7 @@ public abstract class Value implements Expressionable {
 
         @Override
         public String toString() {
-            return this.value;
+            return String.format("StrLiteral{value=%s}", this.value);
         }
     }
 
@@ -90,7 +90,7 @@ public abstract class Value implements Expressionable {
 
         @Override
         public String toString() {
-            return this.value;
+            return String.format("IntLiteral{value=%s}", this.value);
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class Value implements Expressionable {
 
         @Override
         public String toString() {
-            return this.value;
+            return String.format("DecLiteral{value=%s}", this.value);
         }
     }
 
@@ -171,10 +171,10 @@ public abstract class Value implements Expressionable {
         public int hashCode() {
             return Objects.hash(this.value);
         }
-
+        
         @Override
         public String toString() {
-            return this.value;
+            return String.format("BolLiteral{value=%s}", this.value);
         }
     }
 
@@ -226,6 +226,16 @@ public abstract class Value implements Expressionable {
         @Override
         public int hashCode() {
             return Objects.hash(this.isParameter, this.name, this.type);
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                "Value.Variable{parameter=%s name=%s type=%s}",
+                this.isParameter,
+                this.name,
+                this.type
+            );
         }
     }
 
