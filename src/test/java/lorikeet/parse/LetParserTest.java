@@ -127,6 +127,17 @@ public class LetParserTest {
     }
 
     @Test
+    public void testCanInferType() {
+        final String code = "let isInferred = true";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        final Let let = expect(parser.parse(tokens));
+        expect(let, "isInferred");
+        expect(let, known(type("Bol", "lorikeet", "core")));
+        expect(let, new BolLiteral("true"));
+    }
+
+    @Test
     public void testCannotUsingConflictingName() {
         varTable.add(new Let("foo", new SpecType.Known(new Type(new Package("testorg"), "Foo")), null));
         final String code = "let foo Dec = 0.56";

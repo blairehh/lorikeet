@@ -53,10 +53,13 @@ public class LetParser implements Parser<Let> {
         if (varTable.get(name).isPresent()) {
             return new Parse<Let>(new VariableNameConflict(tokens, name));
         }
-        return this.parse(tokens.skip(), name);
+        if (tokens.skip().current().isSymbol(Symbol.EQUAL)) {
+            return this.parseExpression(tokens.skip(), name, null);
+        }
+        return this.parseType(tokens.skip(), name);
     }
 
-    private Parse<Let> parse(TokenSeq tokens, String name) {
+    private Parse<Let> parseType(TokenSeq tokens, String name) {
         return this.typeParser.parse(tokens).then((type, tokenSeq) -> {
             if (!tokenSeq.current().isSymbol(Symbol.EQUAL)) {
                 return new Parse<Let>(new BadSyntax(tokenSeq, "="));
@@ -75,7 +78,7 @@ public class LetParser implements Parser<Let> {
     }
 
     private Parse<Let> checkTypes(TokenSeq letTokens, TokenSeq tokens, String name, SpecType type, Expression expr) {
-        if (SpecType.isKnownMismatch(expr.getType(), type)) {
+        if (type != null && SpecType.isKnownMismatch(expr.getType(), type)) {
             return new Parse<Let>(
                 new TypeMismatch(tokens, ((SpecType.Known)type).getType(), ((SpecType.Known)expr.getType()).getType())
             );
