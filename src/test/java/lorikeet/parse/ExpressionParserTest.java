@@ -7,6 +7,7 @@ import lorikeet.lang.Expression;
 import lorikeet.lang.Package;
 import lorikeet.lang.Let;
 import lorikeet.lang.Type;
+import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.StrLiteral;
 import lorikeet.lang.Value.IntLiteral;
@@ -26,6 +27,10 @@ public class ExpressionParserTest {
     private final VariableTable varTable = new VariableTable();
     private final TypeParser typeParser = new TypeParser(new TypeTable(), new Package("test"));
     private final Tokenizer tokenizer = new Tokenizer();
+
+    SpecType known(Type type) {
+        return new SpecType.Known(type);
+    }
 
     Type type(String name, String... packages) {
         return new Type(new Package(packages), name);
@@ -54,7 +59,7 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, new Type(new Package("lorikeet", "core"), "Str"));
+        expect(e, known(type("Str", "lorikeet", "core")));
         expect(e, 0, new StrLiteral("\"John Doe\""));
     }
 
@@ -65,7 +70,7 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, new Type(new Package("lorikeet", "core"), "Int"));
+        expect(e, known(type("Int", "lorikeet", "core")));
         expect(e, 0, new IntLiteral("45"));
     }
 
@@ -76,7 +81,7 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, new Type(new Package("lorikeet", "core"), "Dec"));
+        expect(e, known(type("Dec", "lorikeet", "core")));
         expect(e, 0, new DecLiteral("45.45"));
     }
 
@@ -87,21 +92,21 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, new Type(new Package("lorikeet", "core"), "Bol"));
+        expect(e, known(type("Bol", "lorikeet", "core")));
         expect(e, 0, new BolLiteral("true"));
     }
 
     @Test
     public void testVar() {
         final VariableTable vt = new VariableTable();
-        vt.add(new Let("foo", type("Str", "lorikeet", "core"), expression(new StrLiteral("\"a\""))));
+        vt.add(new Let("foo", expression(new StrLiteral("\"a\""))));
         final ExpressionParser parser = new ExpressionParser(vt, typeParser);
         final String code = "foo";
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, type("Str", "lorikeet", "core"));
-        expect(e, 0, new Variable(false, "foo", type("Str", "lorikeet", "core")));
+        expect(e, known(type("Str", "lorikeet", "core")));
+        expect(e, 0, new Variable(false, "foo", known(type("Str", "lorikeet", "core"))));
     }
 
     @Test
@@ -111,7 +116,7 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 1);
-        expect(e, type("Bol", "lorikeet", "core"));
+        expect(e, known(type("Bol", "lorikeet", "core")));
         expect(e, 0, new BolLiteral("false"));
     }
 
@@ -134,9 +139,9 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 2);
-        expect(e, type("Bol", "lorikeet", "core"));
-        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), expression(new BolLiteral("false"))));
-        expect(e, 1, new Variable(false, "resp", type("Bol", "lorikeet", "core")));
+        expect(e, known(type("Bol", "lorikeet", "core")));
+        expect(e, 0, new Let("resp", expression(new BolLiteral("false"))));
+        expect(e, 1, new Variable(false, "resp", known(type("Bol", "lorikeet", "core"))));
     }
 
     @Test
@@ -150,16 +155,15 @@ public class ExpressionParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code);
         final Expression e = expect(parser.parse(tokens));
         expect(e, 3);
-        expect(e, type("Bol", "lorikeet", "core"));
-        expect(e, 0, new Let("resp", type("Bol", "lorikeet", "core"), expression(new BolLiteral("false"))));
+        expect(e, known(type("Bol", "lorikeet", "core")));
+        expect(e, 0, new Let("resp", expression(new BolLiteral("false"))));
         expect(e, 1,
             new Let(
                 "r",
-                type("Bol", "lorikeet", "core"),
-                expression(new Variable(false, "resp", type("Bol", "lorikeet", "core")))
+                expression(new Variable(false, "resp", known(type("Bol", "lorikeet", "core"))))
             )
         );
-        expect(e, 2, new Variable(false, "r", type("Bol", "lorikeet", "core")));
+        expect(e, 2, new Variable(false, "r", known(type("Bol", "lorikeet", "core"))));
 
     }
 
@@ -177,7 +181,7 @@ public class ExpressionParserTest {
         assertThat(e.getChildren().size()).isEqualTo(size);
     }
 
-    void expect(Expression e, Type type) {
+    void expect(Expression e, SpecType type) {
         assertThat(e.getType()).isEqualTo(type);
     }
 

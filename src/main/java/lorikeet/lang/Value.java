@@ -18,8 +18,8 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<Type> getExpressionType() {
-            return Optional.of(Str.type());
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.Known(Str.type()));
         }
 
         public String getValue() {
@@ -60,8 +60,8 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<Type> getExpressionType() {
-            return Optional.of(Int.type());
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.Known(Int.type()));
         }
 
         public String getValue() {
@@ -106,8 +106,8 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<Type> getExpressionType() {
-            return Optional.of(Dec.type());
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.Known(Dec.type()));
         }
 
         @Override
@@ -148,8 +148,8 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<Type> getExpressionType() {
-            return Optional.of(Bol.type());
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.Known(Bol.type()));
         }
 
         @Override
@@ -171,7 +171,7 @@ public abstract class Value implements Expressionable {
         public int hashCode() {
             return Objects.hash(this.value);
         }
-        
+
         @Override
         public String toString() {
             return String.format("BolLiteral{value=%s}", this.value);
@@ -181,9 +181,9 @@ public abstract class Value implements Expressionable {
     public static class Variable extends Value {
         private final boolean isParameter;
         private final String name;
-        private final Type type;
+        private final SpecType type;
 
-        public Variable(boolean isParam, String name, Type type) {
+        public Variable(boolean isParam, String name, SpecType type) {
             this.isParameter = isParam;
             this.name = name;
             this.type = type;
@@ -197,12 +197,12 @@ public abstract class Value implements Expressionable {
             return this.name;
         }
 
-        public Type getType() {
+        public SpecType getType() {
             return this.type;
         }
 
         @Override
-        public Optional<Type> getExpressionType() {
+        public Optional<SpecType> getExpressionType() {
             return Optional.ofNullable(this.type);
         }
 

@@ -5,12 +5,19 @@ import java.util.Objects;
 
 public class Let implements Expressionable {
     private final String name;
-    private final Type type;
+    private final SpecType type;
     private final Expression expression;
 
-    public Let(String name, Type type, Expression expression) {
+    // Only used for testing
+    public Let(String name, SpecType type, Expression expression) {
         this.name = name;
         this.type = type;
+        this.expression = expression;
+    }
+
+    public Let(String name, Expression expression) {
+        this.name = name;
+        this.type = expression.getType();
         this.expression = expression;
     }
 
@@ -18,7 +25,7 @@ public class Let implements Expressionable {
         return this.name;
     }
 
-    public Type getType() {
+    public SpecType getType() {
         return this.type;
     }
 
@@ -27,7 +34,7 @@ public class Let implements Expressionable {
     }
 
     @Override
-    public Optional<Type> getExpressionType() {
+    public Optional<SpecType> getExpressionType() {
         return Optional.empty();
     }
 

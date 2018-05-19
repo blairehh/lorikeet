@@ -4,6 +4,7 @@ import lorikeet.lang.Attribute;
 import lorikeet.lang.Function;
 import lorikeet.lang.Let;
 import lorikeet.lang.Type;
+import lorikeet.lang.SpecType.Known;
 import lorikeet.lang.Value.Variable;
 
 import java.util.HashMap;
@@ -25,7 +26,10 @@ public class VariableTable {
     public VariableTable(Function func) {
         this.table = new HashMap<String, Variable>();
         for (Attribute attr : func.getAttributes()) {
-            this.table.put(attr.getName(), new Variable(true, attr.getName(), attr.getType()));
+            this.table.put(
+                attr.getName(),
+                new Variable(true, attr.getName(), new Known(attr.getType()))
+            );
         }
     }
 

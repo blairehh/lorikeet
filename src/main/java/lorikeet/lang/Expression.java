@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Expression {
     private final List<Expressionable> children;
-    private final Type type;
+    private final SpecType type;
 
-    public Expression(List<Expressionable> children, Type type) {
+    public Expression(List<Expressionable> children, SpecType type) {
         this.children = children;
         this.type = type;
     }
@@ -16,7 +16,7 @@ public class Expression {
         return this.children;
     }
 
-    public Type getType() {
+    public SpecType getType() {
         return this.type;
     }
 

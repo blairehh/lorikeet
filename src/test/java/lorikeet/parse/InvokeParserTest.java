@@ -3,6 +3,7 @@ package lorikeet.parse;
 import lorikeet.lang.Package;
 import lorikeet.lang.Invoke;
 import lorikeet.lang.Type;
+import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.BolLiteral;
 import lorikeet.lang.Value.IntLiteral;
@@ -20,8 +21,8 @@ public class InvokeParserTest {
 
     static {
         variableTable = new VariableTable();
-        variableTable.add(new Variable(false, "foo", new Type(new Package("lorikeet", "core"), "Bol")));
-        variableTable.add(new Variable(false, "bar", new Type(new Package("lorikeet", "core"), "Bol")));
+        variableTable.add(new Variable(false, "foo", known(new Type(new Package("lorikeet", "core"), "Bol"))));
+        variableTable.add(new Variable(false, "bar", known(new Type(new Package("lorikeet", "core"), "Bol"))));
     }
 
     private final Tokenizer tokenizer = new Tokenizer();
@@ -30,12 +31,16 @@ public class InvokeParserTest {
         new TypeParser(new TypeTable(), new Package("test"))
     );
 
+    static SpecType known(Type type) {
+        return new SpecType.Known(type);
+    }
+
     Type type(String name, String... packages) {
         return new Type(new Package(packages), name);
     }
 
     Variable variable(String name, String type, String... packages) {
-        return new Variable(false, name, type(type, packages));
+        return new Variable(false, name, known(type(type, packages)));
     }
 
     @Test

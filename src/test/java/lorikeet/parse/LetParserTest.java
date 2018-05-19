@@ -8,6 +8,7 @@ import lorikeet.error.VariableNameConflict;
 import lorikeet.lang.Let;
 import lorikeet.lang.Package;
 import lorikeet.lang.Type;
+import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.StrLiteral;
 import lorikeet.lang.Value.IntLiteral;
@@ -30,6 +31,14 @@ public class LetParserTest {
         new Package("test")
     );
 
+    SpecType known(Type type) {
+        return new SpecType.Known(type);
+    }
+
+    Type type(String name, String... packages) {
+        return new Type(new Package(packages), name);
+    }
+
     @Test
     public void testStr() {
         final String code = "let name Str = \"Bob\"";
@@ -37,7 +46,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens));
         expect(let, "name");
-        expect(let, new Type(new Package("lorikeet", "core"), "Str"));
+        expect(let, known(type("Str", "lorikeet", "core")));
         expect(let, new StrLiteral("\"Bob\""));
     }
 
@@ -48,7 +57,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens));
         expect(let, "isAwesome");
-        expect(let, new Type(new Package("lorikeet", "core"), "Bol"));
+        expect(let, known(type("Bol", "lorikeet", "core")));
         expect(let, new BolLiteral("true"));
     }
 
@@ -59,7 +68,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens));
         expect(let, "isAwful");
-        expect(let, new Type(new Package("lorikeet", "core"), "Bol"));
+        expect(let, known(type("Bol", "lorikeet", "core")));
         expect(let, new BolLiteral("false"));
     }
 
@@ -70,7 +79,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens), "true");
         expect(let, "isAwful");
-        expect(let, new Type(new Package("lorikeet", "core"), "Bol"));
+        expect(let, known(type("Bol", "lorikeet", "core")));
         expect(let, new BolLiteral("false"));
     }
 
@@ -88,7 +97,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens));
         expect(let, "max");
-        expect(let, new Type(new Package("lorikeet", "core"), "Int"));
+        expect(let, known(type("Int", "lorikeet", "core")));
         expect(let, new IntLiteral("100"));
     }
 
@@ -99,7 +108,7 @@ public class LetParserTest {
 
         final Let let = expect(parser.parse(tokens));
         expect(let, "max");
-        expect(let, new Type(new Package("lorikeet", "core"), "Dec"));
+        expect(let, known(type("Dec", "lorikeet", "core")));
         expect(let, new DecLiteral("-100.200"));
     }
 
@@ -119,7 +128,7 @@ public class LetParserTest {
 
     @Test
     public void testCannotUsingConflictingName() {
-        varTable.add(new Let("foo", new Type(new Package("testorg"), "Foo"), null));
+        varTable.add(new Let("foo", new SpecType.Known(new Type(new Package("testorg"), "Foo")), null));
         final String code = "let foo Dec = 0.56";
         final TokenSeq tokens = tokenizer.tokenize(code).jump();
         expect(parser.parse(tokens), VariableNameConflict.class);
@@ -145,7 +154,7 @@ public class LetParserTest {
         assertThat(let.getName()).isEqualTo(name);
     }
 
-    void expect(Let let, Type type) {
+    void expect(Let let, SpecType type) {
         assertThat(let.getType()).isEqualTo(type);
     }
 

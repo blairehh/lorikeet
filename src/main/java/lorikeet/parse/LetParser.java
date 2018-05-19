@@ -11,6 +11,7 @@ import lorikeet.error.VariableNameConflict;
 import lorikeet.lang.Expression;
 import lorikeet.lang.Let;
 import lorikeet.lang.Package;
+import lorikeet.lang.SpecType;
 import lorikeet.lang.Type;
 import lorikeet.lang.Value.StrLiteral;
 import lorikeet.lang.Value.IntLiteral;
@@ -60,11 +61,11 @@ public class LetParser implements Parser<Let> {
             if (!tokenSeq.current().isSymbol(Symbol.EQUAL)) {
                 return new Parse<Let>(new BadSyntax(tokenSeq, "="));
             }
-            return this.parseExpression(tokenSeq, name, type);
+            return this.parseExpression(tokenSeq, name, new SpecType.Known(type));
         });
     }
 
-    private Parse<Let> parseExpression(TokenSeq tokens, String name, Type type) {
+    private Parse<Let> parseExpression(TokenSeq tokens, String name, SpecType type) {
         if (tokens.skip().eof()) {
             return new Parse<Let>(new UnexpectedEof(tokens));
         }
@@ -73,11 +74,13 @@ public class LetParser implements Parser<Let> {
         });
     }
 
-    private Parse<Let> checkTypes(TokenSeq letTokens, TokenSeq tokens, String name, Type type, Expression expr) {
-        if (!expr.getType().equals(type)) {
-            return new Parse<Let>(new TypeMismatch(tokens, type, expr.getType()));
+    private Parse<Let> checkTypes(TokenSeq letTokens, TokenSeq tokens, String name, SpecType type, Expression expr) {
+        if (SpecType.isKnownMismatch(expr.getType(), type)) {
+            return new Parse<Let>(
+                new TypeMismatch(tokens, ((SpecType.Known)type).getType(), ((SpecType.Known)expr.getType()).getType())
+            );
         }
-        return new Parse<Let>(new Let(name, type, expr), tokens);
+        return new Parse<Let>(new Let(name, expr), tokens);
     }
 
 }
