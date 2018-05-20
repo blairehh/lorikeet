@@ -7,6 +7,7 @@ import lorikeet.lang.Type;
 import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.Variable;
+import static lorikeet.Lang.*;
 
 import java.util.List;
 import java.util.Arrays;
@@ -15,42 +16,6 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InvokeTranspilerTest {
-
-    SpecType known(Type type) {
-        return new SpecType.Known(type);
-    }
-
-    Type type(String name, String... packages) {
-        return new Type(new Package(packages), name);
-    }
-
-    Expression expression(Value value) {
-        return new Expression(Arrays.asList(value), value.getExpressionType().get());
-    }
-
-    Value literal(int number) {
-        return new Value.IntLiteral(String.valueOf(number));
-    }
-
-    Value literal(String value) {
-        return new Value.StrLiteral(value);
-    }
-
-    Value literal(double number) {
-        return new Value.DecLiteral(String.valueOf(number));
-    }
-
-    Value literal(boolean value) {
-        return new Value.BolLiteral(String.valueOf(value));
-    }
-
-    Value variable(boolean param, String name, SpecType type) {
-        return new Variable(param, name, type);
-    }
-
-    <A> List<A> listOf(A... values) {
-        return Arrays.asList(values);
-    }
 
     private final InvokeTranspiler transpiler = new InvokeTranspiler();
 
@@ -102,6 +67,32 @@ public class InvokeTranspilerTest {
             + "new lorikeet.core.Lk_struct_Int(56L), "
             + "new lorikeet.core.Lk_struct_Dec(-43.09)"
             + ")";
+        expect(invoke, code);
+    }
+
+    @Test
+    public void testInvokeWithInvokeSubject() {
+        final Invoke invoke = new Invoke(
+            invocation(literal(1), "pl", literal(5)),
+            "toJavaString",
+            listOf()
+        );
+        final String code = "new lorikeet.core.Lk_struct_Int(1L)"
+            + ".m_pl(new lorikeet.core.Lk_struct_Int(5L))"
+            + ".m_toJavaString()";
+        expect(invoke, code);
+    }
+
+    @Test
+    public void testInvokeWithInvokeSubject2Levels() {
+        final Invoke invoke = new Invoke(
+            invocation(invocation(literal(5), "mn", literal(0)), "pl", literal(5)),
+            "mt",
+            listOf(literal(6))
+        );
+        final String code = "new lorikeet.core.Lk_struct_Int(5L).m_mn(new lorikeet.core.Lk_struct_Int(0L))"
+            + ".m_pl(new lorikeet.core.Lk_struct_Int(5L))"
+            + ".m_mt(new lorikeet.core.Lk_struct_Int(6L))";
         expect(invoke, code);
     }
 
