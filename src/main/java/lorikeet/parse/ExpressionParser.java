@@ -5,7 +5,7 @@ import lorikeet.error.UnexpectedEof;
 import lorikeet.error.UnsupportedQuotation;
 import lorikeet.error.ExpectedExpression;
 import lorikeet.error.ExpressionLacksValue;
-import lorikeet.error.UnknownToken;
+import lorikeet.error.UnknownVariableOrExpression;
 import lorikeet.lang.Let;
 import lorikeet.lang.Expression;
 import lorikeet.lang.Expressionable;
@@ -91,7 +91,7 @@ public class ExpressionParser implements Parser<Expression> {
             return this.parseInvoke(tokens.skip(), list);
         }
 
-        return new Parse<Expression>(new UnknownToken(tokens));
+        return new Parse<Expression>(new UnknownVariableOrExpression(tokens));
     }
 
     private Parse<Expression> finish(TokenSeq tokens, List<Expressionable> list) {

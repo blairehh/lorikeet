@@ -10,8 +10,6 @@ import lorikeet.token.Symbol;
 import java.util.List;
 import java.util.ArrayList;
 
-// @TODO check if subject is value and present
-// @TODO check if variable argument is present
 public class InvokeParser implements Parser<Invoke> {
 
     private final ExpressionParser expressionParser;

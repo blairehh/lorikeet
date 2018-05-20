@@ -2,7 +2,7 @@ package lorikeet.parse;
 
 import lorikeet.error.CompileError;
 import lorikeet.error.SingularExpressionNotValue;
-import lorikeet.error.UnknownToken;
+import lorikeet.error.UnknownVariableOrExpression;
 import lorikeet.lang.Expression;
 import lorikeet.lang.Package;
 import lorikeet.lang.Let;
@@ -143,7 +143,7 @@ public class ExpressionParserTest {
         final ExpressionParser parser = new ExpressionParser(varTable, typeParser, Arrays.asList("done"));
         final String code = "false\nend\ndone";
         final TokenSeq tokens = tokenizer.tokenize(code);
-        expect(parser.parse(tokens), UnknownToken.class);
+        expect(parser.parse(tokens), UnknownVariableOrExpression.class);
     }
 
     @Test
