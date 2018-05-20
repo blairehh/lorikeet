@@ -3,6 +3,8 @@ package lorikeet.transpile;
 import lorikeet.lang.Invoke;
 import lorikeet.lang.Value;
 
+// @TODO if the func name are symbols wordify it with ms_ namespace
+
 public class InvokeTranspiler {
 
     private final ValueTranspiler value;

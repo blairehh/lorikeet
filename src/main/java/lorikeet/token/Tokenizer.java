@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.io.File;
 
+// @TODO group symbols together (e.g %| is one token, % | is still two tokens)
 public class Tokenizer {
 
     private static final String SYMBOLS = "!@$%^&*'|?\\()[]{}<>:.,=/+;-";
