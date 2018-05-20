@@ -77,6 +77,18 @@ public class InvokeParserTest {
         expect(invoke, 0, literal(6));
     }
 
+    @Test
+    public void testSubjectIsInvoke() {
+        final String code = "((1 + 5) + 6)";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        Invoke invoke = expect(parser.parse(tokens));
+        expect(invoke, invocation(literal(1), "+", literal(5)));
+        expect(invoke, "+");
+        expect(invoke, 1);
+        expect(invoke, 0, literal(6));
+    }
+
     Invoke expect(Parse<Invoke> parse) {
         assertThat(parse.succeded()).isTrue();
         return parse.getResult();

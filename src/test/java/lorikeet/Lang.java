@@ -6,6 +6,7 @@ import lorikeet.lang.SpecType;
 import lorikeet.lang.Expression;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.Variable;
+import lorikeet.lang.Invoke;
 
 import java.util.List;
 import java.util.Arrays;
@@ -15,6 +16,15 @@ public class Lang {
     public static SpecType known(Type type) {
         return new SpecType.Known(type);
     }
+
+    public static Invoke invoke(Value subject, String funcName, Value... args) {
+        return new Invoke(subject, funcName, Arrays.asList(args));
+    }
+
+    public static Value.Invocation invocation(Value subject, String funcName, Value... args) {
+        return new Value.Invocation(invoke(subject, funcName, args));
+    }
+
 
     public static Type type(String name, String... packages) {
         return new Type(new Package(packages), name);
