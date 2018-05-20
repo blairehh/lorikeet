@@ -30,6 +30,18 @@ public class InvokeTranspilerTest {
     }
 
     @Test
+    public void testSymbolFunction() {
+        final Invoke invoke = new Invoke(
+            literal(5),
+            "+",
+            listOf(literal(5))
+        );
+        final String code = "new lorikeet.core.Lk_struct_Int(5L)"
+            + ".ms_plus(new lorikeet.core.Lk_struct_Int(5L))";
+        expect(invoke, code);
+    }
+
+    @Test
     public void testvarWith1Arg() {
         final Invoke invoke = new Invoke(
             variable(false, "msg", known(type("Str", "lorikeet", "core"))),

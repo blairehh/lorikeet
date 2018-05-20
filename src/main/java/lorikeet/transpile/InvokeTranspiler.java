@@ -27,6 +27,9 @@ public class InvokeTranspiler {
     }
 
     private String transpileFunctionName(Invoke invoke) {
+        if (Wordify.requiresWordify(invoke.getFunctionName())) {
+            return String.format("ms_%s", Wordify.wordify(invoke.getFunctionName()));
+        }
         return String.format("m_%s", invoke.getFunctionName());
     }
 
