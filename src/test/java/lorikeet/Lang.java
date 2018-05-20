@@ -20,7 +20,7 @@ public class Lang {
         return new Type(new Package(packages), name);
     }
 
-    static Expression expression(Value value) {
+    public static Expression expression(Value value) {
         return new Expression(Arrays.asList(value), value.getExpressionType().get());
     }
 
