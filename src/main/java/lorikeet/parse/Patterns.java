@@ -2,6 +2,8 @@ package lorikeet.parse;
 
 import java.util.regex.Pattern;
 
+// @TODO support symbol functions i.e. operators
+
 public class Patterns {
 
     private static final Pattern TYPE_NAME          = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
