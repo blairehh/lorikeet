@@ -5,8 +5,8 @@ import java.util.Objects;
 public class Lk_struct_User implements User {
     private final lorikeet.core.Str f_name;
 
-    public Lk_struct_User(lorikeet.core.Str p_name) {
-        f_name = p_name;
+    public Lk_struct_User(lorikeet.core.Str v_name) {
+        f_name = v_name;
     }
 
     @Override
@@ -15,21 +15,21 @@ public class Lk_struct_User implements User {
     }
 
     @Override
-    public Lk_struct_User setName(lorikeet.core.Str p_value) {
-        return new Lk_struct_User(p_value);
+    public Lk_struct_User setName(lorikeet.core.Str v_value) {
+        return new Lk_struct_User(v_value);
     }
 
     @Override
-    public boolean equals(Object p_o) {
-        if (p_o == this) {
+    public boolean equals(Object v_o) {
+        if (v_o == this) {
             return true;
         }
 
-        if (p_o == null || !this.getClass().equals(p_o.getClass())) {
+        if (v_o == null || !this.getClass().equals(v_o.getClass())) {
             return false;
         }
 
-        Lk_struct_User that = (Lk_struct_User)p_o;
+        Lk_struct_User that = (Lk_struct_User)v_o;
 
         return (
             Objects.equals(f_name, that.f_name)

@@ -125,7 +125,7 @@ public class StructTranspiler {
         StringBuilder builder = new StringBuilder();
         for (Attribute attr : attrs) {
             final String code = String.format(
-                "%s p_%s, ",
+                "%s v_%s, ",
                 this.type.transpile(attr.getType()),
                 attr.getName()
             );
@@ -141,7 +141,7 @@ public class StructTranspiler {
         StringBuilder builder = new StringBuilder();
         for (Attribute attr : attrs) {
             final String code = String.format(
-                "  f_%s = p_%s;\n",
+                "  f_%s = v_%s;\n",
                 attr.getName(),
                 attr.getName()
             );
@@ -168,7 +168,7 @@ public class StructTranspiler {
         StringBuilder builder = new StringBuilder();
         for (Attribute attr : attrs) {
             final String code = String.format(
-                " @Override\n public %s set%s(%s p_value) {\n  return %s;\n }\n",
+                " @Override\n public %s set%s(%s v_value) {\n  return %s;\n }\n",
                 javaClass,
                 attr.getName().substring(0, 1).toUpperCase() + attr.getName().substring(1),
                 this.type.transpile(attr.getType()),
@@ -186,7 +186,7 @@ public class StructTranspiler {
         builder.append("(");
         for (Attribute attr : attrs) {
             if (attr.getName().equals(attrName)) {
-                builder.append("p_value");
+                builder.append("v_value");
             } else {
                 builder.append("f_");
                 builder.append(attr.getName());
@@ -203,14 +203,14 @@ public class StructTranspiler {
             return emptyEqualsMethod();
         }
         final String format = " @Override\n"
-            + " public boolean equals(Object p_o) {\n"
-            + "  if (p_o == this) {\n"
+            + " public boolean equals(Object v_o) {\n"
+            + "  if (v_o == this) {\n"
             + "   return true;\n"
             + "  }\n"
-            + "  if (p_o == null || !this.getClass().equals(p_o.getClass())) {\n"
+            + "  if (v_o == null || !this.getClass().equals(v_o.getClass())) {\n"
             + "   return false;\n"
             + "  }\n"
-            + "  %s that = (%s)p_o;\n"
+            + "  %s that = (%s)v_o;\n"
             + "  return (\n"
             + "  %s"
             + "  );\n"
@@ -220,11 +220,11 @@ public class StructTranspiler {
 
     private static String emptyEqualsMethod() {
         return " @Override\n"
-            + " public boolean equals(Object p_o) {\n"
-            + "  if (p_o == this) {\n"
+            + " public boolean equals(Object v_o) {\n"
+            + "  if (v_o == this) {\n"
             + "   return true;\n"
             + "  }\n"
-            + "  if (p_o == null || !this.getClass().equals(p_o.getClass())) {\n"
+            + "  if (v_o == null || !this.getClass().equals(v_o.getClass())) {\n"
             + "   return false;\n"
             + "  }\n"
             + "  return true;\n"

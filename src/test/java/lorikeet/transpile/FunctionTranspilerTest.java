@@ -66,7 +66,7 @@ public class FunctionTranspilerTest {
 
         String source = this.transpiler.transpile(func);
 
-        expect(source, " public lorikeet.core.Str bar(final lorikeet.core.Int p_baz) { return null; }");
+        expect(source, " public lorikeet.core.Str bar(final lorikeet.core.Int v_baz) { return null; }");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FunctionTranspilerTest {
 
         String source = this.transpiler.transpile(func);
 
-        expect(source, " public java.lang.Void bar(final lorikeet.core.Int p_baz) { return null; }");
+        expect(source, " public java.lang.Void bar(final lorikeet.core.Int v_baz) { return null; }");
     }
 
 
@@ -102,7 +102,7 @@ public class FunctionTranspilerTest {
 
         expect(
             source,
-            " public lorikeet.core.Str bar(final lorikeet.core.Int p_baz, final a.b.c.D p_wom) { return null; }"
+            " public lorikeet.core.Str bar(final lorikeet.core.Int v_baz, final a.b.c.D v_wom) { return null; }"
         );
     }
 

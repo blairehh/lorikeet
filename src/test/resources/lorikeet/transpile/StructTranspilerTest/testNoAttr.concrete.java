@@ -9,12 +9,12 @@ public class Lk_struct_User implements User {
     }
 
     @Override
-    public boolean equals(Object p_o) {
-        if (p_o == this) {
+    public boolean equals(Object v_o) {
+        if (v_o == this) {
             return true;
         }
 
-        if (p_o == null || !this.getClass().equals(p_o.getClass())) {
+        if (v_o == null || !this.getClass().equals(v_o.getClass())) {
             return false;
         }
 

@@ -7,10 +7,10 @@ public class Lk_struct_User implements User {
     private final test.Role f_role;
     private final type.datetime.Date f_dob;
 
-    public Lk_struct_User(lorikeet.core.Str p_name, test.Role p_role, type.datetime.Date p_dob) {
-        f_name = p_name;
-        f_role = p_role;
-        f_dob = p_dob;
+    public Lk_struct_User(lorikeet.core.Str v_name, test.Role v_role, type.datetime.Date v_dob) {
+        f_name = v_name;
+        f_role = v_role;
+        f_dob = v_dob;
     }
 
     @Override
@@ -29,31 +29,31 @@ public class Lk_struct_User implements User {
     }
 
     @Override
-    public Lk_struct_User setName(lorikeet.core.Str p_value) {
-        return new Lk_struct_User(p_value, f_role, f_dob);
+    public Lk_struct_User setName(lorikeet.core.Str v_value) {
+        return new Lk_struct_User(v_value, f_role, f_dob);
     }
 
     @Override
-    public Lk_struct_User setRole(test.Role p_value) {
-        return new Lk_struct_User(f_name, p_value, f_dob);
+    public Lk_struct_User setRole(test.Role v_value) {
+        return new Lk_struct_User(f_name, v_value, f_dob);
     }
 
     @Override
-    public Lk_struct_User setDob(type.datetime.Date p_value) {
-        return new Lk_struct_User(f_name, f_role, p_value);
+    public Lk_struct_User setDob(type.datetime.Date v_value) {
+        return new Lk_struct_User(f_name, f_role, v_value);
     }
 
     @Override
-    public boolean equals(Object p_o) {
-        if (p_o == this) {
+    public boolean equals(Object v_o) {
+        if (v_o == this) {
             return true;
         }
 
-        if (p_o == null || !this.getClass().equals(p_o.getClass())) {
+        if (v_o == null || !this.getClass().equals(v_o.getClass())) {
             return false;
         }
 
-        Lk_struct_User that = (Lk_struct_User)p_o;
+        Lk_struct_User that = (Lk_struct_User)v_o;
 
         return (
             Objects.equals(f_name, that.f_name)

@@ -70,7 +70,7 @@ public class ModuleTranspiler {
         StringBuilder builder = new StringBuilder();
         for (Attribute attr : attrs) {
             final String code = String.format(
-                "  %s p_%s,\n",
+                "  %s v_%s,\n",
                 this.type.transpile(attr.getType()),
                 attr.getName()
             );
@@ -86,7 +86,7 @@ public class ModuleTranspiler {
         StringBuilder builder = new StringBuilder();
         for (Attribute attr : attrs) {
             final String code = String.format(
-                "  f_%s = p_%s;\n",
+                "  f_%s = v_%s;\n",
                 attr.getName(),
                 attr.getName()
             );

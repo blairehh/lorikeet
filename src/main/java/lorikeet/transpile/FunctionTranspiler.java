@@ -53,7 +53,7 @@ public class FunctionTranspiler {
         for (Attribute attr: attrs) {
             builder.append("final ");
             builder.append(this.type.transpile(attr.getType()));
-            builder.append(" p_");
+            builder.append(" v_");
             builder.append(attr.getName());
             builder.append(", ");
         }

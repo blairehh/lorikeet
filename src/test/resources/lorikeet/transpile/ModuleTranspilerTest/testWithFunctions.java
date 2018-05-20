@@ -10,7 +10,7 @@ public class Lk_module_Io {
         return null;
     }
 
-    public lorikeet.core.Str print(final lorikeet.io.Printable p_value) {
+    public lorikeet.core.Str print(final lorikeet.io.Printable v_value) {
         return null;
     }
 }
