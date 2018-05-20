@@ -40,8 +40,12 @@ public class Lang {
         return new Value.BolLiteral(String.valueOf(value));
     }
 
-    public static Value variable(boolean param, String name, SpecType type) {
+    public static Value.Variable variable(boolean param, String name, SpecType type) {
         return new Variable(param, name, type);
+    }
+
+    public static Value.Variable variable(String name, String type, String... packages) {
+        return new Variable(false, name, known(type(type, packages)));
     }
 
     public static <A> List<A> listOf(A... values) {

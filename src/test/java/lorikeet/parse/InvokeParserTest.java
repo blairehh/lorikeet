@@ -2,14 +2,10 @@ package lorikeet.parse;
 
 import lorikeet.lang.Package;
 import lorikeet.lang.Invoke;
-import lorikeet.lang.Type;
-import lorikeet.lang.SpecType;
 import lorikeet.lang.Value;
-import lorikeet.lang.Value.BolLiteral;
-import lorikeet.lang.Value.IntLiteral;
-import lorikeet.lang.Value.Variable;
 import lorikeet.token.TokenSeq;
 import lorikeet.token.Tokenizer;
+import static lorikeet.Lang.*;
 
 import org.junit.Test;
 
@@ -21,8 +17,8 @@ public class InvokeParserTest {
 
     static {
         variableTable = new VariableTable();
-        variableTable.add(new Variable(false, "foo", known(new Type(new Package("lorikeet", "core"), "Bol"))));
-        variableTable.add(new Variable(false, "bar", known(new Type(new Package("lorikeet", "core"), "Bol"))));
+        variableTable.add(variable("foo", "Bol", "lorikeet", "core"));
+        variableTable.add(variable("bar", "Bol", "lorikeet", "core"));
     }
 
     private final Tokenizer tokenizer = new Tokenizer();
@@ -31,21 +27,6 @@ public class InvokeParserTest {
         new TypeParser(new TypeTable(), new Package("test"))
     );
 
-    static SpecType known(Type type) {
-        return new SpecType.Known(type);
-    }
-
-    Type type(String name, String... packages) {
-        return new Type(new Package(packages), name);
-    }
-
-    Variable variable(String name, String type, String... packages) {
-        return new Variable(false, name, known(type(type, packages)));
-    }
-
-    IntLiteral intliteral(String value) {
-        return new IntLiteral(value);
-    }
 
     @Test
     public void testNoArgs() {
@@ -67,7 +48,7 @@ public class InvokeParserTest {
         expect(invoke, variable("foo", "Bol", "lorikeet", "core"));
         expect(invoke, "doh");
         expect(invoke, 1);
-        expect(invoke, 0, new IntLiteral("56"));
+        expect(invoke, 0, literal(56));
     }
 
     @Test
@@ -79,9 +60,9 @@ public class InvokeParserTest {
         expect(invoke, variable("foo", "Bol", "lorikeet", "core"));
         expect(invoke, "doh");
         expect(invoke, 3);
-        expect(invoke, 0, new IntLiteral("56"));
+        expect(invoke, 0, literal(56));
         expect(invoke, 1, variable("bar", "Bol", "lorikeet", "core"));
-        expect(invoke, 2, new BolLiteral("true"));
+        expect(invoke, 2, literal(true));
     }
 
     @Test
@@ -90,10 +71,10 @@ public class InvokeParserTest {
         final TokenSeq tokens = tokenizer.tokenize(code).jump();
 
         Invoke invoke = expect(parser.parse(tokens));
-        expect(invoke, intliteral("6"));
+        expect(invoke, literal(6));
         expect(invoke, "+");
         expect(invoke, 1);
-        expect(invoke, 0, new IntLiteral("6"));
+        expect(invoke, 0, literal(6));
     }
 
     Invoke expect(Parse<Invoke> parse) {
