@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeCheckerTest {
+public class TypeUsageCheckerTest {
 
 
     @Test
@@ -106,7 +106,7 @@ public class TypeCheckerTest {
 
 
     static List<CompileError> check(SourceFile sourceFile) {
-        return new TypeChecker().check(new LorikeetSource(
+        return new TypeUsageChecker().check(new LorikeetSource(
             Arrays.asList(sourceFile),
             Collections.emptyList()
         ));

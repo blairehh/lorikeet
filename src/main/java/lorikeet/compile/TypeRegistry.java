@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.List;
 import java.util.HashMap;
 
-public class TypeDirectory {
+public class TypeRegistry {
     private final HashMap<Type, LorikeetType> table;
 
-    public TypeDirectory() {
+    public TypeRegistry() {
         this.table = new HashMap<Type, LorikeetType>();
     }
 

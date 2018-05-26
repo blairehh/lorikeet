@@ -14,14 +14,14 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeDirectoryTest {
+public class TypeRegistryTest {
 
 
     private static Package pkg = new Package("test");
 
     @Test
     public void testAdd() {
-        TypeDirectory directory = new TypeDirectory();
+        TypeRegistry registry = new TypeRegistry();
         final Struct struct1 = new Struct(new Type(pkg, "User"), Collections.emptySet());
         final Struct struct2 = new Struct(new Type(pkg, "Role"), Collections.emptySet());
         final Module module = new Module(new Type(pkg, "Database"), Collections.emptySet());
@@ -32,16 +32,16 @@ public class TypeDirectoryTest {
             Arrays.asList(module)
         );
 
-        assertThat(directory.enter(sourceFile).isPresent()).isFalse();
+        assertThat(registry.enter(sourceFile).isPresent()).isFalse();
 
-        assertThat(directory.get(struct1.getType()).get()).isEqualTo(struct1);
-        assertThat(directory.get(struct2.getType()).get()).isEqualTo(struct2);
-        assertThat(directory.get(module.getType()).get()).isEqualTo(module);
+        assertThat(registry.get(struct1.getType()).get()).isEqualTo(struct1);
+        assertThat(registry.get(struct2.getType()).get()).isEqualTo(struct2);
+        assertThat(registry.get(module.getType()).get()).isEqualTo(module);
     }
 
     @Test
     public void testFailsDuplicate() {
-        TypeDirectory directory = new TypeDirectory();
+        TypeRegistry registry = new TypeRegistry();
         final Struct struct1 = new Struct(new Type(pkg, "User"), Collections.emptySet());
         final Struct struct2 = new Struct(new Type(pkg, "Role"), Collections.emptySet());
         final Module module = new Module(new Type(pkg, "Role"), Collections.emptySet());
@@ -52,9 +52,9 @@ public class TypeDirectoryTest {
             Arrays.asList(module)
         );
 
-        assertThat(directory.enter(sourceFile).isPresent()).isTrue();
+        assertThat(registry.enter(sourceFile).isPresent()).isTrue();
 
-        assertThat(directory.get(struct1.getType()).get()).isEqualTo(struct1);
+        assertThat(registry.get(struct1.getType()).get()).isEqualTo(struct1);
     }
 
 }
