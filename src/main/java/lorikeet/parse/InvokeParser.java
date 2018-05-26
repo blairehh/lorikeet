@@ -25,8 +25,16 @@ public class InvokeParser implements Parser<Invoke> {
         return this.expressionParser.parse(tokens).then((expr, tokenSeq) -> {
             Parsing parsing = new Parsing();
             parsing.subject = (Value)expr.getChildren().get(0);
+            if (tokenSeq.current().isSymbol(Symbol.CLOSE_ROUND)) {
+                return this.parseRefInvoke(tokenSeq, parsing);
+            }
             return this.parseFunctionName(tokenSeq, parsing);
         });
+    }
+
+    private Parse<Invoke> parseRefInvoke(TokenSeq tokens, Parsing parsing) {
+        parsing.functionName = "_invoke";
+        return new Parse<Invoke>(parsing.build(), tokens.skip());
     }
 
     private Parse<Invoke> parseFunctionName(TokenSeq tokens, Parsing parsing) {

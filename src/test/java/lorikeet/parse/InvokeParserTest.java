@@ -89,7 +89,19 @@ public class InvokeParserTest {
         expect(invoke, 0, literal(6));
     }
 
+    @Test
+    public void testJustVariable() {
+        final String code = "(foo)";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        Invoke invoke = expect(parser.parse(tokens));
+        expect(invoke, variable("foo", "Bol", "lorikeet", "core"));
+        expect(invoke, "_invoke");
+        expect(invoke, 0);
+    }
+
     Invoke expect(Parse<Invoke> parse) {
+        // System.out.println(parse.getErrors(0));
         assertThat(parse.succeded()).isTrue();
         return parse.getResult();
     }
