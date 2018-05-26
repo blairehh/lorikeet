@@ -9,8 +9,8 @@ struct Record =
 
 module main;
 
-func main/run () Int =
+func main/run () Int = 0
 
 package foo
 
-func Record/fromFile (f File) Record =
+func main/runnnn Int = 0

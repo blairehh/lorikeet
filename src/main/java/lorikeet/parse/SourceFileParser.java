@@ -13,12 +13,12 @@ import lorikeet.lang.Type;
 import lorikeet.token.TokenSeq;
 import lorikeet.token.Keyword;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
 /*
 * @TODO remove not bindable and instead add the func to a local "bind bin".
-* @TODO allow free functions
 * @TODO if type not found assume in package and check later
 */
 public class SourceFileParser {
@@ -80,16 +80,26 @@ public class SourceFileParser {
     }
 
     private Parse<SourceFile> func(TokenSeq tokens, ParseData data) {
-        FunctionParser parser = new FunctionParser(data.typeTable, data.pkg);
+        final FunctionParser parser = new FunctionParser(data.typeTable, data.pkg);
         return parser.parse(tokens).then((func, tokenSeq) -> {
             if (!data.typeTable.get(func.getType()).isPresent()) {
                 return new Parse<SourceFile>(new UndefinedType(tokens));
             }
-            if (!data.addFunctionToType(func)) {
+            return this.funcBody(tokenSeq, func, data);
+        });
+    }
+
+    private Parse<SourceFile> funcBody(TokenSeq tokens, Function func, ParseData data) {
+        final ExpressionParser expressionParser = new ExpressionParser(
+            new VariableTable(func),
+            new TypeParser(data.typeTable, data.pkg),
+            Arrays.asList("struct", "module", "expr", "def", "algebraic", "func", "package")
+        );
+        return expressionParser.parse(tokens).then((expression, tokenSeq) -> {
+            if (!data.addFunctionToType(func.withExpression(expression))) {
                 return new Parse<SourceFile>(new NotBindableType(tokens, func));
             }
-            // Parse Function Body here
-            return this.parse(tokenSeq.toNextDeclaration(), data);
+            return this.parse(tokenSeq, data);
         });
     }
 

@@ -16,6 +16,7 @@ import lorikeet.lang.Struct;
 import lorikeet.lang.Type;
 import lorikeet.token.TokenSeq;
 import lorikeet.token.Tokenizer;
+import static lorikeet.Lang.*;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -60,13 +61,15 @@ public class SourceFileParserTest {
             new Type(new Package("app"), "User"),
             "isPro",
             new LinkedHashSet<Attribute>(),
-            new Type(new Package("lorikeet", "core"), "Bol")
+            new Type(new Package("lorikeet", "core"), "Bol"),
+            expression(literal(true))
         );
         Function func2 = new Function(
             new Type(new Package("app"), "User"),
             "isNoob",
             new LinkedHashSet<Attribute>(),
-            new Type(new Package("lorikeet", "core"), "Bol")
+            new Type(new Package("lorikeet", "core"), "Bol"),
+            expression(literal(false))
         );
 
 
@@ -147,7 +150,8 @@ public class SourceFileParserTest {
             new Type(new Package("app"), "Record"),
             "fromFile",
             params1,
-            new Type(new Package("app"), "Record")
+            new Type(new Package("app"), "Record"),
+            expression(literal(0))
         );
         expect(
             sourceFile,
@@ -159,7 +163,8 @@ public class SourceFileParserTest {
             new Type(new Package("app"), "main"),
             "run",
             new LinkedHashSet<Attribute>(),
-            new Type(new Package("lorikeet", "core"), "Int")
+            new Type(new Package("lorikeet", "core"), "Int"),
+            expression(literal(0))
         );
         expect(
             sourceFile,
@@ -192,6 +197,7 @@ public class SourceFileParserTest {
     }
 
     SourceFile expect(Parse<SourceFile> parse) {
+        // System.out.println(parse.getErrors(0));
         assertThat(parse.succeded()).isTrue();
         return parse.getResult();
     }
@@ -213,6 +219,7 @@ public class SourceFileParserTest {
     }
 
     void expectDuplicatePackageDeclaration(Parse<SourceFile> parse) {
+        // System.out.println(parse.getErrors(0));
         assertThat(parse.succeded()).isFalse();
         assertThat(parse.getErrors(0).isOfType(DuplicatePackageDeclaration.class)).isTrue();
     }

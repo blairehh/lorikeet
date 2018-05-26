@@ -7,6 +7,6 @@ struct User =
 
 
 
-func User/isPro Bol =
+func User/isPro Bol = true
 
-func User/isNoob Bol =
+func User/isNoob Bol = false

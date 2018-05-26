@@ -55,7 +55,7 @@ public class ExpressionParser implements Parser<Expression> {
             return this.finish(tokens, list);
         }
 
-        if (tokens.eof() && this.endTokens.size() != 0) {
+        if (tokens.eof() && this.endTokens.size() == 0) {
             return new Parse<Expression>(new UnexpectedEof(tokens));
         }
 
@@ -89,6 +89,10 @@ public class ExpressionParser implements Parser<Expression> {
 
         if (tokens.current().isSymbol(Symbol.OPEN_ROUND)) {
             return this.parseInvoke(tokens.skip(), list);
+        }
+
+        if (tokens.current().isNewLine()) {
+            return this.parse(tokens.jump(), list);
         }
 
         return new Parse<Expression>(new UnknownVariableOrExpression(tokens));

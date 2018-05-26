@@ -10,6 +10,6 @@ struct Record =
 
 module main;
 
-func main/run () Int =
+func main/run () Int = 0
 
-func Record/fromFile (f File) Record =
+func Record/fromFile (f File) Record = 0

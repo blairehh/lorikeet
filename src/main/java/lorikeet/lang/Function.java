@@ -8,6 +8,7 @@ public class Function {
     private final String name;
     private final Set<Attribute> attributes;
     private final Type returnType;
+    private final Expression expression;
 
 
     public Function(Type type, String name, Set<Attribute> attributes, Type returnType) {
@@ -15,6 +16,25 @@ public class Function {
         this.name = name;
         this.attributes = attributes;
         this.returnType = returnType;
+        this.expression = null;
+    }
+
+    public Function(
+        Type type,
+        String name,
+        Set<Attribute> attributes,
+        Type returnType,
+        Expression e
+    ) {
+        this.type = type;
+        this.name = name;
+        this.attributes = attributes;
+        this.returnType = returnType;
+        this.expression = e;
+    }
+
+    public Function withExpression(Expression e) {
+        return new Function(this.type, this.name, this.attributes, this.returnType, e);
     }
 
     public Type getType() {
@@ -33,6 +53,10 @@ public class Function {
         return this.returnType;
     }
 
+    public Expression getExpression() {
+        return this.expression;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -48,11 +72,18 @@ public class Function {
         return Objects.equals(this.getType(), that.getType())
             && Objects.equals(this.getName(), that.getName())
             && Objects.equals(this.getAttributes(), that.getAttributes())
-            && Objects.equals(this.getReturnType(), that.getReturnType());
+            && Objects.equals(this.getReturnType(), that.getReturnType())
+            && Objects.equals(this.getExpression(), that.getExpression());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.name, this.attributes, this.returnType);
+        return Objects.hash(
+            this.type,
+            this.name,
+            this.attributes,
+            this.returnType,
+            this.expression
+        );
     }
 }
