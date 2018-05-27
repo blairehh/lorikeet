@@ -1,5 +1,6 @@
 * Check if the expression of a let matches
 * Add _invoke to struct and module transpile
+* add Self value to transpile
 
 # Add Nil type and nil value
 # Real Type

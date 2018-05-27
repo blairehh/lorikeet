@@ -10,6 +10,38 @@ import java.util.Optional;
 
 public abstract class Value implements Expressionable {
 
+    public static class Self extends Value {
+
+        @Override
+        public Optional<SpecType> getExpressionType() {
+            return Optional.of(new SpecType.ToBeKnown(this));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+
+            if (o == null || !this.getClass().equals(o.getClass())) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Self{}");
+        }
+
+    }
+
     public static class StrLiteral extends Value {
         private final String value;
 

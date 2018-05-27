@@ -25,6 +25,9 @@ public class Lang {
         return new Value.Invocation(invoke(subject, funcName, args));
     }
 
+    public static Value.Self self() {
+        return new Value.Self();
+    }
 
     public static Type type(String name, String... packages) {
         return new Type(new Package(packages), name);

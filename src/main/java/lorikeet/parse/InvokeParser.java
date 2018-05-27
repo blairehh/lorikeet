@@ -22,7 +22,7 @@ public class InvokeParser implements Parser<Invoke> {
         if (tokens.eof()) {
             return new Parse<Invoke>(new UnexpectedEof(tokens));
         }
-        return this.expressionParser.parse(tokens).then((expr, tokenSeq) -> {
+        return this.expressionParser.parse(tokens, true).then((expr, tokenSeq) -> {
             Parsing parsing = new Parsing();
             parsing.subject = (Value)expr.getChildren().get(0);
             if (tokenSeq.current().isSymbol(Symbol.CLOSE_ROUND)) {
@@ -30,6 +30,13 @@ public class InvokeParser implements Parser<Invoke> {
             }
             return this.parseFunctionName(tokenSeq, parsing);
         });
+    }
+
+    public Parse<Invoke> parse(TokenSeq tokens, String functionName) {
+        Parsing parsing = new Parsing();
+        parsing.subject = new Value.Self();
+        parsing.functionName = functionName;
+        return this.parseArgs(tokens, parsing);
     }
 
     private Parse<Invoke> parseRefInvoke(TokenSeq tokens, Parsing parsing) {

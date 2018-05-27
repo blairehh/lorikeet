@@ -100,6 +100,30 @@ public class InvokeParserTest {
         expect(invoke, 0);
     }
 
+    @Test
+    public void testMemberFunc() {
+        final String code = "(doh)";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        Invoke invoke = expect(parser.parse(tokens));
+        expect(invoke, self());
+        expect(invoke, "doh");
+        expect(invoke, 0);
+    }
+
+    @Test
+    public void testMemberFuncWithArgs() {
+        final String code = "(doh 56 true)";
+        final TokenSeq tokens = tokenizer.tokenize(code).jump();
+
+        Invoke invoke = expect(parser.parse(tokens));
+        expect(invoke, self());
+        expect(invoke, "doh");
+        expect(invoke, 2);
+        expect(invoke, 0, literal(56));
+        expect(invoke, 1, literal(true));
+    }
+
     Invoke expect(Parse<Invoke> parse) {
         // System.out.println(parse.getErrors(0));
         assertThat(parse.succeded()).isTrue();
