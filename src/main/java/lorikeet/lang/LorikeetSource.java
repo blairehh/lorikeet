@@ -15,7 +15,6 @@ public class LorikeetSource {
   public LorikeetSource(List<SourceFile> sourceFiles, List<CompileError> errors) {
       this.results = sourceFiles;
       this.compileError = errors;
-
   }
 
   public boolean succeded() {

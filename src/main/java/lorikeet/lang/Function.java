@@ -2,6 +2,7 @@ package lorikeet.lang;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.Optional;
 
 public class Function {
     private final Type type;
@@ -55,6 +56,10 @@ public class Function {
 
     public Expression getExpression() {
         return this.expression;
+    }
+
+    public Optional<Let> findLet(String name) {
+        return this.expression.findLet(name);
     }
 
     @Override

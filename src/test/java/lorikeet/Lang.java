@@ -7,11 +7,36 @@ import lorikeet.lang.Expression;
 import lorikeet.lang.Value;
 import lorikeet.lang.Value.Variable;
 import lorikeet.lang.Invoke;
+import lorikeet.lang.SourceFile;
+import lorikeet.lang.Struct;
+import lorikeet.lang.Module;
+import lorikeet.lang.LorikeetSource;
+import lorikeet.lang.Attribute;
+import lorikeet.lang.Function;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 
 public class Lang {
+
+    public static Struct struct(Type type, Set<Attribute> attrs, List<Function> funcs) {
+        return new Struct(type, attrs, funcs);
+    }
+
+    public static LorikeetSource lorikeetSource(SourceFile... source) {
+        return new LorikeetSource(Arrays.asList(source), Collections.emptyList());
+    }
+
+    public static Package pkg(String a) {
+        return new Package(a);
+    }
+
+    public static SourceFile sourceFile(Package pkg, List<Struct> structs, List<Module> modules) {
+        return new SourceFile(pkg, structs, modules);
+    }
 
     public static SpecType known(Type type) {
         return new SpecType.Known(type);
@@ -63,6 +88,10 @@ public class Lang {
 
     public static <A> List<A> listOf(A... values) {
         return Arrays.asList(values);
+    }
+
+    public static <A> Set<A> setOf(A... values) {
+        return new HashSet<A>(Arrays.asList(values));
     }
 
 }

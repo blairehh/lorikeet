@@ -1,0 +1,11 @@
+package test
+
+
+struct Foo;
+
+
+func Foo/bar Int = 0
+
+func Foo/baz Int =
+    let doh = (bar)
+    doh

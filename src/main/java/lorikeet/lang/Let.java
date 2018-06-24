@@ -39,6 +39,11 @@ public class Let implements Expressionable {
     }
 
     @Override
+    public void setExpressionType(SpecType.Known type) {
+        // let does not return something so dont do anything. Probably should be an error.
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
@@ -58,5 +63,10 @@ public class Let implements Expressionable {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.type, this.expression);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Let{name='%s' type=%s}", this.name, this.type);
     }
 }

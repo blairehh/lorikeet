@@ -6,6 +6,7 @@ import lorikeet.lang.Struct;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SourceFile {
 
@@ -29,6 +30,21 @@ public class SourceFile {
 
     public List<Module> getModules() {
         return this.modules;
+    }
+
+    // This should be tested
+    public Optional<Function> findFunction(String moduleOrStruct, String funcName) {
+        for (Struct struct : this.structs) {
+            if (!struct.getType().getName().equals(moduleOrStruct)) {
+                continue;
+            }
+            for (Function func : struct.getFunctions()) {
+                if (func.getName().equals(funcName)) {
+                    return Optional.of(func);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

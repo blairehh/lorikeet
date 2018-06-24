@@ -12,9 +12,20 @@ public abstract class Value implements Expressionable {
 
     public static class Self extends Value {
 
+        private SpecType type;
+
+        public Self() {
+            this.type = new SpecType.ToBeKnown(this);
+        }
+
         @Override
         public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.ToBeKnown(this));
+            return Optional.of(this.type);
+        }
+
+        @Override
+        public void setExpressionType(SpecType.Known type) {
+            this.type = type;
         }
 
         @Override
@@ -52,6 +63,12 @@ public abstract class Value implements Expressionable {
         @Override
         public Optional<SpecType> getExpressionType() {
             return Optional.of(new SpecType.Known(Str.type()));
+        }
+
+        @Override
+        public void setExpressionType(SpecType.Known type) {
+            // calling this for a literal should probably be an error since we always
+            // know the type. for now just silently ignore
         }
 
         public String getValue() {
@@ -95,6 +112,13 @@ public abstract class Value implements Expressionable {
         public Optional<SpecType> getExpressionType() {
             return Optional.of(new SpecType.Known(Int.type()));
         }
+
+        @Override
+        public void setExpressionType(SpecType.Known type) {
+            // calling this for a literal should probably be an error since we always
+            // know the type. for now just silently ignore
+        }
+
 
         public String getValue() {
             return this.value;
@@ -143,6 +167,12 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
+        public void setExpressionType(SpecType.Known type) {
+            // calling this for a literal should probably be an error since we always
+            // know the type. for now just silently ignore
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -185,6 +215,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
+        public void setExpressionType(SpecType.Known type) {
+            // calling this for a literal should probably be an error since we always
+            // know the type. for now just silently ignore
+        }
+
+
+        @Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -213,7 +250,7 @@ public abstract class Value implements Expressionable {
     public static class Variable extends Value {
         private final boolean isParameter;
         private final String name;
-        private final SpecType type;
+        private SpecType type;
 
         public Variable(boolean isParam, String name, SpecType type) {
             this.isParameter = isParam;
@@ -237,6 +274,12 @@ public abstract class Value implements Expressionable {
         public Optional<SpecType> getExpressionType() {
             return Optional.ofNullable(this.type);
         }
+
+        @Override
+        public void setExpressionType(SpecType.Known type) {
+            this.type = type;
+        }
+
 
         @Override
         public boolean equals(Object o) {
@@ -273,9 +316,11 @@ public abstract class Value implements Expressionable {
 
     public static class Invocation extends Value {
         private final Invoke invoke;
+        private SpecType specType;
 
         public Invocation(Invoke invoke) {
             this.invoke = invoke;
+            this.specType = new SpecType.ToBeKnown(this);
         }
 
         public Invoke getInvoke() {
@@ -284,8 +329,14 @@ public abstract class Value implements Expressionable {
 
         @Override
         public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.ToBeKnown(this));
+            return Optional.of(this.specType);
         }
+
+        @Override
+        public void setExpressionType(SpecType.Known type) {
+            this.specType = type;
+        }
+
 
         @Override
         public boolean equals(Object o) {

@@ -2,6 +2,7 @@ package lorikeet.lang;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Expression {
     private final List<Expressionable> children;
@@ -18,6 +19,20 @@ public class Expression {
 
     public SpecType getType() {
         return this.type;
+    }
+
+    public Optional<Let> findLet(String name) {
+        for (Expressionable e : this.children) {
+            if (!(e instanceof Let)) {
+                continue;
+            }
+
+            Let let = (Let)e;
+            if (let.getName().equals(name)) {
+                return Optional.of(let);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
