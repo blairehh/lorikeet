@@ -117,13 +117,13 @@ public class ExpressionParser implements Parser<Expression> {
         if (list.size() == 0) {
             return new Parse<Expression>(new ExpectedExpression(tokens));
         }
-        if (!list.get(list.size() - 1).getExpressionType().isPresent()) {
+        if (!list.get(list.size() - 1).isReturnable()) {
             return new Parse<Expression>(new ExpressionLacksValue(tokens));
         } else {
             return new Parse<Expression>(
                 new Expression(
                     list,
-                    list.get(list.size() - 1).getExpressionType().get()
+                    list.get(list.size() - 1).getExpressionType()
                 ),
                 tokens
             );

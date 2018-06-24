@@ -59,7 +59,7 @@ public class Lang {
     }
 
     public static Expression expression(Value value) {
-        return new Expression(Arrays.asList(value), value.getExpressionType().get());
+        return new Expression(Arrays.asList(value), value.getExpressionType());
     }
 
     public static Value literal(int number) {

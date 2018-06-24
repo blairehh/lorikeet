@@ -33,10 +33,10 @@ public class TypeAssignChecker {
             // something better would be producedExpression()
             // i.e. does this thing actually produce a value
 System.out.println(e.toString());
-            if (!e.getExpressionType().isPresent()) {
-                continue;
-            }
-            SpecType type = e.getExpressionType().get();
+            // if (!e.getExpressionType().isPresent()) {
+            //     continue;
+            // }
+            SpecType type = e.getExpressionType();
 
             if (type instanceof SpecType.ToBeKnown) {
                 Type actuall = determineTypeFor((SpecType.ToBeKnown)type, parent);

@@ -51,7 +51,7 @@ public class ExpressionParserTest {
     }
 
     Expression expression(Value value) {
-        return new Expression(Arrays.asList(value), value.getExpressionType().get());
+        return new Expression(Arrays.asList(value), value.getExpressionType());
     }
 
     Variable variable(String name, String type, String... packages) {

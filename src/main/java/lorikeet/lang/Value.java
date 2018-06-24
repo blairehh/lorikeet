@@ -19,8 +19,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(this.type);
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return this.type;
         }
 
         @Override
@@ -61,8 +66,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.Known(Str.type()));
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return new SpecType.Known(Str.type());
         }
 
         @Override
@@ -109,8 +119,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.Known(Int.type()));
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return new SpecType.Known(Int.type());
         }
 
         @Override
@@ -162,8 +177,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.Known(Dec.type()));
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return new SpecType.Known(Dec.type());
         }
 
         @Override
@@ -210,8 +230,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(new SpecType.Known(Bol.type()));
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return new SpecType.Known(Bol.type());
         }
 
         @Override
@@ -271,8 +296,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.ofNullable(this.type);
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return this.type;
         }
 
         @Override
@@ -328,8 +358,13 @@ public abstract class Value implements Expressionable {
         }
 
         @Override
-        public Optional<SpecType> getExpressionType() {
-            return Optional.of(this.specType);
+        public boolean isReturnable() {
+            return true;
+        }
+
+        @Override
+        public SpecType getExpressionType() {
+            return this.specType;
         }
 
         @Override

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Let implements Expressionable {
     private final String name;
-    private final SpecType type;
+    private SpecType type;
     private final Expression expression;
 
     // Only used for testing
@@ -34,13 +34,18 @@ public class Let implements Expressionable {
     }
 
     @Override
-    public Optional<SpecType> getExpressionType() {
-        return Optional.empty();
+    public boolean isReturnable() {
+        return false;
+    }
+
+    @Override
+    public SpecType getExpressionType() {
+        return this.type;
     }
 
     @Override
     public void setExpressionType(SpecType.Known type) {
-        // let does not return something so dont do anything. Probably should be an error.
+        this.type = type;
     }
 
     @Override
