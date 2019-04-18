@@ -14,8 +14,8 @@ public class SunHttpServer {
 
     public SunHttpServer(WebServer webserver) throws IOException {
         this.server = HttpServer.create(new InetSocketAddress(1111), 0);
-        for (Mapping mapping : webserver.getRouter().getDispatcher().getMappings()) {
-            this.server.createContext(mapping.getPath(), new NoContentEndpoint());
+        for (WebEndpoint webEndpoint : webserver.getRouter().getDispatcher().getEndpoints()) {
+            this.server.createContext(webEndpoint.getPath(), new NoContentEndpoint());
         }
     }
 

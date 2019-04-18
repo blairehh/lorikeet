@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDispatcherTest {
 
-    static WebEndpoint endpoint = (request, response) -> null;
+    static IncomingRequestHandler endpoint = (request, response) -> null;
 
     @Test
     public void testRootPath() {
@@ -14,10 +14,10 @@ public class WebDispatcherTest {
             .get("foo", endpoint)
             .post("bar", endpoint);
 
-        assertThat(dispatcher.getMappings()).hasSize(2);
-        assertThat(dispatcher.getMappings()).contains(
-            new Mapping(HttpMethod.GET, "/foo", endpoint),
-            new Mapping(HttpMethod.POST, "/bar", endpoint)
+        assertThat(dispatcher.getEndpoints()).hasSize(2);
+        assertThat(dispatcher.getEndpoints()).contains(
+            new WebEndpoint(HttpMethod.GET, "/foo", endpoint),
+            new WebEndpoint(HttpMethod.POST, "/bar", endpoint)
         );
     }
 
@@ -28,10 +28,10 @@ public class WebDispatcherTest {
             .path("/bar")
                 .put("/baz", endpoint);
 
-        assertThat(dispatcher.getMappings()).hasSize(2);
-        assertThat(dispatcher.getMappings()).contains(
-            new Mapping(HttpMethod.GET, "/foo", endpoint),
-            new Mapping(HttpMethod.PUT, "/bar/baz", endpoint)
+        assertThat(dispatcher.getEndpoints()).hasSize(2);
+        assertThat(dispatcher.getEndpoints()).contains(
+            new WebEndpoint(HttpMethod.GET, "/foo", endpoint),
+            new WebEndpoint(HttpMethod.PUT, "/bar/baz", endpoint)
         );
     }
 
@@ -47,13 +47,13 @@ public class WebDispatcherTest {
             .path("/bam")
                 .get("/bom", endpoint);
 
-        assertThat(dispatcher.getMappings()).hasSize(5);
-        assertThat(dispatcher.getMappings()).contains(
-            new Mapping(HttpMethod.GET,"/foo", endpoint),
-            new Mapping(HttpMethod.POST,"/bar/baz", endpoint),
-            new Mapping(HttpMethod.PUT,"/bar/baz2", endpoint),
-            new Mapping(HttpMethod.DELETE,"/abba", endpoint),
-            new Mapping(HttpMethod.GET,"/bam/bom", endpoint)
+        assertThat(dispatcher.getEndpoints()).hasSize(5);
+        assertThat(dispatcher.getEndpoints()).contains(
+            new WebEndpoint(HttpMethod.GET,"/foo", endpoint),
+            new WebEndpoint(HttpMethod.POST,"/bar/baz", endpoint),
+            new WebEndpoint(HttpMethod.PUT,"/bar/baz2", endpoint),
+            new WebEndpoint(HttpMethod.DELETE,"/abba", endpoint),
+            new WebEndpoint(HttpMethod.GET,"/bam/bom", endpoint)
         );
     }
 }
