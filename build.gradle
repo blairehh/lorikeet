@@ -38,5 +38,4 @@ shadowJar {
     mergeServiceFiles()
     archiveName = "build-" + System.getenv("VERSION") + ".jar"
 }
-jar.enabled = false
-build.finalizedBy(project.shadowJar)
+jar.finalizedBy(project.shadowJar)
