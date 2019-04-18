@@ -1,5 +1,5 @@
 package lorikeet.web;
 
 public interface WebServer {
-    public HttpRouter getRouter();
+    public WebRouter getRouter();
 }

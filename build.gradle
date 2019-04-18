@@ -1,19 +1,28 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
 apply plugin: "java"
+apply plugin: "com.github.johnrengelman.shadow"
 
 
 repositories {
     mavenCentral()
 }
 
-jar {
-    manifest {
-        attributes(
-            'Main-Class': 'lorikeet.Main'
-        )
+task fatJar(type: Jar) {
+    zip64 true
+    baseName = '-all'
+    destinationDir = file("${buildDir}/distributions")
+    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } } {
+        exclude 'META-INF/*'
     }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    with jar
 }
 
 sourceCompatibility = 1.11
