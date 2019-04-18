@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Spliterator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -24,6 +25,29 @@ public final class Seq<T> implements List<T> {
         this.vector = source;
     }
 
+    public static <X> Seq<X> empty() {
+        return new Seq<>();
+    }
+
+    public static <X> Seq<X> unique(List<X> list) {
+        Seq<X> seq = Seq.empty();
+        for (X value : list) {
+            seq = seq.push(value);
+        }
+        return seq;
+    }
+
+    public static <X,A> Seq<X> unique(List<A> list, Function<A, X> mapper) {
+        Seq<X> seq = Seq.empty();
+        for (A item : list) {
+            final X value = mapper.apply(item);
+            if (!seq.contains(value)) {
+                seq = seq.push(value);
+            }
+        }
+        return seq;
+    }
+
     public Seq(Collection<T> collection) {
         this.vector = TreePVector.from(collection);
     }
@@ -32,17 +56,37 @@ public final class Seq<T> implements List<T> {
         return new Seq<>(this.vector.stream().filter(predicate).collect(Collectors.toList()));
     }
 
-    public Seq<T> plus(T value) {
+    public Seq<T> push(T value) {
         return new Seq<>(this.vector.plus(value));
     }
 
-    // List
+    public Seq<T> drop(int index) {
+        return new Seq<>(this.vector.minus(index));
+    }
+
+    public Seq<T> drop(T value) {
+        return new Seq<>(this.vector.minus(value));
+    }
+
+    public <V> Dict<T, V> mapify(Function<T, V> mapper) {
+        Dict<T, V> map = Dict.empty();
+        for (T value : this.vector) {
+            map = map.push(value, mapper.apply(value));
+        }
+        return map;
+    }
+
+    /*
+        Methods for List<T>
+    */
     @Override
+    @Deprecated
     public void replaceAll(UnaryOperator<T> operator) {
         this.vector.replaceAll(operator);
     }
 
     @Override
+    @Deprecated
     public void sort(Comparator<? super T> c) {
         this.vector.sort(c);
     }
@@ -83,11 +127,13 @@ public final class Seq<T> implements List<T> {
     }
 
     @Override
+    @Deprecated
     public boolean add(T t) {
         return this.vector.add(t);
     }
 
     @Override
+    @Deprecated
     public boolean remove(Object o) {
         return this.vector.remove(o);
     }
@@ -98,26 +144,31 @@ public final class Seq<T> implements List<T> {
     }
 
     @Override
+    @Deprecated
     public boolean addAll(Collection<? extends T> c) {
         return this.vector.addAll(c);
     }
 
     @Override
+    @Deprecated
     public boolean addAll(int index, Collection<? extends T> c) {
         return this.vector.addAll(index, c);
     }
 
     @Override
+    @Deprecated
     public boolean removeAll(Collection<?> c) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean retainAll(Collection<?> c) {
         return this.vector.retainAll(c);
     }
 
     @Override
+    @Deprecated
     public void clear() {
         this.vector.clear();
     }
@@ -128,16 +179,19 @@ public final class Seq<T> implements List<T> {
     }
 
     @Override
+    @Deprecated
     public T set(int index, T element) {
         return this.vector.set(index, element);
     }
 
     @Override
+    @Deprecated
     public void add(int index, T element) {
         this.vector.add(index, element);
     }
 
     @Override
+    @Deprecated
     public T remove(int index) {
         return this.vector.remove(index);
     }

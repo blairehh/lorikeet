@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
     }
 }
 
@@ -13,16 +13,6 @@ apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     mavenCentral()
-}
-
-task fatJar(type: Jar) {
-    zip64 true
-    baseName = '-all'
-    destinationDir = file("${buildDir}/distributions")
-    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } } {
-        exclude 'META-INF/*'
-    }
-    with jar
 }
 
 sourceCompatibility = 1.11
@@ -43,3 +33,11 @@ test {
         showStandardStreams = true
     }
 }
+shadowJar {
+    zip64 true
+    mergeServiceFiles()
+    classifier = ""
+    version = "1.0"
+}
+jar.enabled = false
+build.finalizedBy(project.shadowJar)

@@ -1,5 +1,6 @@
 package lorikeet.web;
 
+import lorikeet.Dict;
 import lorikeet.Seq;
 
 public class WebDispatcher {
@@ -9,7 +10,7 @@ public class WebDispatcher {
 
     public WebDispatcher() {
         this.path = "";
-        this.endpoints = new Seq<>();
+        this.endpoints = Seq.empty();
     }
 
     private WebDispatcher(String path, Seq<WebEndpoint> webEndpoints) {
@@ -26,22 +27,22 @@ public class WebDispatcher {
 
     public WebDispatcher get(String endpointPath, IncomingRequestHandler endpoint) {
         final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.GET, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.plus(webEndpoint));
+        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
     }
 
     public WebDispatcher post(String endpointPath, IncomingRequestHandler endpoint) {
         final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.POST, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.plus(webEndpoint));
+        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
     }
 
     public WebDispatcher put(String endpointPath, IncomingRequestHandler endpoint) {
         final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.PUT, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.plus(webEndpoint));
+        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
     }
 
     public WebDispatcher delete(String endpointPath, IncomingRequestHandler endpoint) {
         final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.DELETE, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.plus(webEndpoint));
+        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
     }
 
     public WebDispatcher done() {
@@ -54,6 +55,11 @@ public class WebDispatcher {
 
     public Seq<WebEndpoint> getEndpoints() {
         return this.endpoints;
+    }
+
+    public Dict<String, Seq<WebEndpoint>> getEndpointsByPath() {
+        return Seq.unique(this.endpoints, WebEndpoint::getPath)
+            .mapify(path -> this.endpoints.filter(endpoint -> endpoint.getPath().equals(path)));
     }
 
     private static String joinPath(String a, String b) {
