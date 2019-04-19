@@ -30,11 +30,11 @@ public class WebDispatcher {
     }
 
     public WebDispatcher get(String endpointPath, IncomingRequestHandler handler) {
-        return this.register(Seq.of(HttpMethod.DELETE), endpointPath, handler);
+        return this.register(Seq.of(HttpMethod.GET), endpointPath, handler);
     }
 
     public WebDispatcher post(String endpointPath, IncomingRequestHandler handler) {
-        return this.register(Seq.of(HttpMethod.DELETE), endpointPath, handler);
+        return this.register(Seq.of(HttpMethod.POST), endpointPath, handler);
     }
 
     public WebDispatcher put(String endpointPath, IncomingRequestHandler handler) {
@@ -46,7 +46,7 @@ public class WebDispatcher {
     }
 
     private WebDispatcher register(Seq<HttpMethod> methods, String endpointPath, IncomingRequestHandler handler) {
-        final Seq<WebEndpoint> endpoints = methods.map(method -> new WebEndpoint(method, endpointPath, handler));
+        final Seq<WebEndpoint> endpoints = methods.map(method -> new WebEndpoint(method, joinPath(this.path, endpointPath), handler));
         return new WebDispatcher(this.path, this.endpoints.push(endpoints));
     }
 
@@ -60,11 +60,6 @@ public class WebDispatcher {
 
     public Seq<WebEndpoint> getEndpoints() {
         return this.endpoints;
-    }
-
-    public Dict<String, Seq<WebEndpoint>> getEndpointsByPath() {
-        return Seq.unique(this.endpoints, WebEndpoint::getPath)
-            .mapify(path -> this.endpoints.filter(endpoint -> endpoint.getPath().equals(path)));
     }
 
     private static String joinPath(String a, String b) {
