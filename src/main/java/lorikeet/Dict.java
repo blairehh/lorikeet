@@ -17,12 +17,20 @@ public class Dict<K, V> implements Map<K, V> {
         this.map = HashTreePMap.empty();
     }
 
+    public Dict(Map<K, V> map) {
+        this.map = HashTreePMap.from(map);
+    }
+
     private Dict(HashPMap<K, V> map) {
         this.map = map;
     }
 
     public static <A,B> Dict<A,B> empty() {
         return new Dict<>();
+    }
+
+    public static <A,B> Dict<A,B> of(Map<A,B> map) {
+        return new Dict<>(map);
     }
 
     public Dict<K, V> push(K key, V value) {

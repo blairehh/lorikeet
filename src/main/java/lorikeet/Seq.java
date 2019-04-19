@@ -2,11 +2,13 @@ package lorikeet;
 
 import org.pcollections.TreePVector;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,6 +29,14 @@ public final class Seq<T> implements List<T> {
 
     public static <X> Seq<X> empty() {
         return new Seq<>();
+    }
+
+    public static <X> Seq<X> of(List<X> list) {
+        return new Seq<>(list);
+    }
+
+    public static <X> Seq<X> of(X... values) {
+        return new Seq<>(Arrays.asList(values));
     }
 
     public static <X> Seq<X> unique(List<X> list) {
@@ -54,6 +64,13 @@ public final class Seq<T> implements List<T> {
 
     public Seq<T> filter(Predicate<T> predicate) {
         return new Seq<>(this.vector.stream().filter(predicate).collect(Collectors.toList()));
+    }
+
+    public Optional<T> first() {
+        if (this.vector.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(this.vector.get(0));
     }
 
     public Seq<T> push(T value) {

@@ -8,12 +8,12 @@ import java.util.Objects;
 public final class WebEndpoint {
     private final HttpMethod method;
     private final String path;
-    private final IncomingRequestHandler endpoint;
+    private final IncomingRequestHandler handler;
 
-    public WebEndpoint(HttpMethod method, String path, IncomingRequestHandler endpoint) {
+    public WebEndpoint(HttpMethod method, String path, IncomingRequestHandler handler) {
         this.method = method;
         this.path = path;
-        this.endpoint = endpoint;
+        this.handler = handler;
     }
 
     public HttpMethod getMethod() {
@@ -24,8 +24,8 @@ public final class WebEndpoint {
         return this.path;
     }
 
-    public IncomingRequestHandler getEndpoint() {
-        return this.endpoint;
+    public IncomingRequestHandler getHandler() {
+        return this.handler;
     }
 
     @Override
@@ -42,12 +42,12 @@ public final class WebEndpoint {
 
         return Objects.equals(this.getMethod(), webEndpoint.getMethod())
             && Objects.equals(this.getPath(), webEndpoint.getPath())
-            && Objects.equals(this.getEndpoint(), webEndpoint.getEndpoint());
+            && Objects.equals(this.getHandler(), webEndpoint.getHandler());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getMethod(), this.getPath(), this.getEndpoint());
+        return Objects.hash(this.getMethod(), this.getPath(), this.getHandler());
     }
 
     @Override
