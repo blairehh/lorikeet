@@ -10,13 +10,14 @@ public final class Lorikeet {
             if (app.getWebServer() != null) {
                 SunHttpServerEngine serverEngine = new SunHttpServerEngine(app.getWebServer());
                 serverEngine.start();
+                System.out.println("waiting");
                 while (true) {
 
                 }
             }
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             throw new RuntimeException(ioe);
         }
-
     }
 }
