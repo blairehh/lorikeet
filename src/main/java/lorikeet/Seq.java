@@ -81,6 +81,10 @@ public final class Seq<T> implements List<T> {
         return new Seq<T>(this.vector.plusAll(seq));
     }
 
+    public boolean anyMatch(Predicate<T> predicate) {
+        return this.vector.stream().anyMatch(predicate);
+    }
+
     public Seq<T> drop(int index) {
         return new Seq<>(this.vector.minus(index));
     }
