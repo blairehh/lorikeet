@@ -4,6 +4,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lorikeet.NinjaException;
+import lorikeet.spring.PathContainer;
+import lorikeet.spring.PathPattern;
+import lorikeet.spring.PathPatternParser;
 import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
@@ -46,9 +49,13 @@ public class SunHttpServerEngine {
         private void handle(IncomingRequest request, HttpExchange exchange) {
             this.router.getDispatcher().getEndpoints()
                 .filter(endpoint -> endpoint.getMethod() == request.getMethod())
-                .filter(endpoint -> endpoint.getPath().equals(request.getURI().toASCIIString()))
+                .filter(endpoint -> matchesEndpoint(endpoint, request.getURI().toASCIIString()))
                 .first()
                 .ifPresentOrElse(endpoint -> this.handle(endpoint, request, exchange), () -> this.handle404(request, exchange));
+        }
+
+        private boolean matchesEndpoint(WebEndpoint endpoint, String incomingRequestPath) {
+            return new PathPatternParser().parse(endpoint.getPath()).matches(PathContainer.parsePath(incomingRequestPath));
         }
 
         private void handle(WebEndpoint endpoint, IncomingRequest request, HttpExchange exchange) {
