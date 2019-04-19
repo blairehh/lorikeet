@@ -35,25 +35,21 @@ public class SunHttpServerEngine {
         }
 
         @Override
-        public void handle(HttpExchange httpExchange) {
-            HttpMethod.find(httpExchange.getRequestMethod())
-                .ifPresent(method -> this.handle(method, httpExchange));
+        public void handle(HttpExchange exchange) {
+            HttpMethod.find(exchange.getRequestMethod())
+                .map(method -> new StandardIncomingRequest(exchange.getRequestURI(), method, new HttpHeaders(exchange.getRequestHeaders())))
+                .ifPresent(request -> this.handle(request, exchange));
         }
 
-        private void handle(HttpMethod method, HttpExchange exchange) {
+        private void handle(IncomingRequest request, HttpExchange exchange) {
             this.endpoints
-                .filter(endpoint -> endpoint.getMethod() == method)
-                .filter(endpoint -> endpoint.getPath().equals(exchange.getRequestURI().toASCIIString()))
+                .filter(endpoint -> endpoint.getMethod() == request.getMethod())
+                .filter(endpoint -> endpoint.getPath().equals(request.getURI().toASCIIString()))
                 .first()
-                .ifPresent(endpoint -> this.handle(endpoint, method, exchange));
+                .ifPresent(endpoint -> this.handle(endpoint, request, exchange));
         }
 
-        private void handle(WebEndpoint endpoint, HttpMethod method, HttpExchange exchange) {
-            final IncomingRequest request = new StandardIncomingRequest(
-                exchange.getRequestURI(),
-                method,
-                new HttpHeaders(exchange.getRequestHeaders())
-            );
+        private void handle(WebEndpoint endpoint, IncomingRequest request, HttpExchange exchange) {
             endpoint.getHandler().handle(request, new SunHttpOutgoingResponse(exchange));
         }
     }
