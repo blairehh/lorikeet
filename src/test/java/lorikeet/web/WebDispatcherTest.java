@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDispatcherTest {
 
-    static IncomingRequestHandler endpoint = (request, response) -> null;
+    static IncomingRequestHandler endpoint = (request, response) -> {};
 
     @Test
     public void testSingleLevel() {

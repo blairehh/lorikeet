@@ -1,5 +1,5 @@
 package lorikeet.web;
 
 public interface IncomingRequestHandler {
-    public EndpointAction handle(IncomingRequest request, OutgoingResponse response);
+    public void handle(IncomingRequest request, OutgoingResponse response);
 }
