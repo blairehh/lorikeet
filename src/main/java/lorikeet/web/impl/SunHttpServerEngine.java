@@ -3,11 +3,11 @@ package lorikeet.web.impl;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import lorikeet.Seq;
 import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
 import lorikeet.web.WebEndpoint;
+import lorikeet.web.WebRouter;
 import lorikeet.web.WebServer;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class SunHttpServerEngine {
 
     public SunHttpServerEngine(WebServer webserver) throws IOException {
         this.server = HttpServer.create(new InetSocketAddress(1111), 0);
-        this.server.createContext("/", new HttpEndpointHandler(webserver.getRouter().getDispatcher().getEndpoints()));
+        this.server.createContext("/", new HttpEndpointHandler(webserver.getRouter()));
     }
 
     public void start() {
@@ -28,10 +28,10 @@ public class SunHttpServerEngine {
 
     public static class HttpEndpointHandler implements HttpHandler {
 
-        private final Seq<WebEndpoint> endpoints;
+        private final WebRouter router;
 
-        public HttpEndpointHandler(Seq<WebEndpoint> endpoints) {
-            this.endpoints = endpoints;
+        public HttpEndpointHandler(WebRouter router) {
+            this.router = router;
         }
 
         @Override
@@ -42,15 +42,19 @@ public class SunHttpServerEngine {
         }
 
         private void handle(IncomingRequest request, HttpExchange exchange) {
-            this.endpoints
+            this.router.getDispatcher().getEndpoints()
                 .filter(endpoint -> endpoint.getMethod() == request.getMethod())
                 .filter(endpoint -> endpoint.getPath().equals(request.getURI().toASCIIString()))
                 .first()
-                .ifPresent(endpoint -> this.handle(endpoint, request, exchange));
+                .ifPresentOrElse(endpoint -> this.handle(endpoint, request, exchange), () -> this.handle404(request, exchange));
         }
 
         private void handle(WebEndpoint endpoint, IncomingRequest request, HttpExchange exchange) {
             endpoint.getHandler().handle(request, new SunHttpOutgoingResponse(exchange));
+        }
+
+        private void handle404(IncomingRequest request, HttpExchange exchange) {
+            this.router.get404Handler().handle(request, new SunHttpOutgoingResponse(exchange));
         }
     }
 
