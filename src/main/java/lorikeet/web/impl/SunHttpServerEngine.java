@@ -3,6 +3,7 @@ package lorikeet.web.impl;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import lorikeet.Dict;
 import lorikeet.NinjaException;
 import lorikeet.spring.PathContainer;
 import lorikeet.spring.PathPattern;
@@ -17,6 +18,7 @@ import lorikeet.web.WebServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Map;
 
 public class SunHttpServerEngine {
 
@@ -42,23 +44,23 @@ public class SunHttpServerEngine {
         @Override
         public void handle(HttpExchange exchange) {
             HttpMethod.find(exchange.getRequestMethod())
-                .map(method -> new StandardIncomingRequest(exchange.getRequestURI(), method, new HttpHeaders(exchange.getRequestHeaders())))
-                .ifPresent(request -> this.handle(request, exchange));
+                .ifPresent(method -> this.handle(exchange, method));
         }
 
-        private void handle(IncomingRequest request, HttpExchange exchange) {
+        private void handle(HttpExchange exchange, HttpMethod method) {
             this.router.getDispatcher().getEndpoints()
-                .filter(endpoint -> endpoint.getMethod() == request.getMethod())
-                .filter(endpoint -> matchesEndpoint(endpoint, request.getURI().toASCIIString()))
+                .filter(endpoint -> endpoint.getMethod() == method)
+                .filter(endpoint -> matchesEndpoint(endpoint, exchange.getRequestURI().toASCIIString()))
                 .first()
-                .ifPresentOrElse(endpoint -> this.handle(endpoint, request, exchange), () -> this.handle404(request, exchange));
+                .ifPresentOrElse(endpoint -> this.handle(exchange, method, endpoint), () -> this.handle404(exchange, method));
         }
 
         private boolean matchesEndpoint(WebEndpoint endpoint, String incomingRequestPath) {
             return new PathPatternParser().parse(endpoint.getPath()).matches(PathContainer.parsePath(incomingRequestPath));
         }
 
-        private void handle(WebEndpoint endpoint, IncomingRequest request, HttpExchange exchange) {
+        private void handle(HttpExchange exchange, HttpMethod method, WebEndpoint endpoint) {
+            final IncomingRequest request = createIncomingRequest(exchange, endpoint);
             final OutgoingResponse response =new SunHttpOutgoingResponse(exchange);
             try {
                 endpoint.getHandler().handle(request, response);
@@ -69,7 +71,25 @@ public class SunHttpServerEngine {
             }
         }
 
-        private void handle404(IncomingRequest request, HttpExchange exchange) {
+        private IncomingRequest createIncomingRequest(HttpExchange exchange, WebEndpoint endpoint) {
+            final Map<String, String> variables = new PathPatternParser().parse(endpoint.getPath())
+                .matchAndExtract(PathContainer.parsePath(exchange.getRequestURI().toASCIIString()))
+                .getUriVariables();
+            return new StandardIncomingRequest(
+                exchange.getRequestURI(),
+                endpoint.getMethod(),
+                new HttpHeaders(exchange.getRequestHeaders()),
+                new Dict<>(variables)
+            );
+        }
+
+        private void handle404(HttpExchange exchange, HttpMethod method) {
+            final IncomingRequest request = new StandardIncomingRequest(
+                exchange.getRequestURI(),
+                method,
+                new HttpHeaders(exchange.getRequestHeaders()),
+                Dict.empty()
+            );
             this.router.get404Handler().handle(request, new SunHttpOutgoingResponse(exchange));
         }
     }

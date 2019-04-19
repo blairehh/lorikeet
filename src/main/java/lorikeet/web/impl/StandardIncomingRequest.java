@@ -1,5 +1,6 @@
 package lorikeet.web.impl;
 
+import lorikeet.Dict;
 import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
@@ -14,11 +15,13 @@ public class StandardIncomingRequest implements IncomingRequest {
     private final URI uri;
     private final HttpMethod method;
     private final HttpHeaders headers;
+    private final Dict<String, String> pathVariables;
 
-    public StandardIncomingRequest(URI uri, HttpMethod method, HttpHeaders headers) {
+    public StandardIncomingRequest(URI uri, HttpMethod method, HttpHeaders headers, Dict<String, String> pathVariables) {
         this.uri = uri;
         this.method = method;
         this.headers = headers;
+        this.pathVariables = pathVariables;
     }
 
     @Override
@@ -37,6 +40,11 @@ public class StandardIncomingRequest implements IncomingRequest {
     }
 
     @Override
+    public Dict<String, String> getPathVariables() {
+        return this.pathVariables;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
@@ -50,12 +58,13 @@ public class StandardIncomingRequest implements IncomingRequest {
 
         return Objects.equals(this.getURI(), that.getURI())
             && Objects.equals(this.getMethod(), that.getMethod())
-            && Objects.equals(this.getHeaders(), that.getHeaders());
+            && Objects.equals(this.getHeaders(), that.getHeaders())
+            && Objects.equals(this.getPathVariables(), that.getPathVariables());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getURI(), this.getMethod(), this.getHeaders());
+        return Objects.hash(this.getURI(), this.getMethod(), this.getHeaders(), this.getPathVariables());
     }
 
     @Override
