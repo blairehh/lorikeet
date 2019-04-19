@@ -41,16 +41,9 @@ public class SunHttpServerEngine {
         }
 
         private void handle(HttpMethod method, HttpExchange exchange) {
-            System.out.println("request:");
-            System.out.println(exchange.getRequestURI());
             this.endpoints
-                .filter(endpoint -> {
-                    System.out.println("endpoint:");
-                    System.out.println(endpoint.getPath());
-                    System.out.println(endpoint.getPath().equals(exchange.getRequestURI().toASCIIString()));
-                    return endpoint.getPath().equals(exchange.getRequestURI().toASCIIString());
-                })
                 .filter(endpoint -> endpoint.getMethod() == method)
+                .filter(endpoint -> endpoint.getPath().equals(exchange.getRequestURI().toASCIIString()))
                 .first()
                 .ifPresent(endpoint -> this.handle(endpoint, method, exchange));
         }
