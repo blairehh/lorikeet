@@ -23,7 +23,7 @@ public class StandardIncomingRequest implements IncomingRequest {
 
     @Override
     public URI getURI() {
-        return null;
+        return this.uri;
     }
 
     @Override
