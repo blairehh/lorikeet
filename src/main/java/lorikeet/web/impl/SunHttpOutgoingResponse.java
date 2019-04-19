@@ -16,11 +16,14 @@ public class SunHttpOutgoingResponse implements OutgoingResponse {
     @Override
     public void reply(int statusCode, String content) {
         try {
+            System.out.println(content);
             final byte[] body = content.getBytes();
+            System.out.println(body.length);
             this.exchange.sendResponseHeaders(statusCode, body.length);
             OutputStream os = this.exchange.getResponseBody();
             os.write(body);
             os.close();
+            System.out.println("done");
         } catch (IOException e) {
             e.printStackTrace();
         }
