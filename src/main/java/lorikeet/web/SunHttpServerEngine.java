@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lorikeet.Seq;
 import lorikeet.web.impl.StandardIncomingRequest;
+import lorikeet.web.impl.SunHttpOutgoingResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,39 +34,27 @@ public class SunHttpServerEngine {
         }
 
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            final Optional<HttpMethod> method = HttpMethod.find(httpExchange.getRequestMethod());
-            if (method.isPresent()) {
-                this.handle(method.get(), httpExchange);
-            }
+        public void handle(HttpExchange httpExchange) {
+            HttpMethod.find(httpExchange.getRequestMethod())
+                .ifPresent(method -> this.handle(method, httpExchange));
         }
 
-        private void handle(HttpMethod method, HttpExchange exchange) throws IOException {
+        private void handle(HttpMethod method, HttpExchange exchange) {
             System.out.println(exchange.getRequestURI());
             this.endpoints
                 .filter(endpoint -> endpoint.getMethod() == method)
                 .filter(endpoint -> endpoint.getPath().equals(exchange.getRequestURI().toASCIIString()))
                 .first()
-                .ifPresent(endpoint -> {
-                    try {
-                        endpoint.getHandler().handle(toIncomingRequest(method, exchange), null);
-                        exchange.sendResponseHeaders(200, "".length());
-                        OutputStream os = exchange.getResponseBody();
-                        os.write("".getBytes());
-                        os.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
-
-                });
+                .ifPresent(endpoint -> this.handle(endpoint, method, exchange));
         }
 
-        private IncomingRequest toIncomingRequest(HttpMethod method, HttpExchange exchange) {
-            return new StandardIncomingRequest(
+        private void handle(WebEndpoint endpoint, HttpMethod method, HttpExchange exchange) {
+            final IncomingRequest request = new StandardIncomingRequest(
                 exchange.getRequestURI(),
                 method,
                 new HttpHeaders(exchange.getRequestHeaders())
             );
+            endpoint.getHandler().handle(request, new SunHttpOutgoingResponse(exchange));
         }
     }
 
