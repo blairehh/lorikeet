@@ -1,6 +1,7 @@
 package lorikeet.web.impl;
 
 import com.sun.net.httpserver.HttpExchange;
+import lorikeet.NinjaException;
 import lorikeet.web.OutgoingResponse;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class SunHttpOutgoingResponse implements OutgoingResponse {
             os.write(body);
             os.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new NinjaException(e);
         }
     }
 }
