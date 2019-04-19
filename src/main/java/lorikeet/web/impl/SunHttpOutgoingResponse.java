@@ -5,6 +5,7 @@ import lorikeet.web.OutgoingResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class SunHttpOutgoingResponse implements OutgoingResponse {
     private final HttpExchange exchange;
@@ -15,8 +16,11 @@ public class SunHttpOutgoingResponse implements OutgoingResponse {
 
     @Override
     public void reply(int statusCode, String content) {
+        this.respond(statusCode, content.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private void respond(int statusCode, byte[] body) {
         try {
-            final byte[] body = content.getBytes();
             this.exchange.sendResponseHeaders(statusCode, body.length);
             OutputStream os = this.exchange.getResponseBody();
             os.write(body);
