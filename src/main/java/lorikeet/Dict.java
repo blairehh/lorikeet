@@ -4,6 +4,7 @@ import org.pcollections.HashPMap;
 import org.pcollections.HashTreePMap;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +34,19 @@ public class Dict<K, V> implements Map<K, V> {
     public static <A,B> Dict<A,B> of(Map<A,B> map) {
         return new Dict<>(map);
     }
+
+    public static <A, B> Dict<A, B> of(A key, B value) {
+        return (Dict<A,B>)Dict.empty()
+            .push(key, value);
+    }
+
+    public static <A, B> Dict<A, B> of(A key1, B value1, A key2, B value2) {
+        return (Dict<A,B>)Dict.empty()
+            .push(key1, value1)
+            .push(key2, value2);
+    }
+
+
 
     public Dict<K, V> push(K key, V value) {
         return new Dict<>(this.map.plus(key, value));

@@ -17,6 +17,10 @@ public final class HttpHeaders {
         this.headers = Dict.of(map);
     }
 
+    public static HttpHeaders none() {
+        return new HttpHeaders(new Headers());
+    }
+
     public boolean has(String header) {
         return this.headers.containsKey(header);
     }
