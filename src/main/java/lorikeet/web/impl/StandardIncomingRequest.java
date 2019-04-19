@@ -1,6 +1,7 @@
 package lorikeet.web.impl;
 
 import lorikeet.Dict;
+import lorikeet.Seq;
 import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
@@ -14,10 +15,12 @@ public class StandardIncomingRequest implements IncomingRequest {
 
     private final URI uri;
     private final HttpMethod method;
-    private final HttpHeaders headers;
+    private final Dict<String, Seq<String>> headers;
     private final Dict<String, String> pathVariables;
 
-    public StandardIncomingRequest(URI uri, HttpMethod method, HttpHeaders headers, Dict<String, String> pathVariables) {
+    public StandardIncomingRequest(
+        URI uri, HttpMethod method, Dict<String, Seq<String>> headers, Dict<String, String> pathVariables) {
+
         this.uri = uri;
         this.method = method;
         this.headers = headers;
@@ -35,7 +38,7 @@ public class StandardIncomingRequest implements IncomingRequest {
     }
 
     @Override
-    public HttpHeaders getHeaders() {
+    public Dict<String, Seq<String>> getHeaders() {
         return this.headers;
     }
 

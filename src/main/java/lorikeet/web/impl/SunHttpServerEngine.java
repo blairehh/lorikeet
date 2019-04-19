@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lorikeet.Dict;
 import lorikeet.NinjaException;
+import lorikeet.Seq;
 import lorikeet.spring.PathContainer;
 import lorikeet.spring.PathPattern;
 import lorikeet.spring.PathPatternParser;
@@ -19,6 +20,7 @@ import lorikeet.web.WebServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SunHttpServerEngine {
@@ -65,10 +67,12 @@ public class SunHttpServerEngine {
         }
 
         private void intercept(IncomingRequestInterceptor interceptor, HttpExchange exchange, HttpMethod method) {
+            final Map<String, Seq<String>> headers = new HashMap<>();
+            exchange.getRequestHeaders().forEach((name, value) -> headers.put(name, Seq.of(value)));
             final IncomingRequest request = new StandardIncomingRequest(
                 exchange.getRequestURI(),
                 method,
-                new HttpHeaders(exchange.getRequestHeaders()),
+                Dict.of(headers),
                 Dict.empty()
             );
             interceptor.intercept(request, new SunHttpOutgoingResponse(exchange));
@@ -94,19 +98,23 @@ public class SunHttpServerEngine {
             final Map<String, String> variables = new PathPatternParser().parse(uriPattern)
                 .matchAndExtract(PathContainer.parsePath(exchange.getRequestURI().toASCIIString()))
                 .getUriVariables();
+            final Map<String, Seq<String>> headers = new HashMap<>();
+            exchange.getRequestHeaders().forEach((name, value) -> headers.put(name, Seq.of(value)));
             return new StandardIncomingRequest(
                 exchange.getRequestURI(),
                 method,
-                new HttpHeaders(exchange.getRequestHeaders()),
-                new Dict<>(variables)
+                Dict.of(headers),
+                Dict.of(variables)
             );
         }
 
         private void handle404(HttpExchange exchange, HttpMethod method) {
+            final Map<String, Seq<String>> headers = new HashMap<>();
+            exchange.getRequestHeaders().forEach((name, value) -> headers.put(name, Seq.of(value)));
             final IncomingRequest request = new StandardIncomingRequest(
                 exchange.getRequestURI(),
                 method,
-                new HttpHeaders(exchange.getRequestHeaders()),
+                Dict.of(headers),
                 Dict.empty()
             );
             this.router.get404Handler().handle(request, new SunHttpOutgoingResponse(exchange));

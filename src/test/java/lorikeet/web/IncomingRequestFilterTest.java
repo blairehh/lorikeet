@@ -12,9 +12,9 @@ public class IncomingRequestFilterTest {
             .get("/yes")
             .post("/orders/{id}/end-customer");
 
-        assertThat(filter.applicable(HttpMethod.GET, "/yes")).isTrue();
-        assertThat(filter.applicable(HttpMethod.GET, "/no")).isFalse();
-        assertThat(filter.applicable(HttpMethod.POST, "/yes")).isFalse();
-        assertThat(filter.applicable(HttpMethod.POST, "/orders/5456/end-customer")).isTrue();
+        assertThat(filter.isApplicable(HttpMethod.GET, "/yes")).isTrue();
+        assertThat(filter.isApplicable(HttpMethod.GET, "/no")).isFalse();
+        assertThat(filter.isApplicable(HttpMethod.POST, "/yes")).isFalse();
+        assertThat(filter.isApplicable(HttpMethod.POST, "/orders/5456/end-customer")).isTrue();
     }
 }
