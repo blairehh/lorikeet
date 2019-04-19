@@ -17,9 +17,7 @@ public class SunHttpServerEngine {
 
     public SunHttpServerEngine(WebServer webserver) throws IOException {
         this.server = HttpServer.create(new InetSocketAddress(1111), 0);
-        webserver.getRouter().getDispatcher().getEndpointsByPath().forEach((path, endpoints) -> {
-            this.server.createContext(path, new HttpEndpointHandler(endpoints));
-        });
+        this.server.createContext("/", new HttpEndpointHandler(webserver.getRouter().getDispatcher().getEndpoints()));
     }
 
     public void start() {
@@ -43,8 +41,10 @@ public class SunHttpServerEngine {
         }
 
         private void handle(HttpMethod method, HttpExchange exchange) throws IOException {
+            System.out.println(exchange.getRequestURI());
             this.endpoints
                 .filter(endpoint -> endpoint.getMethod() == method)
+                .filter(endpoint -> endpoint.getPath().equals(exchange.getRequestURI().toASCIIString()))
                 .first()
                 .ifPresent(endpoint -> {
                     try {
