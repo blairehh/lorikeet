@@ -77,12 +77,20 @@ public final class Seq<T> implements List<T> {
         return new Seq<>(this.vector.plus(value));
     }
 
+    public Seq<T> push(Seq<T> seq) {
+        return new Seq<T>(this.vector.plusAll(seq));
+    }
+
     public Seq<T> drop(int index) {
         return new Seq<>(this.vector.minus(index));
     }
 
     public Seq<T> drop(T value) {
         return new Seq<>(this.vector.minus(value));
+    }
+
+    public <X> Seq<X> map(Function<T,X> functor) {
+        return new Seq<>(this.vector.stream().map(functor).collect(Collectors.toList()));
     }
 
     public <V> Dict<T, V> mapify(Function<T, V> mapper) {

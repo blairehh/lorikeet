@@ -25,24 +25,29 @@ public class WebDispatcher {
         return new WebDispatcher(this.path + path, this.endpoints);
     }
 
-    public WebDispatcher get(String endpointPath, IncomingRequestHandler endpoint) {
-        final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.GET, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
+    public WebDispatcher serve(String endpointPath, IncomingRequestHandler handler, HttpMethod... methods) {
+        return this.register(Seq.of(methods), endpointPath, handler);
     }
 
-    public WebDispatcher post(String endpointPath, IncomingRequestHandler endpoint) {
-        final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.POST, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
+    public WebDispatcher get(String endpointPath, IncomingRequestHandler handler) {
+        return this.register(Seq.of(HttpMethod.DELETE), endpointPath, handler);
     }
 
-    public WebDispatcher put(String endpointPath, IncomingRequestHandler endpoint) {
-        final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.PUT, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
+    public WebDispatcher post(String endpointPath, IncomingRequestHandler handler) {
+        return this.register(Seq.of(HttpMethod.DELETE), endpointPath, handler);
     }
 
-    public WebDispatcher delete(String endpointPath, IncomingRequestHandler endpoint) {
-        final WebEndpoint webEndpoint = new WebEndpoint(HttpMethod.DELETE, joinPath(this.path, endpointPath), endpoint);
-        return new WebDispatcher(this.path, this.endpoints.push(webEndpoint));
+    public WebDispatcher put(String endpointPath, IncomingRequestHandler handler) {
+        return this.register(Seq.of(HttpMethod.PUT), endpointPath, handler);
+    }
+
+    public WebDispatcher delete(String endpointPath, IncomingRequestHandler handler) {
+        return this.register(Seq.of(HttpMethod.DELETE), endpointPath, handler);
+    }
+
+    private WebDispatcher register(Seq<HttpMethod> methods, String endpointPath, IncomingRequestHandler handler) {
+        final Seq<WebEndpoint> endpoints = methods.map(method -> new WebEndpoint(method, endpointPath, handler));
+        return new WebDispatcher(this.path, this.endpoints.push(endpoints));
     }
 
     public WebDispatcher done() {
