@@ -36,7 +36,11 @@ public final class IncomingRequestFilter {
         return this.filter(path, HttpMethod.DELETE);
     }
 
-    public boolean applicable(HttpMethod method, String path) {
-        return this.filters.anyMatch(duo -> duo.getLeft() == method && Utils.uriMatches(duo.getRight(), path));
+    public boolean isApplicable(HttpMethod method, String path) {
+        return !this.applicable(method, path).isEmpty();
+    }
+
+    public Seq<Duo<HttpMethod, String>> applicable(HttpMethod method, String path) {
+        return this.filters.filter(duo -> duo.getLeft() == method && Utils.uriMatches(duo.getRight(), path));
     }
 }

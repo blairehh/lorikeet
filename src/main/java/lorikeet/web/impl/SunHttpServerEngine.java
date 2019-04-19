@@ -11,6 +11,7 @@ import lorikeet.spring.PathPatternParser;
 import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
+import lorikeet.web.IncomingRequestInterceptor;
 import lorikeet.web.OutgoingResponse;
 import lorikeet.web.WebEndpoint;
 import lorikeet.web.WebRouter;
@@ -48,6 +49,7 @@ public class SunHttpServerEngine {
         }
 
         private void handle(HttpExchange exchange, HttpMethod method) {
+            this.invokeInterceptors(exchange, method);
             this.router.getDispatcher().getEndpoints()
                 .filter(endpoint -> endpoint.getMethod() == method)
                 .filter(endpoint -> matchesEndpoint(endpoint, exchange.getRequestURI().toASCIIString()))
@@ -55,12 +57,29 @@ public class SunHttpServerEngine {
                 .ifPresentOrElse(endpoint -> this.handle(exchange, method, endpoint), () -> this.handle404(exchange, method));
         }
 
+        private void invokeInterceptors(HttpExchange exchange, HttpMethod method) {
+            final String path = exchange.getRequestURI().toASCIIString();
+            this.router.getIncomingRequestInterceptors()
+                .filter(interceptor -> interceptor.getFilter().isApplicable(method, path))
+                .forEach(interceptor -> this.intercept(interceptor, exchange, method));
+        }
+
+        private void intercept(IncomingRequestInterceptor interceptor, HttpExchange exchange, HttpMethod method) {
+            final IncomingRequest request = new StandardIncomingRequest(
+                exchange.getRequestURI(),
+                method,
+                new HttpHeaders(exchange.getRequestHeaders()),
+                Dict.empty()
+            );
+            interceptor.intercept(request, new SunHttpOutgoingResponse(exchange));
+        }
+
         private boolean matchesEndpoint(WebEndpoint endpoint, String incomingRequestPath) {
             return new PathPatternParser().parse(endpoint.getPath()).matches(PathContainer.parsePath(incomingRequestPath));
         }
 
         private void handle(HttpExchange exchange, HttpMethod method, WebEndpoint endpoint) {
-            final IncomingRequest request = createIncomingRequest(exchange, endpoint);
+            final IncomingRequest request = createIncomingRequest(exchange, method, endpoint.getPath());
             final OutgoingResponse response =new SunHttpOutgoingResponse(exchange);
             try {
                 endpoint.getHandler().handle(request, response);
@@ -71,13 +90,13 @@ public class SunHttpServerEngine {
             }
         }
 
-        private IncomingRequest createIncomingRequest(HttpExchange exchange, WebEndpoint endpoint) {
-            final Map<String, String> variables = new PathPatternParser().parse(endpoint.getPath())
+        private IncomingRequest createIncomingRequest(HttpExchange exchange, HttpMethod method, String uriPattern) {
+            final Map<String, String> variables = new PathPatternParser().parse(uriPattern)
                 .matchAndExtract(PathContainer.parsePath(exchange.getRequestURI().toASCIIString()))
                 .getUriVariables();
             return new StandardIncomingRequest(
                 exchange.getRequestURI(),
-                endpoint.getMethod(),
+                method,
                 new HttpHeaders(exchange.getRequestHeaders()),
                 new Dict<>(variables)
             );

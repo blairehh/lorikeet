@@ -23,6 +23,14 @@ public final class Duo<L, R> {
         return this.right;
     }
 
+    public L getKey() {
+        return this.left;
+    }
+
+    public R getValue() {
+        return this.right;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
