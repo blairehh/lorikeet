@@ -1,16 +1,17 @@
-package lorikeet.web;
+package lorikeet.web.impl;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lorikeet.Seq;
-import lorikeet.web.impl.StandardIncomingRequest;
-import lorikeet.web.impl.SunHttpOutgoingResponse;
+import lorikeet.web.HttpHeaders;
+import lorikeet.web.HttpMethod;
+import lorikeet.web.IncomingRequest;
+import lorikeet.web.WebEndpoint;
+import lorikeet.web.WebServer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.util.Optional;
 
 public class SunHttpServerEngine {
 

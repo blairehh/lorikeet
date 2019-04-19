@@ -1,6 +1,6 @@
 package lorikeet;
 
-import lorikeet.web.SunHttpServerEngine;
+import lorikeet.web.impl.SunHttpServerEngine;
 
 import java.io.IOException;
 
