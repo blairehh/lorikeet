@@ -4,6 +4,7 @@ package lorikeet;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,5 +35,15 @@ public class SeqTest {
         assertThat(nums).containsOnly("1", "2", "3", "4", "5");
     }
 
+
+    @Test
+    public void testCollector() {
+        Seq<Integer> nums = Seq.of(1, 2, 3, 4, 5, 6);
+        Seq<String> strs = nums.stream()
+            .map(String::valueOf)
+            .collect(Seq.collector());
+
+        assertThat(strs).containsOnly("1", "2", "3", "4", "5", "6");
+    }
 
 }

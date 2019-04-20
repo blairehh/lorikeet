@@ -16,12 +16,6 @@ public final class Filter implements Comparable<Filter> {
         this.rank = rank;
     }
 
-    public Filter(HttpMethod method, String path) {
-        this.method = method;
-        this.path = path;
-        this.rank = -1;
-    }
-
     public HttpMethod getMethod() {
         return this.method;
     }

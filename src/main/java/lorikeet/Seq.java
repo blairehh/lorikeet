@@ -2,6 +2,7 @@ package lorikeet;
 
 import org.pcollections.TreePVector;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public final class Seq<T> implements List<T>, May<T> {
@@ -58,6 +60,19 @@ public final class Seq<T> implements List<T>, May<T> {
         }
         return seq;
     }
+
+
+    public static <X> Collector<X, List<X>, Seq<X>> collector() {
+        return Collector.of(
+            ArrayList::new,
+            (List<X> list, X item) -> {list.add(item);},
+            (List<X> listA, List<X> listB) -> {listA.addAll(listB); return listA;},
+             Seq::of,
+            Collector.Characteristics.UNORDERED
+        );
+    }
+
+
 
     public Seq(Collection<T> collection) {
         this.vector = TreePVector.from(collection);
