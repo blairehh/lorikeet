@@ -4,9 +4,7 @@ import org.pcollections.HashPMap;
 import org.pcollections.HashTreePMap;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -52,8 +50,8 @@ public class Dict<K, V> implements Map<K, V> {
         return new Dict<>(this.map.plus(key, value));
     }
 
-    public Optional<V> find(K key) {
-        return Optional.ofNullable(this.map.get(key));
+    public Opt<V> find(K key) {
+        return Opt.ofNullable(this.map.get(key));
     }
 
     /*

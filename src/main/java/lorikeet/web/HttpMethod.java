@@ -1,6 +1,6 @@
 package lorikeet.web;
 
-import java.util.Optional;
+import lorikeet.Opt;
 import java.util.stream.Stream;
 
 public enum HttpMethod {
@@ -19,12 +19,12 @@ public enum HttpMethod {
         return this.value;
     }
 
-    public static Optional<HttpMethod> find(String value) {
+    public static Opt<HttpMethod> find(String value) {
         if (value == null) {
-            return Optional.empty();
+            return Opt.empty();
         }
-        return Stream.of(HttpMethod.values())
+        return Opt.of(Stream.of(HttpMethod.values())
             .filter(method -> method.getValue().equals(value.trim().toUpperCase()))
-            .findFirst();
+            .findFirst());
     }
 }

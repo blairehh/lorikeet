@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -66,11 +65,11 @@ public final class Seq<T> implements List<T> {
         return new Seq<>(this.vector.stream().filter(predicate).collect(Collectors.toList()));
     }
 
-    public Optional<T> first() {
+    public Opt<T> first() {
         if (this.vector.isEmpty()) {
-            return Optional.empty();
+            return Opt.empty();
         }
-        return Optional.ofNullable(this.vector.get(0));
+        return Opt.ofNullable(this.vector.get(0));
     }
 
     public Seq<T> push(T value) {

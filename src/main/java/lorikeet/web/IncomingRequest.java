@@ -1,11 +1,11 @@
 package lorikeet.web;
 
 import lorikeet.Dict;
+import lorikeet.Opt;
 import lorikeet.Seq;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.net.URI;
-import java.util.Optional;
 
 public interface IncomingRequest {
     URI getURI();
@@ -25,7 +25,7 @@ public interface IncomingRequest {
         return this.getHeaders().getOrDefault(header, Seq.of(defaultValue));
     }
 
-    default Optional<String> findFirstHeader(String header) {
+    default Opt<String> findFirstHeader(String header) {
         return this.findHeader(header).first();
     }
 
@@ -34,11 +34,11 @@ public interface IncomingRequest {
     }
 
 
-    default Optional<String> findPathVariable(String name) {
+    default Opt<String> findPathVariable(String name) {
         return this.getPathVariables().find(name);
     }
 
-    default Optional<Number> findNumberPathVariable(String name) {
+    default Opt<Number> findNumberPathVariable(String name) {
         return this.findPathVariable(name)
             .filter(NumberUtils::isCreatable)
             .map(NumberUtils::createNumber);
