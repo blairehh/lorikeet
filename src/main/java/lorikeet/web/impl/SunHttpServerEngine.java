@@ -18,6 +18,7 @@ import lorikeet.web.WebServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class SunHttpServerEngine {
             this.router.getIncomingRequestInterceptors()
                 .stream()
                 .filter(interceptor -> interceptor.getFilter().isApplicable(method, path))
-                .sorted()
+                .sorted(Comparator.reverseOrder())
                 .forEach(interceptor -> this.intercept(interceptor, exchange, method));
         }
 
