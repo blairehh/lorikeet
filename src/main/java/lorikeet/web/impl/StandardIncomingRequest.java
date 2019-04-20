@@ -2,7 +2,6 @@ package lorikeet.web.impl;
 
 import lorikeet.Dict;
 import lorikeet.Seq;
-import lorikeet.web.HttpHeaders;
 import lorikeet.web.HttpMethod;
 import lorikeet.web.IncomingRequest;
 import org.apache.commons.lang3.builder.ToStringBuilder;
