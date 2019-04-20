@@ -9,12 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-public final class Seq<T> implements List<T> {
+public final class Seq<T> implements List<T>, May<T> {
 
     private final TreePVector<T> vector;
 
@@ -61,7 +63,7 @@ public final class Seq<T> implements List<T> {
         this.vector = TreePVector.from(collection);
     }
 
-    public Seq<T> filter(Predicate<T> predicate) {
+    public Seq<T> filter(Predicate<? super T> predicate) {
         return new Seq<>(this.vector.stream().filter(predicate).collect(Collectors.toList()));
     }
 
@@ -92,7 +94,7 @@ public final class Seq<T> implements List<T> {
         return new Seq<>(this.vector.minus(value));
     }
 
-    public <X> Seq<X> map(Function<T,X> functor) {
+    public <U> Seq<U> map(Function<? super T, ? extends U> functor) {
         return new Seq<>(this.vector.stream().map(functor).collect(Collectors.toList()));
     }
 
@@ -104,9 +106,34 @@ public final class Seq<T> implements List<T> {
         return map;
     }
 
+    @Override
+    public T orPanic() {
+        return this.first().orPanic();
+    }
+
+    @Override
+    public boolean isPresent() {
+        return !this.isEmpty();
+    }
+
+    @Override
+    public May<T> then(Consumer<? super T> action) {
+        return this.first().then(action);
+    }
+
+    @Override
+    public May<T> or(Supplier<? extends May<? extends T>> supplier) {
+        return this.first().or(supplier);
+    }
+
+    @Override
+    public T orElse(T other) {
+        return null;
+    }
+
     /*
-        Methods for List<T>
-    */
+            Methods for List<T>
+        */
     @Override
     @Deprecated
     public void replaceAll(UnaryOperator<T> operator) {
