@@ -79,7 +79,7 @@ public final class Seq<T> implements List<T>, May<T> {
     }
 
     public Seq<T> filter(Predicate<? super T> predicate) {
-        return new Seq<>(this.vector.stream().filter(predicate).collect(Collectors.toList()));
+        return this.vector.stream().filter(predicate).collect(Seq.collector());
     }
 
     public Opt<T> first() {
@@ -143,7 +143,7 @@ public final class Seq<T> implements List<T>, May<T> {
 
     @Override
     public T orElse(T other) {
-        return null;
+        return this.first().orElse(other);
     }
 
     /*
