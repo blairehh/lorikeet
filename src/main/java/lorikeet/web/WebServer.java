@@ -1,5 +1,9 @@
 package lorikeet.web;
 
 public interface WebServer {
-    public WebRouter getRouter();
+    WebRouter getRouter();
+
+    default int getPort() {
+        return 8080;
+    }
 }

@@ -26,7 +26,7 @@ public class SunHttpServerEngine {
     private final HttpServer server;
 
     public SunHttpServerEngine(WebServer webserver) throws IOException {
-        this.server = HttpServer.create(new InetSocketAddress(1111), 0);
+        this.server = HttpServer.create(new InetSocketAddress(webserver.getPort()), 0);
         this.server.createContext("/", new HttpEndpointHandler(webserver.getRouter()));
     }
 
@@ -45,7 +45,7 @@ public class SunHttpServerEngine {
         @Override
         public void handle(HttpExchange exchange) {
             HttpMethod.find(exchange.getRequestMethod())
-                .ifPresent(method -> this.handle(exchange, method));
+                .then(method -> this.handle(exchange, method));
         }
 
         private void handle(HttpExchange exchange, HttpMethod method) {
