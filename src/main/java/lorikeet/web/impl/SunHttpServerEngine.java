@@ -60,7 +60,9 @@ public class SunHttpServerEngine {
         private void invokeInterceptors(HttpExchange exchange, HttpMethod method) {
             final String path = exchange.getRequestURI().toASCIIString();
             this.router.getIncomingRequestInterceptors()
+                .stream()
                 .filter(interceptor -> interceptor.getFilter().isApplicable(method, path))
+                .sorted()
                 .forEach(interceptor -> this.intercept(interceptor, exchange, method));
         }
 
