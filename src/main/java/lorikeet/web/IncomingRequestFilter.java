@@ -1,57 +1,36 @@
 package lorikeet.web;
 
+import lorikeet.Duo;
 import lorikeet.Seq;
 
 public final class IncomingRequestFilter {
 
-    private static final int DEFAULT_RANK = -1;
-
-    private final Seq<Filter> filters;
+    private final Seq<Duo<HttpMethod, String>> filters;
 
     public IncomingRequestFilter() {
         this.filters = Seq.empty();
     }
 
-    private IncomingRequestFilter(Seq<Filter> filters) {
+    private IncomingRequestFilter(Seq<Duo<HttpMethod, String>> filters) {
         this.filters = filters;
     }
 
-    public IncomingRequestFilter filter(int rank, String path, HttpMethod... methods) {
-        final Seq<Filter> filts  = Seq.of(methods)
-            .map(method -> new Filter(method, path, rank));
-        return new IncomingRequestFilter(this.filters.push(filts));
-    }
-
     public IncomingRequestFilter filter(String path, HttpMethod... methods) {
-        return this.filter(DEFAULT_RANK, path, methods);
-    }
-
-    public IncomingRequestFilter get(int rank, String path) {
-        return this.filter(rank, path, HttpMethod.GET);
+        final Seq<Duo<HttpMethod, String>> filts  = Seq.of(methods)
+            .map(method -> Duo.of(method, path));
+        return new IncomingRequestFilter(this.filters.push(filts));
     }
 
     public IncomingRequestFilter get(String path) {
         return this.filter(path, HttpMethod.GET);
     }
 
-    public IncomingRequestFilter post(int rank, String path) {
-        return this.filter(rank, path, HttpMethod.POST);
-    }
-
     public IncomingRequestFilter post(String path) {
         return this.filter(path, HttpMethod.POST);
     }
 
-    public IncomingRequestFilter put(int rank, String path) {
-        return this.filter(rank, path, HttpMethod.PUT);
-    }
-
     public IncomingRequestFilter put(String path) {
         return this.filter(path, HttpMethod.PUT);
-    }
-
-    public IncomingRequestFilter delete(int rank, String path) {
-        return this.filter(rank, path, HttpMethod.DELETE);
     }
 
     public IncomingRequestFilter delete(String path) {
@@ -62,11 +41,10 @@ public final class IncomingRequestFilter {
         return !this.applicable(method, path).isEmpty();
     }
 
-    public Seq<Filter> applicable(HttpMethod method, String path) {
+    public Seq<Duo<HttpMethod, String>> applicable(HttpMethod method, String path) {
         return this.filters
             .stream()
-            .filter(filter -> filter.getMethod() == method && Utils.uriMatches(filter.getPath(), path))
-            .sorted()
+            .filter(filter -> filter.getLeft() == method && Utils.uriMatches(filter.getRight(), path))
             .collect(Seq.collector());
     }
 }
