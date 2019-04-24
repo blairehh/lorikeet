@@ -1,7 +1,6 @@
 package lorikeet.container.testing;
 
-import lorikeet.Dict;
-import lorikeet.Seq;
+
 import lorikeet.container.ActionContainer;
 import lorikeet.container.Container;
 import lorikeet.container.Edict1;
@@ -14,19 +13,21 @@ import lorikeet.container.Meta;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class TestActionContainer implements ActionContainer {
 
     private final String cid;
-    private ContainerGraphNode currentGraphNode;
     private ContainerGraphNode rootGraphNode;
 
     public TestActionContainer() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private TestActionContainer(ContainerGraphNode root) {
+        this.cid = UUID.randomUUID().toString().substring(0, 8);
+        this.rootGraphNode = root;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class TestActionContainer implements ActionContainer {
 
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Edict1<ReturnType, ParameterType> edict, ParameterType parameter) {
-        this.prepareGraphNode(edict, parameter);
+        edict.inject(this.prepareGraphNode(edict, parameter));
         return edict.invoke(parameter);
     }
 
@@ -46,8 +47,7 @@ public class TestActionContainer implements ActionContainer {
         ParameterType1 parameter1,
         ParameterType2 parameter2
     ) {
-        this.prepareGraphNode(edict, parameter1, parameter2);
-        edict.inject(this);
+        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2));
         return edict.invoke(parameter1, parameter2);
     }
 
@@ -58,8 +58,7 @@ public class TestActionContainer implements ActionContainer {
         ParameterType2 parameter2,
         ParameterType3 parameter3
     ) {
-        this.prepareGraphNode(edict, parameter1, parameter2, parameter3);
-        edict.inject(this);
+        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3));
         return edict.invoke(parameter1, parameter2, parameter3);
     }
 
@@ -71,8 +70,7 @@ public class TestActionContainer implements ActionContainer {
         ParameterType3 parameter3,
         ParameterType4 parameter4
     ) {
-        this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4);
-        edict.inject(this);
+        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4));
         return edict.invoke(parameter1, parameter2, parameter3, parameter4);
     }
 
@@ -85,29 +83,29 @@ public class TestActionContainer implements ActionContainer {
         ParameterType4 parameter4,
         ParameterType5 parameter5
     ) {
-        this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4, parameter5);
-        edict.inject(this);
+        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4, parameter5));
         return edict.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
     }
 
-    private void prepareGraphNode(Container container, Object... params) {
+    private ActionContainer prepareGraphNode(Container container, Object... params) {
         List<ContainerParameter> parameters = new ArrayList<>();
 
         this.populateParameters(container.getMeta(), Arrays.asList(params), parameters);
 
-        ContainerGraphNode thisNode = new ContainerGraphNode(
+        ContainerGraphNode createdNode = new ContainerGraphNode(
             container.getClass().getName(),
             parameters,
             Instant.now(),
             new ArrayList<>()
         );
-        if (this.currentGraphNode == null) {
-            this.currentGraphNode = thisNode;
-            this.rootGraphNode = this.currentGraphNode;
+
+        if (this.rootGraphNode == null) {
+            this.rootGraphNode = createdNode;
         } else {
-            this.currentGraphNode.getChildren().add(thisNode);
-            this.currentGraphNode = thisNode;
+            this.rootGraphNode.getChildren().add(createdNode);
         }
+
+        return new TestActionContainer(createdNode);
     }
 
     private void populateParameters(Meta meta, List<Object> params, List<ContainerParameter> parameters) {

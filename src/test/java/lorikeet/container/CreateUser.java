@@ -9,6 +9,10 @@ public class CreateUser implements Edict2<User, String, String> {
         user.email = email;
         user.password = password;
         user.welcomeMessageSentAt = action.yield(new SendWelcomeMessage(), email);
+
+        action.yield(new ChargePayment(), "USD", 45.0);
+        action.yield(new OpenAccount(), email);
+
         return user;
     }
 
