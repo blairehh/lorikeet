@@ -96,7 +96,7 @@ public class TestActionContainer implements ActionContainer {
         this.populateParameters(container.getMeta(), Arrays.asList(params), parameters);
 
         ContainerGraphNode thisNode = new ContainerGraphNode(
-            container.getClass().getSimpleName(),
+            container.getClass().getName(),
             parameters,
             Instant.now(),
             new ArrayList<>()

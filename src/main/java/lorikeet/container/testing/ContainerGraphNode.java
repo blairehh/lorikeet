@@ -3,19 +3,20 @@ package lorikeet.container.testing;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ContainerGraphNode {
     private final String name;
     private final List<ContainerParameter> parameters;
     private final Instant timestamp;
+    private final int serializedHashCode;
     private final List<ContainerGraphNode> children;
 
     public ContainerGraphNode(String name, List<ContainerParameter> parameters, Instant timestamp,
                               List<ContainerGraphNode> children) {
         this.name = name;
         this.parameters = parameters;
+        this.serializedHashCode = Objects.hash(parameters.toArray());
         this.timestamp = timestamp;
         this.children = children;
     }
@@ -34,6 +35,10 @@ public class ContainerGraphNode {
 
     public final Instant getTimestamp() {
         return this.timestamp;
+    }
+
+    public int getSerializedHashCode() {
+        return this.serializedHashCode;
     }
 
     @Override
