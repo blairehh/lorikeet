@@ -1,15 +1,6 @@
 package lorikeet.container;
 
-import java.io.Serializable;
-
-public interface Edict5<
-    ReturnType,
-    ParameterType1 extends Serializable,
-    ParameterType2 extends Serializable,
-    ParameterType3 extends Serializable,
-    ParameterType4 extends Serializable,
-    ParameterType5 extends Serializable
-    > {
+public interface Edict5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> extends Container {
     ReturnType invoke(
         ParameterType1 parameter1,
         ParameterType2 parameter2,

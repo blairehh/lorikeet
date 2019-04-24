@@ -1,8 +1,7 @@
 package lorikeet.container;
 
-import java.io.Serializable;
 
-public interface Edict1<ReturnType, ParameterType extends Serializable> {
+public interface Edict1<ReturnType, ParameterType> extends Container {
     ReturnType invoke(ParameterType parameter);
     void inject(ActionContainer action);
 }

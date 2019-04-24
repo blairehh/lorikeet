@@ -23,4 +23,9 @@ public class CreateUser implements Edict2<User, String, String> {
         this.action = action;
     }
 
+    @Override
+    public Meta getMeta() {
+        return Meta.parameters("email", "password");
+    }
+
 }

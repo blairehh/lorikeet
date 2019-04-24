@@ -17,4 +17,9 @@ public class SendWelcomeMessage implements Edict1<Instant, String> {
     public void inject(ActionContainer action) {
         
     }
+
+    @Override
+    public Meta getMeta() {
+        return Meta.parameters("email");
+    }
 }
