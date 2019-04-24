@@ -97,6 +97,10 @@ public final class Seq<T> implements List<T>, May<T> {
         return new Seq<T>(this.vector.plusAll(seq));
     }
 
+    public Opt<T> fetch(int index) {
+        return Opt.ofNullable(this.get(index));
+    }
+
     public boolean anyMatch(Predicate<T> predicate) {
         return this.vector.stream().anyMatch(predicate);
     }

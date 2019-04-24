@@ -1,26 +1,21 @@
 package lorikeet.container.testing;
 
-import lorikeet.Dict;
-import lorikeet.Seq;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ContainerGraphNode {
     private final String name;
-    private final Dict<String, String> stringParameters;
-    private final Dict<String, Number> numericParameters;
-    private final Dict<String, Boolean> booleanParameters;
+    private final List<ContainerParameter> parameters;
     private final Instant timestamp;
     private final List<ContainerGraphNode> children;
 
-    public ContainerGraphNode(String name, Dict<String, String> stringParameters, Dict<String, Number> numericParameters,
-                              Dict<String, Boolean> booleanParameters, Instant timestamp, List<ContainerGraphNode> children) {
+    public ContainerGraphNode(String name, List<ContainerParameter> parameters, Instant timestamp,
+                              List<ContainerGraphNode> children) {
         this.name = name;
-        this.stringParameters = stringParameters;
-        this.numericParameters = numericParameters;
-        this.booleanParameters = booleanParameters;
+        this.parameters = parameters;
         this.timestamp = timestamp;
         this.children = children;
     }
@@ -29,16 +24,8 @@ public class ContainerGraphNode {
         return this.name;
     }
 
-    public final Dict<String, String> getStringParameters() {
-        return this.stringParameters;
-    }
-
-    public final Dict<String, Number> getNumericParameters() {
-        return this.numericParameters;
-    }
-
-    public final Dict<String, Boolean> getBooleanParameters() {
-        return this.booleanParameters;
+    public final List<ContainerParameter> getParameters() {
+        return this.parameters;
     }
 
     public final List<ContainerGraphNode> getChildren() {
@@ -62,9 +49,7 @@ public class ContainerGraphNode {
         ContainerGraphNode that = (ContainerGraphNode) o;
 
         return Objects.equals(this.getName(), that.getName())
-            && Objects.equals(this.getStringParameters(), that.getStringParameters())
-            && Objects.equals(this.getNumericParameters(), that.getNumericParameters())
-            && Objects.equals(this.getBooleanParameters(), that.getBooleanParameters())
+            && Objects.equals(this.getParameters(), that.getParameters())
             && Objects.equals(this.getTimestamp(), that.getTimestamp())
             && Objects.equals(this.getChildren(), that.getChildren());
     }
@@ -73,9 +58,7 @@ public class ContainerGraphNode {
     public int hashCode() {
         return Objects.hash(
             this.getName(),
-            this.getStringParameters(),
-            this.getNumericParameters(),
-            this.getBooleanParameters(),
+            this.getParameters(),
             this.getTimestamp(),
             this.getChildren()
         );

@@ -20,10 +20,13 @@ public class TestActionContainerTest {
 
         ContainerGraphNode root = action.getGraph().getRootNode();
         assertThat(root.getName()).isEqualTo("CreateUser");
+        assertThat(root.getParameters()).contains(new ContainerParameter(RenderType.STRING, "email", "bob@gmail.com"));
+        assertThat(root.getParameters()).contains(new ContainerParameter(RenderType.STRING,"password", "secret"));
 
         List<ContainerGraphNode> children = root.getChildren();
         assertThat(children).hasSize(1);
         assertThat(children.get(0).getName()).isEqualTo("SendWelcomeMessage");
+        assertThat(children.get(0).getParameters()).contains(new ContainerParameter(RenderType.STRING,"email", "bob@gmail.com"));
     }
 
 }
