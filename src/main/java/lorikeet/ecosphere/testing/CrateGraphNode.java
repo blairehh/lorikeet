@@ -1,19 +1,19 @@
-package lorikeet.container.testing;
+package lorikeet.ecosphere.testing;
 
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-public class ContainerGraphNode {
+public class CrateGraphNode {
     private final String name;
-    private final List<ContainerParameter> parameters;
+    private final List<CrateParameter> parameters;
     private final Instant timestamp;
     private final int serializedHashCode;
-    private final List<ContainerGraphNode> children;
+    private final List<CrateGraphNode> children;
 
-    public ContainerGraphNode(String name, List<ContainerParameter> parameters, Instant timestamp,
-                              List<ContainerGraphNode> children) {
+    public CrateGraphNode(String name, List<CrateParameter> parameters, Instant timestamp,
+                          List<CrateGraphNode> children) {
         this.name = name;
         this.parameters = parameters;
         this.serializedHashCode = Objects.hash(parameters.toArray());
@@ -25,11 +25,11 @@ public class ContainerGraphNode {
         return this.name;
     }
 
-    public final List<ContainerParameter> getParameters() {
+    public final List<CrateParameter> getParameters() {
         return this.parameters;
     }
 
-    public final List<ContainerGraphNode> getChildren() {
+    public final List<CrateGraphNode> getChildren() {
         return this.children;
     }
 
@@ -51,7 +51,7 @@ public class ContainerGraphNode {
             return false;
         }
 
-        ContainerGraphNode that = (ContainerGraphNode) o;
+        CrateGraphNode that = (CrateGraphNode) o;
 
         return Objects.equals(this.getName(), that.getName())
             && Objects.equals(this.getParameters(), that.getParameters())

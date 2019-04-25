@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A container object which may or may not contain a non-{@code null} value.
+ * A ecosphere object which may or may not contain a non-{@code null} value.
  * If a value is present, {@code isPresent()} returns {@code true} and
  * {@code get()} returns the value.
  *

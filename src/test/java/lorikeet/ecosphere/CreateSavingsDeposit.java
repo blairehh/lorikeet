@@ -1,8 +1,8 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
 
-    private ActionContainer action;
+    private Plug plug;
 
     private boolean createSavingsAccount(double balance) {
         return true;
@@ -14,8 +14,8 @@ public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
-        this.action = action;
+    public void inject(Plug plug) {
+        this.plug = plug;
     }
 
     @Override

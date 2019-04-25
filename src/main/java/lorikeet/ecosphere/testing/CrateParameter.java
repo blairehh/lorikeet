@@ -1,16 +1,16 @@
-package lorikeet.container.testing;
+package lorikeet.ecosphere.testing;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 
-public class ContainerParameter {
+public class CrateParameter {
     private final RenderType renderType;
     private final String name;
     private final String value;
 
-    public ContainerParameter(RenderType renderType, String name, String value) {
+    public CrateParameter(RenderType renderType, String name, String value) {
         this.renderType = renderType;
         this.name = name;
         this.value = value;
@@ -38,7 +38,7 @@ public class ContainerParameter {
             return false;
         }
 
-        ContainerParameter that = (ContainerParameter) o;
+        CrateParameter that = (CrateParameter) o;
 
         return Objects.equals(this.getRenderType(), that.getRenderType())
             && Objects.equals(this.getName(), that.getName())

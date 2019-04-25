@@ -1,4 +1,4 @@
-package lorikeet.container.testing;
+package lorikeet.ecosphere.testing;
 
 public enum RenderType {
     NULL,

@@ -1,17 +1,17 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 public class CreateUser implements Edict2<User, String, String> {
 
-    private ActionContainer action;
+    private Plug plug;
 
     public User createUser(String email, String password) {
         User user = new User();
         user.email = email;
         user.password = password;
-        user.welcomeMessageSentAt = action.yield(new SendWelcomeMessage(), email);
+        user.welcomeMessageSentAt = plug.yield(new SendWelcomeMessage(), email);
 
-        action.yield(new ChargePayment(), "USD", 45.0);
-        action.yield(new OpenAccount(), email);
+        plug.yield(new ChargePayment(), "USD", 45.0);
+        plug.yield(new OpenAccount(), email);
 
         return user;
     }
@@ -23,8 +23,8 @@ public class CreateUser implements Edict2<User, String, String> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
-        this.action = action;
+    public void inject(Plug action) {
+        this.plug = action;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 import java.time.Instant;
 
@@ -14,7 +14,7 @@ public class SendWelcomeMessage implements Edict1<Instant, String> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
+    public void inject(Plug plug) {
         
     }
 

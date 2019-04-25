@@ -1,7 +1,7 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 
-public interface ActionContainer {
+public interface Plug {
 
     String getCid();
 

@@ -1,27 +1,27 @@
-package lorikeet.container.testing;
+package lorikeet.ecosphere.testing;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class ContainerGraphNodeTranscriber {
+public class CrateGraphNodeTranscriber {
 
-    public String transcribe(ContainerGraphNode root) {
+    public String transcribe(CrateGraphNode root) {
         StringBuilder transcript = new StringBuilder();
         transcribe(transcript, 0, root);
         return transcript.toString();
     }
 
-    private void transcribe(StringBuilder transcript, int indentation, ContainerGraphNode node) {
+    private void transcribe(StringBuilder transcript, int indentation, CrateGraphNode node) {
         final int childIndentation = indentation + 1;
         this.transcribeNode(transcript, indentation, node);
         transcript.append('\n');
         node.getChildren()
             .stream()
-            .sorted(Comparator.comparing(ContainerGraphNode::getTimestamp))
+            .sorted(Comparator.comparing(CrateGraphNode::getTimestamp))
             .forEach(child -> this.transcribe(transcript, childIndentation, child));
     }
 
-    private void transcribeNode(StringBuilder transcript, int indentation, ContainerGraphNode node) {
+    private void transcribeNode(StringBuilder transcript, int indentation, CrateGraphNode node) {
         transcript.append("\t".repeat(indentation));
         transcript.append("<");
         transcript.append(node.getName());
@@ -30,10 +30,10 @@ public class ContainerGraphNodeTranscriber {
         transcript.append(">");
     }
 
-    private String buildParameters(List<ContainerParameter> parameters) {
+    private String buildParameters(List<CrateParameter> parameters) {
         StringBuilder builder = new StringBuilder();
         parameters.stream()
-            .sorted(Comparator.comparing(ContainerParameter::getName))
+            .sorted(Comparator.comparing(CrateParameter::getName))
             .forEach(parameter -> {
                 builder.append(stringy(parameter));
             });
@@ -41,7 +41,7 @@ public class ContainerGraphNodeTranscriber {
         return builder.toString();
     }
 
-    private String stringy(ContainerParameter parameter) {
+    private String stringy(CrateParameter parameter) {
         StringBuilder builder = new StringBuilder();
         builder.append(" ");
         builder.append(parameter.getName());

@@ -1,12 +1,12 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 import java.util.UUID;
 
-public class DefaultActionContainer implements ActionContainer{
+public class DefaultPlug implements Plug {
 
     private final String cid;
 
-    public DefaultActionContainer() {
+    public DefaultPlug() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
     }
 
@@ -17,6 +17,7 @@ public class DefaultActionContainer implements ActionContainer{
 
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Edict1<ReturnType, ParameterType> edict, ParameterType parameter) {
+        edict.inject(this);
         return edict.invoke(parameter);
     }
 

@@ -1,6 +1,6 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
-public interface Container {
+public interface Crate {
     default Meta getMeta() {
         return Meta.none();
     }

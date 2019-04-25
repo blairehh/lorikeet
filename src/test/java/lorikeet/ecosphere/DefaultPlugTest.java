@@ -1,14 +1,14 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultActionContainerTest {
+public class DefaultPlugTest {
 
     @Test
     public void test() {
-        ActionContainer action = new DefaultActionContainer();
+        Plug action = new DefaultPlug();
         User user = action.yield(new CreateUser(), "bob@gmail.com", "secret");
         assertThat(user.email).isEqualTo("bob@gmail.com");
         assertThat(user.password).isEqualTo("secret");

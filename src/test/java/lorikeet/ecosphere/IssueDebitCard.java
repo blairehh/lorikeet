@@ -1,8 +1,8 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 public class IssueDebitCard implements Edict1<Boolean, String> {
 
-    private ActionContainer action;
+    private Plug plug;
 
     private boolean issueDebitCard(String paymentCompany) {
         return true;
@@ -14,8 +14,8 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
-        this.action = action;
+    public void inject(Plug action) {
+        this.plug = plug;
     }
 
     @Override

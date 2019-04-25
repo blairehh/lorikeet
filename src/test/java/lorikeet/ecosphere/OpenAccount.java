@@ -1,12 +1,12 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 public class OpenAccount implements Edict1<Boolean, String> {
 
-    private ActionContainer action;
+    private Plug plug;
 
     private boolean openAccount(String email) {
-        action.yield(new CreateSavingsDeposit(), 0.0);
-        action.yield(new IssueDebitCard(), "mastercard");
+        plug.yield(new CreateSavingsDeposit(), 0.0);
+        plug.yield(new IssueDebitCard(), "mastercard");
         return true;
     }
 
@@ -16,8 +16,8 @@ public class OpenAccount implements Edict1<Boolean, String> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
-        this.action = action;
+    public void inject(Plug plug) {
+        this.plug = plug;
     }
 
     @Override

@@ -513,8 +513,8 @@ public class PathPattern implements Comparable<PathPattern> {
     }
 
     /**
-     * Return if the container is not null and has more than zero elements.
-     * @param container a path container
+     * Return if the ecosphere is not null and has more than zero elements.
+     * @param container a path ecosphere
      * @return {@code true} has more than zero elements
      */
     private boolean hasLength(PathContainer container) {

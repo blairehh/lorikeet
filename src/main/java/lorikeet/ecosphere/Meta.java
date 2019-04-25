@@ -1,4 +1,4 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 import lorikeet.Seq;
 

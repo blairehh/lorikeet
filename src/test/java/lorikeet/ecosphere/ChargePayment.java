@@ -1,4 +1,4 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
 public class ChargePayment implements Edict2<Boolean, String, Double> {
     @Override
@@ -7,7 +7,7 @@ public class ChargePayment implements Edict2<Boolean, String, Double> {
     }
 
     @Override
-    public void inject(ActionContainer action) {
+    public void inject(Plug plug) {
 
     }
 

@@ -1,6 +1,6 @@
-package lorikeet.container;
+package lorikeet.ecosphere;
 
-public interface Edict5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> extends Container {
+public interface Edict5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> extends Crate {
     ReturnType invoke(
         ParameterType1 parameter1,
         ParameterType2 parameter2,
@@ -8,5 +8,5 @@ public interface Edict5<ReturnType, ParameterType1, ParameterType2, ParameterTyp
         ParameterType4 parameter4,
         ParameterType5 parameter5
     );
-    void inject(ActionContainer action);
+    void inject(Plug action);
 }
