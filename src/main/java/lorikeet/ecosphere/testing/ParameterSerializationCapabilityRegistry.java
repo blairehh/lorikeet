@@ -1,6 +1,5 @@
 package lorikeet.ecosphere.testing;
 
-import com.sun.jdi.Value;
 import lorikeet.Err;
 import lorikeet.Fun;
 import lorikeet.Fun2;
@@ -8,10 +7,7 @@ import lorikeet.error.CouldNotFindParameterSerializerCapability;
 import lorikeet.tools.CapabilityRegistry;
 import lorikeet.tools.CapabilityRepository;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Collection;
-import java.util.List;
 
 public class ParameterSerializationCapabilityRegistry implements CapabilityRegistry<Class<?>, Fun2<Object, Class<?>, String>, Class<?>> {
 
@@ -60,37 +56,18 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
     }
 
     public static ParameterSerializationCapabilityRegistry init() {
-        final ParameterSerializationCapabilityRegistry scalarTypes = new ParameterSerializationCapabilityRegistry()
-            .register(c -> c.equals(String.class), (value, context) -> String.format("\"%s\"", value))
-            .register(c -> Number.class.isAssignableFrom(c), (value, context) -> value.toString())
+        final ParameterSerializationCapabilityRegistry registry = new ParameterSerializationCapabilityRegistry();
+        final ParameterSerializer serializer = new ParameterSerializer(registry);
+        registry.register(c -> c.equals(String.class), (value, context) -> String.format("\"%s\"", value))
+            .register(Number.class::isAssignableFrom, (value, context) -> value.toString())
+            .register(c -> c.equals(Character.class), (value, context) -> String.format("'%s'", value))
             .register(c -> c.equals(Boolean.class), (value, context) -> value.toString());
 
 
-        return scalarTypes.register(c -> Collection.class.isAssignableFrom(c), (Collection<?> list, Class<?> context) -> serializeList(list, context, scalarTypes));
-    }
-
-    static String serializeList(Collection<?> list, Class<?> context, ParameterSerializationCapabilityRegistry scalarTypes) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        int i = 0;
-        for (Object item : list) {
-            if (item == null) {
-                builder.append("null ");
-                continue;
-            }
-
-            final String value = scalarTypes.find(item.getClass(), context)
-                .map(stringifier -> stringifier.apply(item, context))
-                .orElse("not-ser");
-
-            builder.append(value);
-            if (i != list.size() - 1) {
-                builder.append(", ");
-            }
-            i++;
-        }
-        builder.append("]");
-        return builder.toString();
+        return registry.register(
+            Collection.class::isAssignableFrom,
+            (Collection<?> list, Class<?> context) -> ParameterSerializerSupport.serializeCollection(list, context, serializer)
+        );
     }
 
 
