@@ -197,6 +197,13 @@ public final class Opt<T> implements May<T> {
         return this;
     }
 
+    public Err<T> asErr(Exception e) {
+        if (this.value == null) {
+            return Err.failure(e);
+        }
+        return Err.of(this.value);
+    }
+
     /**
      * If a value is present, performs the given action with the value,
      * otherwise performs the given empty-based action.
