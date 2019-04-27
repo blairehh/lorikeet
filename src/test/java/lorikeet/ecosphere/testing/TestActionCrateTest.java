@@ -1,5 +1,6 @@
 package lorikeet.ecosphere.testing;
 
+import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
 import org.junit.Test;
@@ -13,7 +14,7 @@ public class TestActionCrateTest {
     @Test
     public void test() {
         TestPlug action = new TestPlug();
-        User user = action.yield(new CreateUser(), "bob@gmail.com", "secret");
+        User user = action.yield(new CreateUser(), "bob@gmail.com", "secret", Seq.of(1, 2));
         assertThat(user.email).isEqualTo("bob@gmail.com");
         assertThat(user.password).isEqualTo("secret");
 

@@ -1,10 +1,13 @@
 package lorikeet.ecosphere;
 
-public class CreateUser implements Edict2<User, String, String> {
+
+import lorikeet.Seq;
+
+public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
 
     private Plug plug;
 
-    public User createUser(String email, String password) {
+    public User createUser(String email, String password, Seq<Integer> codes) {
         User user = new User();
         user.email = email;
         user.password = password;
@@ -18,8 +21,8 @@ public class CreateUser implements Edict2<User, String, String> {
 
 
     @Override
-    public User invoke(String email, String password) {
-        return this.createUser(email, password);
+    public User invoke(String email, String password, Seq<Integer> codes) {
+        return this.createUser(email, password, codes);
     }
 
     @Override
@@ -29,7 +32,7 @@ public class CreateUser implements Edict2<User, String, String> {
 
     @Override
     public Meta getMeta() {
-        return Meta.parameters("email", "password");
+        return Meta.parameters("email", "password", "codes");
     }
 
 }

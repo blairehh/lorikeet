@@ -4,26 +4,29 @@ import lorikeet.Fun;
 import lorikeet.Opt;
 import lorikeet.Seq;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CapabilityRepository<Identifier, Ability, Context> {
     private static final int DEFAULT_RANK = -2;
     private final Fun<Context, Boolean> DEFAULT_CONTEXT_PREDICATE = (context -> true);
 
-    private final Seq<Capability<Identifier, Ability, Context>> capabilities;
+    private final List<Capability<Identifier, Ability, Context>> capabilities;
 
     public CapabilityRepository() {
-        this.capabilities = Seq.empty();
+        this.capabilities = new ArrayList<>();
     }
 
-    public CapabilityRepository(Seq<Capability<Identifier, Ability, Context>> capabilities) {
+    public CapabilityRepository(List<Capability<Identifier, Ability, Context>> capabilities) {
         this.capabilities = capabilities;
     }
 
     public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate,
                                                                   Ability ability, Fun<Context, Boolean> contextPredicate,
                                                                   int rank) {
-        return new CapabilityRepository<>(this.capabilities.push(new Capability<>(identifierPredicate, ability, contextPredicate, rank)));
+        this.capabilities.add(new Capability<>(identifierPredicate, ability, contextPredicate, rank));
+        return this;
     }
 
     public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate,

@@ -9,6 +9,7 @@ import lorikeet.tools.CapabilityRepository;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 public class ParameterSerializationCapabilityRegistry implements CapabilityRegistry<Class<?>, Fun<Object, String>, Class<?>> {
 
@@ -57,10 +58,37 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
     }
 
     public static ParameterSerializationCapabilityRegistry init() {
-        return new ParameterSerializationCapabilityRegistry()
+        final ParameterSerializationCapabilityRegistry scalarTypes = new ParameterSerializationCapabilityRegistry()
             .register(c -> c.equals(String.class), (value) -> String.format("\"%s\"", value))
             .register(c -> Number.class.isAssignableFrom(c), Object::toString)
             .register(c -> c.equals(Boolean.class), Object::toString);
+
+
+        return scalarTypes.register(c -> List.class.isAssignableFrom(c), (List<?> list) -> serializeList(list, scalarTypes));
+    }
+
+    static String serializeList(List<?> list, ParameterSerializationCapabilityRegistry scalarTypes) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (int i = 0; i < list.size(); i++) {
+            final Object item = list.get(i);
+            if (item == null) {
+                builder.append("null ");
+                continue;
+            }
+
+            final String value = scalarTypes.find(item.getClass(), String.class)
+                .map(stringifier -> stringifier.apply(item))
+                .orElse("not-ser");
+
+            builder.append(value);
+            if (i != list.size() - 1) {
+                builder.append(", ");
+            }
+
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 
