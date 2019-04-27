@@ -116,6 +116,10 @@ public final class Err<T> implements May<T> {
         return t;
     }
 
+    public static<T> Err<T> failure(Exception e) {
+        return new Err<>(e);
+    }
+
     /**
      * Constructs an instance with the described value.
      *

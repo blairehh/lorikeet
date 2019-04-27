@@ -117,29 +117,9 @@ public class TestPlug implements Plug {
                 continue;
             }
 
-            final Object value = params.get(i);
-            parameters.add(new CrateParameter(determineRenderType(value), parameterName, value == null ? "" : value.toString()));
-        }
-    }
 
-    private RenderType determineRenderType(Object object) {
-        if (object == null) {
-            return RenderType.NULL;
+            parameters.add(new CrateParameter(parameterName, params.get(i)));
         }
-
-        if (object instanceof String) {
-            return RenderType.STRING;
-        }
-
-        if (object instanceof Number) {
-            return RenderType.NUMBER;
-        }
-
-        if (object instanceof Boolean) {
-            return RenderType.BOOLEAN;
-        }
-
-        return RenderType.OBJECT;
     }
 
     public CrateGraph getGraph() {

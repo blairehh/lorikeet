@@ -5,6 +5,9 @@ import java.util.List;
 
 public class CrateGraphNodeTranscriber {
 
+    final ParameterSerializationCapabilityRegistry parameterSerializationRegistry = ParameterSerializationCapabilityRegistry.init();
+
+
     public String transcribe(CrateGraphNode root) {
         StringBuilder transcript = new StringBuilder();
         transcribe(transcript, 0, root);
@@ -34,26 +37,21 @@ public class CrateGraphNodeTranscriber {
         parameters.stream()
             .sorted(Comparator.comparing(CrateParameter::getName))
             .forEach(parameter -> {
-                builder.append(stringy(parameter));
+                builder.append(" ");
+                builder.append(parameter.getName());
+                builder.append("=");
+                stringify(builder, parameter);
             });
 
         return builder.toString();
     }
 
-    private String stringy(CrateParameter parameter) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(" ");
-        builder.append(parameter.getName());
-        builder.append("=");
-
-        switch (parameter.getRenderType()) {
-            case NULL: builder.append("null"); break;
-            case STRING: builder.append(String.format("\"%s\"", parameter.getValue())); break;
-            case BOOLEAN:
-            case OBJECT:
-            case NUMBER: builder.append(parameter.getValue()); break;
+    private void stringify(StringBuilder builder, CrateParameter parameter) {
+        if (parameter.getValue() == null) {
+            builder.append("null");
         }
-
-        return builder.toString();
+        final Object value = parameter.getValue();
+        this.parameterSerializationRegistry.find(value.getClass(), String.class)
+            .then(stringifier -> builder.append(stringifier.apply(value)));
     }
 }
