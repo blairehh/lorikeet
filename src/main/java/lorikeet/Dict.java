@@ -45,6 +45,9 @@ public class Dict<K, V> implements Map<K, V> {
     }
 
 
+    public static<Key, Value> Dict<Key, Seq<Value>> pushpush(Dict<Key, Seq<Value>> dict, Key key, Value value) {
+        return dict.push(key, dict.find(key).map(seq -> seq.push(value)).orElse(Seq.of(value)));
+    }
 
     public Dict<K, V> push(K key, V value) {
         return new Dict<>(this.map.plus(key, value));
