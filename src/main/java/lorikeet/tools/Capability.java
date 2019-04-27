@@ -8,20 +8,20 @@ import java.util.Objects;
 
 public class Capability<Identifier, Ability, Context> implements Rankable {
 
-    private final Fun<Identifier, Boolean> identifierPredicate;
+    private final Fun<Identifier, Boolean> matchPredicate;
     private final Ability ability;
     private final Fun<Context, Boolean> contextPredicate;
     private final int rank;
 
-    public Capability(Fun<Identifier, Boolean> identifierPredicate, Ability ability, Fun<Context, Boolean> contextPredicate, int rank) {
-        this.identifierPredicate = identifierPredicate;
+    public Capability(Fun<Identifier, Boolean> matchPredicate, Ability ability, Fun<Context, Boolean> contextPredicate, int rank) {
+        this.matchPredicate = matchPredicate;
         this.ability = ability;
         this.contextPredicate = contextPredicate;
         this.rank = rank;
     }
 
-    public Fun<Identifier, Boolean> getIdentifierPredicate() {
-        return this.identifierPredicate;
+    public Fun<Identifier, Boolean> getMatchPredicate() {
+        return this.matchPredicate;
     }
 
     public final Ability getAbility() {
@@ -49,7 +49,7 @@ public class Capability<Identifier, Ability, Context> implements Rankable {
 
         Capability<?, ?,?> that = (Capability<?, ?,?>) o;
 
-        return Objects.equals(this.getIdentifierPredicate(), that.getIdentifierPredicate())
+        return Objects.equals(this.getMatchPredicate(), that.getMatchPredicate())
             && Objects.equals(this.getContextPredicate(), that.getContextPredicate())
             && Objects.equals(this.getAbility(), that.getAbility())
             && Objects.equals(this.getRank(), that.getRank());
@@ -57,7 +57,7 @@ public class Capability<Identifier, Ability, Context> implements Rankable {
 
     @Override
     public final int hashCode() {
-        return Objects.hash(this.getIdentifierPredicate(), this.getAbility(), this.getContextPredicate(), this.getRank());
+        return Objects.hash(this.getMatchPredicate(), this.getAbility(), this.getContextPredicate(), this.getRank());
     }
 
     @Override

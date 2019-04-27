@@ -22,32 +22,32 @@ public class CapabilityRepository<Identifier, Ability, Context> {
         this.capabilities = capabilities;
     }
 
-    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate,
+    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> getMatchPredicate,
                                                                   Ability ability, Fun<Context, Boolean> contextPredicate,
                                                                   int rank) {
-        this.capabilities.add(new Capability<>(identifierPredicate, ability, contextPredicate, rank));
+        this.capabilities.add(new Capability<>(getMatchPredicate, ability, contextPredicate, rank));
         return this;
     }
 
-    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate,
+    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> getMatchPredicate,
                                                                   Ability ability, Fun<Context, Boolean> contextPredicate) {
-        return this.add(identifierPredicate, ability, contextPredicate, DEFAULT_RANK);
+        return this.add(getMatchPredicate, ability, contextPredicate, DEFAULT_RANK);
     }
 
-    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate,
+    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> getMatchPredicate,
                                                                   Ability ability, int rank) {
-        return this.add(identifierPredicate, ability, DEFAULT_CONTEXT_PREDICATE, rank);
+        return this.add(getMatchPredicate, ability, DEFAULT_CONTEXT_PREDICATE, rank);
     }
 
 
-    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> identifierPredicate, Ability ability) {
-        return this.add(identifierPredicate, ability, DEFAULT_CONTEXT_PREDICATE, DEFAULT_RANK);
+    public CapabilityRepository<Identifier, Ability, Context> add(Fun<Identifier, Boolean> getMatchPredicate, Ability ability) {
+        return this.add(getMatchPredicate, ability, DEFAULT_CONTEXT_PREDICATE, DEFAULT_RANK);
     }
 
     public Opt<Ability> find(Identifier identifier, Context context) {
         return this.capabilities
             .stream()
-            .filter(capability -> capability.getIdentifierPredicate().apply(identifier))
+            .filter(capability -> capability.getMatchPredicate().apply(identifier))
             .filter(capability -> capability.getContextPredicate().apply(context))
             .map(Capability::getAbility)
             .collect(Seq.collector())

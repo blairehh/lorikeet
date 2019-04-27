@@ -23,31 +23,31 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
         this.repository = repository;
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability) {
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> match, Fun<ValueType, String> ability) {
         final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
-        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap));
+        final Fun<Class<?>, Boolean> matchPredicate = value -> match.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(matchPredicate, unsafeWrap));
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability, int rank) {
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> match, Fun<ValueType, String> ability, int rank) {
         final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
-        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, rank));
+        final Fun<Class<?>, Boolean> matchPredicate = value -> match.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(matchPredicate, unsafeWrap, rank));
     }
 
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability,
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> match, Fun<ValueType, String> ability,
                                                             Fun<Class<?>, Boolean> contextPredicate, int rank) {
         final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
-        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, contextPredicate, rank));
+        final Fun<Class<?>, Boolean> matchPredicate = value -> match.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(matchPredicate, unsafeWrap, contextPredicate, rank));
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability,
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> match, Fun<ValueType, String> ability,
                                                             Fun<Class<?>, Boolean> contextPredicate) {
         final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
-        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, contextPredicate));
+        final Fun<Class<?>, Boolean> matchPredicate = value -> match.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(matchPredicate, unsafeWrap, contextPredicate));
     }
 
     @Override
