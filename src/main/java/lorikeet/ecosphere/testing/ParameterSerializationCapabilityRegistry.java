@@ -8,6 +8,7 @@ import lorikeet.tools.CapabilityRegistry;
 import lorikeet.tools.CapabilityRepository;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class ParameterSerializationCapabilityRegistry implements CapabilityRegistry<Class<?>, Fun2<Object, Class<?>, String>, Class<?>> {
 
@@ -64,10 +65,17 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
             .register(c -> c.equals(Boolean.class), (value, context) -> value.toString());
 
 
-        return registry.register(
+        registry.register(
             Collection.class::isAssignableFrom,
             (Collection<?> list, Class<?> context) -> ParameterSerializerSupport.serializeCollection(list, context, serializer)
         );
+
+        registry.register(
+            Map.class::isAssignableFrom,
+            (Map<?, ?> map, Class<?> context) -> ParameterSerializerSupport.serializeMap(map, context, serializer)
+        );
+
+        return registry;
     }
 
 

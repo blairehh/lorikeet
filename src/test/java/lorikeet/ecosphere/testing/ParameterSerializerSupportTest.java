@@ -5,7 +5,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,4 +44,27 @@ public class ParameterSerializerSupportTest {
             .isEqualTo("[[1, 2], [3, 4]]");
     }
 
+
+    @Test
+    public void testEmptyMap() {
+        Map<String, String> map = new HashMap<>();
+        assertThat(ParameterSerializerSupport.serializeMap(map, this.getClass(), serializer)).isEqualTo("{}");
+    }
+
+    @Test
+    public void testMapOneEntry() {
+        Map<String, String> map = new HashMap<>();
+        map.put("foo", "bar");
+        assertThat(ParameterSerializerSupport.serializeMap(map, this.getClass(), serializer))
+            .isEqualTo("{\"foo\": \"bar\"}");
+    }
+
+    @Test
+    public void testMapTwoEntries() {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 2);
+        map.put(3, 4);
+        assertThat(ParameterSerializerSupport.serializeMap(map, this.getClass(), serializer))
+            .isEqualTo("{1: 2, 3: 4}");
+    }
 }
