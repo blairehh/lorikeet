@@ -6,6 +6,9 @@ import lorikeet.error.CouldNotFindParameterSerializerCapability;
 import lorikeet.tools.CapabilityRegistry;
 import lorikeet.tools.CapabilityRepository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class ParameterSerializationCapabilityRegistry implements CapabilityRegistry<Class<?>, Fun<Object, String>, Class<?>> {
 
     private final CapabilityRepository<Class<?>, Fun<Object, String>, Class<?>> repository;
@@ -56,6 +59,8 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
             .register(Long.class, Object::toString)
             .register(Float.class, Object::toString)
             .register(Double.class, Object::toString)
+            .register(BigInteger.class, Object::toString)
+            .register(BigDecimal.class, Object::toString)
             .register(Number.class, Object::toString)
             .register(Boolean.class, Object::toString);
     }
