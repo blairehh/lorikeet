@@ -51,7 +51,8 @@ public class CrateGraphNodeTranscriber {
             builder.append("null");
         }
         final Object value = parameter.getValue();
+        // @TODO get the correct context
         this.parameterSerializationRegistry.find(value.getClass(), String.class)
-            .then(stringifier -> builder.append(stringifier.apply(value)));
+            .then(stringifier -> builder.append(stringifier.apply(value, String.class)));
     }
 }
