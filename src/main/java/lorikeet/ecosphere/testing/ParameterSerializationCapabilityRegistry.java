@@ -1,5 +1,6 @@
 package lorikeet.ecosphere.testing;
 
+import com.sun.jdi.Value;
 import lorikeet.Err;
 import lorikeet.Fun;
 import lorikeet.error.CouldNotFindParameterSerializerCapability;
@@ -21,27 +22,31 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
         this.repository = repository;
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Class<ValueType> identity, Fun<ValueType, String> ability) {
-        final Fun<Object, String> wrap = value -> ability.apply((ValueType)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identity, wrap));
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability) {
+        final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
+        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap));
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Class<ValueType> identity, Fun<ValueType, String> ability, int rank) {
-        final Fun<Object, String> wrap = value -> ability.apply((ValueType)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identity, wrap, rank));
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability, int rank) {
+        final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
+        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, rank));
     }
 
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Class<ValueType> identity, Fun<ValueType, String> ability,
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability,
                                                             Fun<Class<?>, Boolean> contextPredicate, int rank) {
-        final Fun<Object, String> wrap = value -> ability.apply((ValueType)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identity, wrap, contextPredicate, rank));
+        final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
+        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, contextPredicate, rank));
     }
 
-    public <ValueType> ParameterSerializationCapabilityRegistry register(Class<ValueType> identity, Fun<ValueType, String> ability,
+    public <ValueType> ParameterSerializationCapabilityRegistry register(Fun<Class<ValueType>, Boolean> identity, Fun<ValueType, String> ability,
                                                             Fun<Class<?>, Boolean> contextPredicate) {
-        final Fun<Object, String> wrap = value -> ability.apply((ValueType)value);
-        return new ParameterSerializationCapabilityRegistry(this.repository.add(identity, wrap, contextPredicate));
+        final Fun<Object, String> unsafeWrap = value -> ability.apply((ValueType)value);
+        final Fun<Class<?>, Boolean> identityPredicate = value -> identity.apply((Class<ValueType>)value);
+        return new ParameterSerializationCapabilityRegistry(this.repository.add(identityPredicate, unsafeWrap, contextPredicate));
     }
 
     @Override
@@ -53,16 +58,9 @@ public class ParameterSerializationCapabilityRegistry implements CapabilityRegis
 
     public static ParameterSerializationCapabilityRegistry init() {
         return new ParameterSerializationCapabilityRegistry()
-            .register(String.class, (value) -> String.format("\"%s\"", value))
-            .register(Short.class, Object::toString)
-            .register(Integer.class, Object::toString)
-            .register(Long.class, Object::toString)
-            .register(Float.class, Object::toString)
-            .register(Double.class, Object::toString)
-            .register(BigInteger.class, Object::toString)
-            .register(BigDecimal.class, Object::toString)
-            .register(Number.class, Object::toString)
-            .register(Boolean.class, Object::toString);
+            .register(c -> c.equals(String.class), (value) -> String.format("\"%s\"", value))
+            .register(c -> Number.class.isAssignableFrom(c), Object::toString)
+            .register(c -> c.equals(Boolean.class), Object::toString);
     }
 
 
