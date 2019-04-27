@@ -25,8 +25,7 @@ public class CrateGraphNodeTranscriber {
         transcript.append("\t".repeat(indentation));
         transcript.append("<");
         transcript.append(node.getName());
-        transcript.append("#");
-        transcript.append(node.getSerializedHashCode());
+        transcript.append(buildParameters(node.getParameters()));
         transcript.append(">");
     }
 

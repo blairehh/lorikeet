@@ -8,9 +8,9 @@ import java.util.Objects;
 public class CrateParameter {
     private final RenderType renderType;
     private final String name;
-    private final String value;
+    private final Object value;
 
-    public CrateParameter(RenderType renderType, String name, String value) {
+    public CrateParameter(RenderType renderType, String name, Object value) {
         this.renderType = renderType;
         this.name = name;
         this.value = value;
@@ -24,7 +24,7 @@ public class CrateParameter {
         return this.name;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return this.value;
     }
 
