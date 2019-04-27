@@ -5,7 +5,11 @@ import java.util.List;
 
 public class CrateGraphNodeTranscriber {
 
-    final ParameterSerializationCapabilityRegistry parameterSerializationRegistry = ParameterSerializationCapabilityRegistry.init();
+    private final ParameterSerializer serializer;
+
+    public CrateGraphNodeTranscriber(ParameterSerializer serializer) {
+        this.serializer = serializer;
+    }
 
 
     public String transcribe(CrateGraphNode root) {
@@ -47,12 +51,7 @@ public class CrateGraphNodeTranscriber {
     }
 
     private void stringify(StringBuilder builder, CrateParameter parameter) {
-        if (parameter.getValue() == null) {
-            builder.append("null");
-        }
-        final Object value = parameter.getValue();
         // @TODO get the correct context
-        this.parameterSerializationRegistry.find(value.getClass(), String.class)
-            .then(stringifier -> builder.append(stringifier.apply(value, String.class)));
+        builder.append(this.serializer.serialize(parameter.getValue(), String.class));
     }
 }

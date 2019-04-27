@@ -10,12 +10,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CrateGraphNodeTranscriberTest {
 
+    private ParameterSerializer serializer = new ParameterSerializer(ParameterSerializationCapabilityRegistry.init());
+
     @Test
     public void test() {
         TestPlug action = new TestPlug();
         User user = action.yield(new CreateUser(), "bob@gmail.com", "secret", Seq.of(1, 2));
 
-        String transcript = new CrateGraphNodeTranscriber().transcribe(action.getGraph().getRootNode());
+        String transcript = new CrateGraphNodeTranscriber(serializer).transcribe(action.getGraph().getRootNode());
         System.out.println(transcript);
     }
 
