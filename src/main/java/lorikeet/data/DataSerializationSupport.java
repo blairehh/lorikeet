@@ -1,11 +1,11 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.data;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class ParameterSerializerSupport {
+public class DataSerializationSupport {
 
-    public static String serializeCollection(Collection<?> collection, Class<?> context, ParameterSerializer serializer) {
+    public static String serializeCollection(Collection<?> collection, Class<?> context, DataSerializer serializer) {
         if (collection == null) {
             return "null";
         }
@@ -27,7 +27,7 @@ public class ParameterSerializerSupport {
         return builder.toString();
     }
 
-    public static String serializeMap(Map<?, ?> map, Class<?> context, ParameterSerializer serializer) {
+    public static String serializeMap(Map<?, ?> map, Class<?> context, DataSerializer serializer) {
         if (map == null) {
             return "null";
         }

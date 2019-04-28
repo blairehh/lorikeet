@@ -2,6 +2,8 @@ package lorikeet.ecosphere.testing;
 
 
 import lorikeet.Seq;
+import lorikeet.data.DataSerializer;
+import lorikeet.data.DataSerializationCapabilityRegistry;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
 import org.junit.Test;
@@ -10,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CrateGraphNodeTranscriberTest {
 
-    private ParameterSerializer serializer = new ParameterSerializer(ParameterSerializationCapabilityRegistry.init());
+    private DataSerializer serializer = new DataSerializer(DataSerializationCapabilityRegistry.init());
 
     @Test
     public void test() {

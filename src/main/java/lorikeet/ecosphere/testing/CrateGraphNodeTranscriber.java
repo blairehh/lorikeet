@@ -1,13 +1,15 @@
 package lorikeet.ecosphere.testing;
 
+import lorikeet.data.DataSerializer;
+
 import java.util.Comparator;
 import java.util.List;
 
 public class CrateGraphNodeTranscriber {
 
-    private final ParameterSerializer serializer;
+    private final DataSerializer serializer;
 
-    public CrateGraphNodeTranscriber(ParameterSerializer serializer) {
+    public CrateGraphNodeTranscriber(DataSerializer serializer) {
         this.serializer = serializer;
     }
 

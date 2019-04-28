@@ -1,9 +1,9 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.data;
 
-public class ParameterSerializer {
-    private final ParameterSerializationCapabilityRegistry capabilityRegistry;
+public class DataSerializer {
+    private final DataSerializationCapabilityRegistry capabilityRegistry;
 
-    public ParameterSerializer(ParameterSerializationCapabilityRegistry registry) {
+    public DataSerializer(DataSerializationCapabilityRegistry registry) {
         this.capabilityRegistry = registry;
     }
 
