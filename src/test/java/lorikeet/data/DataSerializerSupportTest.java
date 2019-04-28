@@ -3,8 +3,11 @@ package lorikeet.data;
 import lorikeet.data.DataSerializer;
 import lorikeet.data.DataSerializationSupport;
 import lorikeet.data.DataSerializationCapabilityRegistry;
+import lorikeet.ecosphere.Account;
+import lorikeet.ecosphere.User;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,5 +72,30 @@ public class DataSerializerSupportTest {
         map.put(3, 4);
         assertThat(DataSerializationSupport.serializeMap(map, this.getClass(), serializer))
             .isEqualTo("{1: 2, 3: 4}");
+    }
+
+    @Test
+    public void testObject() {
+        User user = new User();
+        user.email = "foo@gmail.com";
+        user.password = "secret";
+
+        assertThat(DataSerializationSupport.serializeObject(user, this.getClass(), serializer))
+            .isEqualTo("lorikeet.ecosphere.User(email=\"foo@gmail.com\", password=\"secret\", welcomeMessageSentAt=null, account=null)");
+    }
+
+    @Test
+    public void testObjectWithObjectAsMember() {
+        User user = new User();
+        user.email = "foo@gmail.com";
+        user.password = "secret";
+
+        Account account = new Account();
+        account.balance = 45.33;
+        account.id = "FG5464";
+        user.account = account;
+
+        assertThat(DataSerializationSupport.serializeObject(user, this.getClass(), serializer))
+            .isEqualTo("lorikeet.ecosphere.User(email=\"foo@gmail.com\", password=\"secret\", welcomeMessageSentAt=null, account=lorikeet.ecosphere.Account(id=\"FG5464\", balance=45.33))");
     }
 }

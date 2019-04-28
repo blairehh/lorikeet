@@ -6,4 +6,5 @@ public class User {
     public String email;
     public String password;
     public Instant welcomeMessageSentAt;
+    public Account account;
 }

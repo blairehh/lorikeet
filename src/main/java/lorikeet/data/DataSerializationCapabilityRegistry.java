@@ -75,6 +75,12 @@ public class DataSerializationCapabilityRegistry implements CapabilityRegistry<C
             (Map<?, ?> map, Class<?> context) -> DataSerializationSupport.serializeMap(map, context, serializer)
         );
 
+        registry.register(
+            (c) -> true,
+            (Object o, Class<?> context) -> DataSerializationSupport.serializeObject(o, context, serializer),
+            -1000
+        );
+
         return registry;
     }
 
