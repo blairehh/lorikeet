@@ -9,20 +9,28 @@ public class CrateGraphNode {
     private final String name;
     private final List<CrateParameter> parameters;
     private final Instant timestamp;
-    private final int serializedHashCode;
     private final List<CrateGraphNode> children;
+    private Object returnValue;
 
     public CrateGraphNode(String name, List<CrateParameter> parameters, Instant timestamp,
                           List<CrateGraphNode> children) {
         this.name = name;
         this.parameters = parameters;
-        this.serializedHashCode = Objects.hash(parameters.toArray());
         this.timestamp = timestamp;
         this.children = children;
+        this.returnValue = null;
     }
 
     public final String getName() {
         return this.name;
+    }
+
+    public Object getReturnValue() {
+        return this.returnValue;
+    }
+
+    public void setReturnValue(Object value) {
+        this.returnValue = value;
     }
 
     public final List<CrateParameter> getParameters() {
@@ -35,10 +43,6 @@ public class CrateGraphNode {
 
     public final Instant getTimestamp() {
         return this.timestamp;
-    }
-
-    public int getSerializedHashCode() {
-        return this.serializedHashCode;
     }
 
     @Override

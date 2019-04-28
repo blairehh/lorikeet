@@ -33,6 +33,9 @@ public class CrateGraphNodeTranscriber {
         transcript.append("<");
         transcript.append(node.getName());
         transcript.append(buildParameters(node.getParameters()));
+        transcript.append(" ");
+        transcript.append("return=");
+        transcript.append(this.serializer.serialize(node.getReturnValue(), String.class));
         transcript.append(">");
     }
 

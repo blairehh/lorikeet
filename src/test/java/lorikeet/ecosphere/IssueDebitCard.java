@@ -12,7 +12,7 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
 
     @Override
     public Boolean invoke(@Tag("paymentCompany") String paymentCompany) {
-        return null;
+        return true;
     }
 
     @Override

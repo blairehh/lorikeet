@@ -38,8 +38,11 @@ public class TestPlug implements Plug {
 
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Edict1<ReturnType, ParameterType> edict, ParameterType parameter) {
-        edict.inject(this.prepareGraphNode(edict, parameter));
-        return edict.invoke(parameter);
+        final CrateGraphNode child = this.prepareGraphNode(edict, parameter);
+        edict.inject(new TestPlug(child));
+        final ReturnType returnValue = edict.invoke(parameter);
+        child.setReturnValue(returnValue);
+        return returnValue;
     }
 
     @Override
@@ -48,8 +51,11 @@ public class TestPlug implements Plug {
         ParameterType1 parameter1,
         ParameterType2 parameter2
     ) {
-        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2));
-        return edict.invoke(parameter1, parameter2);
+        final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2);
+        edict.inject(new TestPlug(child));
+        final ReturnType returnValue = edict.invoke(parameter1, parameter2);
+        child.setReturnValue(returnValue);
+        return returnValue;
     }
 
     @Override
@@ -59,8 +65,11 @@ public class TestPlug implements Plug {
         ParameterType2 parameter2,
         ParameterType3 parameter3
     ) {
-        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3));
-        return edict.invoke(parameter1, parameter2, parameter3);
+        final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3);
+        edict.inject(new TestPlug(child));
+        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3);
+        child.setReturnValue(returnValue);
+        return returnValue;
     }
 
     @Override
@@ -71,8 +80,11 @@ public class TestPlug implements Plug {
         ParameterType3 parameter3,
         ParameterType4 parameter4
     ) {
-        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4));
-        return edict.invoke(parameter1, parameter2, parameter3, parameter4);
+        final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4);
+        edict.inject(new TestPlug(child));
+        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4);
+        child.setReturnValue(returnValue);
+        return returnValue;
     }
 
     @Override
@@ -84,11 +96,14 @@ public class TestPlug implements Plug {
         ParameterType4 parameter4,
         ParameterType5 parameter5
     ) {
-        edict.inject(this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4, parameter5));
-        return edict.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+        final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4, parameter5);
+        edict.inject(new TestPlug(child));
+        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+        child.setReturnValue(returnValue);
+        return returnValue;
     }
 
-    private Plug prepareGraphNode(Crate crate, Object... params) {
+    private CrateGraphNode prepareGraphNode(Crate crate, Object... params) {
         List<CrateParameter> parameters = new ArrayList<>();
         final Meta meta = MetaFromTagAnnotations.meta(crate, params.length);
         this.populateParameters(meta, Arrays.asList(params), parameters);
@@ -106,7 +121,7 @@ public class TestPlug implements Plug {
             this.rootGraphNode.getChildren().add(createdNode);
         }
 
-        return new TestPlug(createdNode);
+        return createdNode;
     }
 
     private void populateParameters(Meta meta, List<Object> params, List<CrateParameter> parameters) {
