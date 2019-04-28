@@ -1,5 +1,7 @@
 package lorikeet.ecosphere;
 
+import lorikeet.ecosphere.meta.Tag;
+
 public class OpenAccount implements Edict1<Boolean, String> {
 
     private Plug plug;
@@ -11,7 +13,7 @@ public class OpenAccount implements Edict1<Boolean, String> {
     }
 
     @Override
-    public Boolean invoke(String parameter) {
+    public Boolean invoke(@Tag("email") String parameter) {
         return this.openAccount(parameter);
     }
 
@@ -20,8 +22,4 @@ public class OpenAccount implements Edict1<Boolean, String> {
         this.plug = plug;
     }
 
-    @Override
-    public Meta getMeta() {
-        return Meta.parameters("email");
-    }
 }

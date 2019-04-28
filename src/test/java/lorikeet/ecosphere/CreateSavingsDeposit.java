@@ -17,9 +17,4 @@ public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
     public void inject(Plug plug) {
         this.plug = plug;
     }
-
-    @Override
-    public Meta getMeta() {
-        return Meta.parameters("balance");
-    }
 }

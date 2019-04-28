@@ -98,6 +98,9 @@ public final class Seq<T> implements List<T>, May<T> {
     }
 
     public Opt<T> fetch(int index) {
+        if (index >= this.size()) {
+            return Opt.empty();
+        }
         return Opt.ofNullable(this.get(index));
     }
 

@@ -39,10 +39,9 @@ public class CrateGraphNodeTranscriber {
     private String buildParameters(List<CrateParameter> parameters) {
         StringBuilder builder = new StringBuilder();
         parameters.stream()
-            .sorted(Comparator.comparing(CrateParameter::getName))
             .forEach(parameter -> {
                 builder.append(" ");
-                builder.append(parameter.getName());
+                builder.append(((CrateParameter) parameter).getMeta().getName());
                 builder.append("=");
                 stringify(builder, parameter);
             });

@@ -17,6 +17,20 @@ public class ParameterMeta {
         this.ignore = ignore;
     }
 
+    public ParameterMeta(int position, String name) {
+        this.position = position;
+        this.name = name;
+        this.useHash = false;
+        this.ignore = false;
+    }
+
+    public ParameterMeta(int position) {
+        this.position = position;
+        this.name = String.valueOf(position);
+        this.useHash = false;
+        this.ignore = false;
+    }
+
     public int getPosition() {
         return this.position;
     }

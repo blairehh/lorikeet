@@ -1,5 +1,7 @@
 package lorikeet.ecosphere;
 
+import lorikeet.ecosphere.meta.Tag;
+
 public class IssueDebitCard implements Edict1<Boolean, String> {
 
     private Plug plug;
@@ -9,7 +11,7 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
     }
 
     @Override
-    public Boolean invoke(String paymentCompany) {
+    public Boolean invoke(@Tag("paymentCompany") String paymentCompany) {
         return null;
     }
 
@@ -18,8 +20,4 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
         this.plug = plug;
     }
 
-    @Override
-    public Meta getMeta() {
-        return Meta.parameters("paymentCompany");
-    }
 }

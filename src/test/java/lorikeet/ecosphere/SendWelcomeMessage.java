@@ -19,9 +19,4 @@ public class SendWelcomeMessage implements Edict2<Instant, String, String> {
     public void inject(Plug plug) {
         
     }
-
-    @Override
-    public Meta getMeta() {
-        return Meta.parameters("email");
-    }
 }

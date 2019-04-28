@@ -8,7 +8,8 @@ import lorikeet.ecosphere.Edict2;
 import lorikeet.ecosphere.Edict3;
 import lorikeet.ecosphere.Edict4;
 import lorikeet.ecosphere.Edict5;
-import lorikeet.ecosphere.Meta;
+import lorikeet.ecosphere.meta.Meta;
+import lorikeet.ecosphere.meta.MetaFromTagAnnotations;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -89,8 +90,8 @@ public class TestPlug implements Plug {
 
     private Plug prepareGraphNode(Crate crate, Object... params) {
         List<CrateParameter> parameters = new ArrayList<>();
-
-        this.populateParameters(crate.getMeta(), Arrays.asList(params), parameters);
+        final Meta meta = MetaFromTagAnnotations.meta(crate, params.length);
+        this.populateParameters(meta, Arrays.asList(params), parameters);
 
         CrateGraphNode createdNode = new CrateGraphNode(
             crate.getClass().getName(),
@@ -110,15 +111,7 @@ public class TestPlug implements Plug {
 
     private void populateParameters(Meta meta, List<Object> params, List<CrateParameter> parameters) {
         for (int i = 0; i < params.size(); i++) {
-            final String parameterName = meta.getParameters().fetch(i)
-                .filter(name -> name != null && !name.trim().isEmpty())
-                .orElse(null);
-            if (parameterName == null) {
-                continue;
-            }
-
-
-            parameters.add(new CrateParameter(parameterName, params.get(i)));
+            parameters.add(new CrateParameter(meta.findParameterOrCreate(i), params.get(i)));
         }
     }
 

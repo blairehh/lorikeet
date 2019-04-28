@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class MetaFromTagAnnotations {
 
 
-    public static Seq<ParameterMeta> meta(Crate crate, int invokeParameterCount) {
+    public static Meta meta(Crate crate, int invokeParameterCount) {
         Seq<ParameterMeta> parameters = Seq.empty();
         final Annotation[][] parameterAnnotations = determineInvokeMethod(crate, invokeParameterCount)
             .getParameterAnnotations();
@@ -24,7 +24,7 @@ public class MetaFromTagAnnotations {
                 .orElse(parameterMeta(index));
             parameters = parameters.push(parameter);
         }
-        return parameters;
+        return new Meta(parameters);
     }
 
     private static Method determineInvokeMethod(Crate crate, int invokeParameterCount) {
@@ -45,7 +45,7 @@ public class MetaFromTagAnnotations {
     }
 
     private static ParameterMeta parameterMeta(int parameterIndex) {
-        return new ParameterMeta(parameterIndex, null, false, false);
+        return new ParameterMeta(parameterIndex);
     }
 
     private static ParameterMeta parameterMeta(int parameterIndex, Tag tag) {

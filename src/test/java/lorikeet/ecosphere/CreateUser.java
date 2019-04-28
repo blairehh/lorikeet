@@ -31,9 +31,4 @@ public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
         this.plug = action;
     }
 
-    @Override
-    public Meta getMeta() {
-        return Meta.parameters("email", "password", "codes");
-    }
-
 }
