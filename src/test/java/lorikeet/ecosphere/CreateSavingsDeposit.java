@@ -1,5 +1,7 @@
 package lorikeet.ecosphere;
 
+import lorikeet.ecosphere.meta.Dbg;
+
 public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
 
     private Plug plug;
@@ -9,7 +11,7 @@ public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
     }
 
     @Override
-    public Boolean invoke(Double parameter) {
+    public Boolean invoke(@Dbg(useHash = true)Double parameter) {
         return this.createSavingsAccount(parameter);
     }
 

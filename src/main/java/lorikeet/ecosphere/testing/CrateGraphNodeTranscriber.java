@@ -51,18 +51,25 @@ public class CrateGraphNodeTranscriber {
     private String buildParameters(List<CrateParameter> parameters) {
         StringBuilder builder = new StringBuilder();
         parameters.stream()
-            .forEach(parameter -> {
-                builder.append(" ");
-                builder.append(((CrateParameter) parameter).getMeta().getName());
-                builder.append("=");
-                stringify(builder, parameter);
-            });
+            .forEach(parameter -> transcribeParameter(builder, parameter));
 
         return builder.toString();
     }
 
-    private void stringify(StringBuilder builder, CrateParameter parameter) {
-        // @TODO get the correct context
-        builder.append(this.serializer.serialize(parameter.getValue(), String.class));
+    private void transcribeParameter(StringBuilder transcript, CrateParameter parameter) {
+
+        if (parameter.getMeta().isIgnore()) {
+            return;
+        }
+        transcript.append(" ");
+        transcript.append(parameter.getMeta().getName());
+        transcript.append("=");
+        if (parameter.getMeta().isUseHash()) {
+            transcript.append("#");
+            transcript.append(parameter.getValue().hashCode());
+        } else {
+            transcript.append(this.serializer.serialize(parameter.getValue(), String.class));
+        }
+
     }
 }

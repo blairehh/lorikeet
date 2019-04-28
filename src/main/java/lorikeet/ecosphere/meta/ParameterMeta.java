@@ -12,23 +12,30 @@ public class ParameterMeta {
 
     public ParameterMeta(int position, String name, boolean useHash, boolean ignore) {
         this.position = position;
-        this.name = name;
+        this.name = parameterName(position, name);
         this.useHash = useHash;
         this.ignore = ignore;
     }
 
     public ParameterMeta(int position, String name) {
         this.position = position;
-        this.name = name;
+        this.name = parameterName(position, name);
         this.useHash = false;
         this.ignore = false;
     }
 
     public ParameterMeta(int position) {
         this.position = position;
-        this.name = "-" + String.valueOf(position);
+        this.name = parameterName(position, null);
         this.useHash = false;
         this.ignore = false;
+    }
+
+    static String parameterName(int position, String suppliedName) {
+        if (suppliedName == null || suppliedName.trim().isEmpty()) {
+            return "-" + position;
+        }
+        return "-" + suppliedName;
     }
 
     public int getPosition() {
