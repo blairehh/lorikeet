@@ -92,7 +92,6 @@ public class DataSerializerSupportTest {
 
         Account account = new Account();
         account.balance = 45.33;
-        account.id = "FG5464";
         user.account = account;
 
         assertThat(DataSerializationSupport.serializeObject(user, this.getClass(), serializer))

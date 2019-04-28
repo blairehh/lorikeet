@@ -60,12 +60,19 @@ public class DataSerializationSupport {
             if (Modifier.isTransient(field.getModifiers())) {
                 continue;
             }
-            serialized.append(field.getName());
-            serialized.append("=");
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             try {
                 field.setAccessible(true);
+                if (!field.canAccess(object)) {
+                    continue;
+                }
+                serialized.append(field.getName());
+                serialized.append("=");
                 serialized.append(serializer.serialize(field.get(object), context));
-            } catch (IllegalAccessException ioe) {
+            } catch (IllegalAccessException | SecurityException e) {
+                e.printStackTrace();
                 serialized.append(DataSerializer.FAILED_SERIALIZATION_VALUE);
             }
             if (i != numberOfFields - 1) {
