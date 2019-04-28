@@ -2,6 +2,7 @@ package lorikeet.ecosphere;
 
 
 import lorikeet.Seq;
+import lorikeet.ecosphere.meta.Tag;
 
 public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
 
@@ -11,7 +12,7 @@ public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
         User user = new User();
         user.email = email;
         user.password = password;
-        user.welcomeMessageSentAt = plug.yield(new SendWelcomeMessage(), email);
+        user.welcomeMessageSentAt = plug.yield(new SendWelcomeMessage(), email, "Hello");
 
         plug.yield(new ChargePayment(), "USD", 45.0);
         plug.yield(new OpenAccount(), email);
@@ -21,7 +22,7 @@ public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
 
 
     @Override
-    public User invoke(String email, String password, Seq<Integer> codes) {
+    public User invoke(@Tag("email") String email, @Tag("password") String password, @Tag("codes") Seq<Integer> codes) {
         return this.createUser(email, password, codes);
     }
 
