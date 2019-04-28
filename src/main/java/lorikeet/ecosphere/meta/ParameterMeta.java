@@ -35,7 +35,7 @@ public class ParameterMeta {
         if (suppliedName == null || suppliedName.trim().isEmpty()) {
             return "-" + position;
         }
-        return "-" + suppliedName;
+        return suppliedName;
     }
 
     public int getPosition() {
