@@ -9,7 +9,7 @@ public class DataSerializationSupport {
 
     public static String serializeCollection(Collection<?> collection, Class<?> context, DataSerializer serializer) {
         if (collection == null) {
-            return "null";
+            return DataSerializer.NULL_VALUE;
         }
 
         final StringBuilder builder = new StringBuilder();
@@ -31,7 +31,7 @@ public class DataSerializationSupport {
 
     public static String serializeMap(Map<?, ?> map, Class<?> context, DataSerializer serializer) {
         if (map == null) {
-            return "null";
+            return DataSerializer.NULL_VALUE;
         }
         final StringBuilder builder = new StringBuilder();
         builder.append("{");
