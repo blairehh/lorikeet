@@ -26,7 +26,7 @@ public class ParameterMeta {
 
     public ParameterMeta(int position) {
         this.position = position;
-        this.name = String.valueOf(position);
+        this.name = "-" + String.valueOf(position);
         this.useHash = false;
         this.ignore = false;
     }

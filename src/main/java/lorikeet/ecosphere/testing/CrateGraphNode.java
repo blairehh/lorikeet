@@ -11,6 +11,7 @@ public class CrateGraphNode {
     private final Instant timestamp;
     private final List<CrateGraphNode> children;
     private Object returnValue;
+    private RuntimeException exceptionThrown;
 
     public CrateGraphNode(String name, List<CrateParameter> parameters, Instant timestamp,
                           List<CrateGraphNode> children) {
@@ -19,6 +20,7 @@ public class CrateGraphNode {
         this.timestamp = timestamp;
         this.children = children;
         this.returnValue = null;
+        this.exceptionThrown = null;
     }
 
     public final String getName() {
@@ -31,6 +33,14 @@ public class CrateGraphNode {
 
     public void setReturnValue(Object value) {
         this.returnValue = value;
+    }
+
+    public RuntimeException getExceptionThrown() {
+        return this.exceptionThrown;
+    }
+
+    public void setExceptionThrown(RuntimeException exception) {
+        this.exceptionThrown = exception;
     }
 
     public final List<CrateParameter> getParameters() {
@@ -60,7 +70,9 @@ public class CrateGraphNode {
         return Objects.equals(this.getName(), that.getName())
             && Objects.equals(this.getParameters(), that.getParameters())
             && Objects.equals(this.getTimestamp(), that.getTimestamp())
-            && Objects.equals(this.getChildren(), that.getChildren());
+            && Objects.equals(this.getChildren(), that.getChildren())
+            && Objects.equals(this.getReturnValue(), that.getReturnValue())
+            && Objects.equals(this.getExceptionThrown(), that.getExceptionThrown());
     }
 
     @Override
@@ -69,7 +81,9 @@ public class CrateGraphNode {
             this.getName(),
             this.getParameters(),
             this.getTimestamp(),
-            this.getChildren()
+            this.getChildren(),
+            this.getReturnValue(),
+            this.getExceptionThrown()
         );
     }
 }

@@ -39,10 +39,15 @@ public class TestPlug implements Plug {
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Edict1<ReturnType, ParameterType> edict, ParameterType parameter) {
         final CrateGraphNode child = this.prepareGraphNode(edict, parameter);
-        edict.inject(new TestPlug(child));
-        final ReturnType returnValue = edict.invoke(parameter);
-        child.setReturnValue(returnValue);
-        return returnValue;
+        try {
+            edict.inject(new TestPlug(child));
+            final ReturnType returnValue = edict.invoke(parameter);
+            child.setReturnValue(returnValue);
+            return returnValue;
+        } catch (RuntimeException e) {
+            child.setExceptionThrown(e);
+            throw e;
+        }
     }
 
     @Override
@@ -52,10 +57,15 @@ public class TestPlug implements Plug {
         ParameterType2 parameter2
     ) {
         final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2);
-        edict.inject(new TestPlug(child));
-        final ReturnType returnValue = edict.invoke(parameter1, parameter2);
-        child.setReturnValue(returnValue);
-        return returnValue;
+        try {
+            edict.inject(new TestPlug(child));
+            final ReturnType returnValue = edict.invoke(parameter1, parameter2);
+            child.setReturnValue(returnValue);
+            return returnValue;
+        } catch (RuntimeException e) {
+            child.setExceptionThrown(e);
+            throw e;
+        }
     }
 
     @Override
@@ -66,10 +76,15 @@ public class TestPlug implements Plug {
         ParameterType3 parameter3
     ) {
         final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3);
-        edict.inject(new TestPlug(child));
-        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3);
-        child.setReturnValue(returnValue);
-        return returnValue;
+        try {
+            edict.inject(new TestPlug(child));
+            final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3);
+            child.setReturnValue(returnValue);
+            return returnValue;
+        } catch (RuntimeException e) {
+            child.setExceptionThrown(e);
+            throw e;
+        }
     }
 
     @Override
@@ -81,10 +96,15 @@ public class TestPlug implements Plug {
         ParameterType4 parameter4
     ) {
         final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4);
-        edict.inject(new TestPlug(child));
-        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4);
-        child.setReturnValue(returnValue);
-        return returnValue;
+        try {
+            edict.inject(new TestPlug(child));
+            final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4);
+            child.setReturnValue(returnValue);
+            return returnValue;
+        } catch (RuntimeException e) {
+            child.setExceptionThrown(e);
+            throw e;
+        }
     }
 
     @Override
@@ -97,10 +117,15 @@ public class TestPlug implements Plug {
         ParameterType5 parameter5
     ) {
         final CrateGraphNode child = this.prepareGraphNode(edict, parameter1, parameter2, parameter3, parameter4, parameter5);
-        edict.inject(new TestPlug(child));
-        final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
-        child.setReturnValue(returnValue);
-        return returnValue;
+        try {
+            edict.inject(new TestPlug(child));
+            final ReturnType returnValue = edict.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+            child.setReturnValue(returnValue);
+            return returnValue;
+        } catch (RuntimeException e) {
+            child.setExceptionThrown(e);
+            throw e;
+        }
     }
 
     private CrateGraphNode prepareGraphNode(Crate crate, Object... params) {

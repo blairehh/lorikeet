@@ -34,9 +34,18 @@ public class CrateGraphNodeTranscriber {
         transcript.append(node.getName());
         transcript.append(buildParameters(node.getParameters()));
         transcript.append(" ");
-        transcript.append("return=");
-        transcript.append(this.serializer.serialize(node.getReturnValue(), String.class));
+        this.transcribeResponse(transcript, node);
         transcript.append(">");
+    }
+
+    private void transcribeResponse(StringBuilder transcript, CrateGraphNode node) {
+        if (node.getExceptionThrown() != null) {
+            transcript.append("-exception=");
+            transcript.append(node.getExceptionThrown().getClass().getName());
+            return;
+        }
+        transcript.append("-return=");
+        transcript.append(this.serializer.serialize(node.getReturnValue(), String.class));
     }
 
     private String buildParameters(List<CrateParameter> parameters) {

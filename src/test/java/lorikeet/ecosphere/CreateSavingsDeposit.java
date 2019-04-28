@@ -5,12 +5,12 @@ public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
     private Plug plug;
 
     private boolean createSavingsAccount(double balance) {
-        return true;
+        throw new RuntimeException();
     }
 
     @Override
     public Boolean invoke(Double parameter) {
-        return null;
+        return this.createSavingsAccount(parameter);
     }
 
     @Override
