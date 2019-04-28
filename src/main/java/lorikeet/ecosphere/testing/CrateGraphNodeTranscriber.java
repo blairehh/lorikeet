@@ -66,7 +66,12 @@ public class CrateGraphNodeTranscriber {
         transcript.append(" ");
         transcript.append(parameter.getMeta().getName());
         transcript.append("=");
+        if (parameter.getValue() == null) {
+            transcript.append(DataSerializer.NULL_VALUE);
+            return;
+        }
         if (parameter.getMeta().isUseHash()) {
+            transcript.append(parameter.getValue().getClass().getName());
             transcript.append("#");
             transcript.append(parameter.getValue().hashCode());
         } else {

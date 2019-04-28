@@ -76,7 +76,7 @@ public class DataSerializationCapabilityRegistry implements CapabilityRegistry<C
         );
 
         registry.register(
-            (c) -> true,
+            (c) -> !c.getPackage().getName().startsWith("java.") && !c.getPackage().getName().startsWith("javax."),
             (Object o, Class<?> context) -> DataSerializationSupport.serializeObject(o, context, serializer),
             -1000
         );

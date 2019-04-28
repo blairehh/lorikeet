@@ -1,5 +1,7 @@
 package lorikeet.data;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -54,7 +56,7 @@ public class DataSerializationSupport {
         StringBuilder serialized = new StringBuilder();
         serialized.append(object.getClass().getName());
         serialized.append("(");
-        final int numberOfFields = object.getClass().getDeclaredFields().length;
+        int numberOfFields = object.getClass().getDeclaredFields().length;
         int i = 0;
         for (Field field : object.getClass().getDeclaredFields()) {
             if (Modifier.isTransient(field.getModifiers())) {
