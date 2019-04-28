@@ -1,10 +1,10 @@
 package lorikeet.ecosphere;
 
-import lorikeet.ecosphere.meta.Tag;
+import lorikeet.ecosphere.meta.Dbg;
 
 public class ChargePayment implements Edict2<Boolean, String, Double> {
     @Override
-    public Boolean invoke(@Tag("currency") String parameter1, @Tag("price") Double parameter2) {
+    public Boolean invoke(@Dbg("currency") String parameter1, @Dbg("price") Double parameter2) {
         return true;
     }
 

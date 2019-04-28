@@ -9,7 +9,7 @@ import lorikeet.ecosphere.Edict3;
 import lorikeet.ecosphere.Edict4;
 import lorikeet.ecosphere.Edict5;
 import lorikeet.ecosphere.meta.Meta;
-import lorikeet.ecosphere.meta.MetaFromTagAnnotations;
+import lorikeet.ecosphere.meta.MetaFromDbgAnnotations;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -130,7 +130,7 @@ public class TestPlug implements Plug {
 
     private CrateGraphNode prepareGraphNode(Crate crate, Object... params) {
         List<CrateParameter> parameters = new ArrayList<>();
-        final Meta meta = MetaFromTagAnnotations.meta(crate, params.length);
+        final Meta meta = MetaFromDbgAnnotations.meta(crate, params.length);
         this.populateParameters(meta, Arrays.asList(params), parameters);
 
         CrateGraphNode createdNode = new CrateGraphNode(

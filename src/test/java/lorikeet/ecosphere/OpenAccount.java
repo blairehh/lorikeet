@@ -1,6 +1,6 @@
 package lorikeet.ecosphere;
 
-import lorikeet.ecosphere.meta.Tag;
+import lorikeet.ecosphere.meta.Dbg;
 
 public class OpenAccount implements Edict1<Boolean, String> {
 
@@ -16,7 +16,7 @@ public class OpenAccount implements Edict1<Boolean, String> {
     }
 
     @Override
-    public Boolean invoke(@Tag("email") String parameter) {
+    public Boolean invoke(@Dbg("email") String parameter) {
         return this.openAccount(parameter);
     }
 

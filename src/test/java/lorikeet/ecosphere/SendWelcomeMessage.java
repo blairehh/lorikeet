@@ -1,6 +1,6 @@
 package lorikeet.ecosphere;
 
-import lorikeet.ecosphere.meta.Tag;
+import lorikeet.ecosphere.meta.Dbg;
 
 import java.time.Instant;
 
@@ -11,7 +11,7 @@ public class SendWelcomeMessage implements Edict2<Instant, String, String> {
     }
 
     @Override
-    public Instant invoke(String email, @Tag("message") String message) {
+    public Instant invoke(String email, @Dbg("message") String message) {
         return this.sendWelcomeMessage(email, message);
     }
 

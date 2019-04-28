@@ -1,6 +1,6 @@
 package lorikeet.ecosphere;
 
-import lorikeet.ecosphere.meta.Tag;
+import lorikeet.ecosphere.meta.Dbg;
 
 public class IssueDebitCard implements Edict1<Boolean, String> {
 
@@ -11,7 +11,7 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
     }
 
     @Override
-    public Boolean invoke(@Tag("paymentCompany") String paymentCompany) {
+    public Boolean invoke(@Dbg("paymentCompany") String paymentCompany) {
         return true;
     }
 

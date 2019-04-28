@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-public class MetaFromTagAnnotations {
+public class MetaFromDbgAnnotations {
 
 
     public static Meta meta(Crate crate, int invokeParameterCount) {
@@ -36,10 +36,10 @@ public class MetaFromTagAnnotations {
             .orElseThrow(() -> new RuntimeException("could not find invoke method on class " + crate.getClass().getName()));
     }
 
-    private static Opt<Tag> findTagAnnotation(Annotation[] annotations) {
+    private static Opt<Dbg> findTagAnnotation(Annotation[] annotations) {
         return Stream.of(annotations)
-            .filter(annotation -> annotation.annotationType().equals(Tag.class))
-            .map(annotation -> (Tag)annotation)
+            .filter(annotation -> annotation.annotationType().equals(Dbg.class))
+            .map(annotation -> (Dbg)annotation)
             .collect(Seq.collector())
             .first();
     }
@@ -48,7 +48,7 @@ public class MetaFromTagAnnotations {
         return new ParameterMeta(parameterIndex);
     }
 
-    private static ParameterMeta parameterMeta(int parameterIndex, Tag tag) {
-        return new ParameterMeta(parameterIndex, tag.value(), tag.useHash(), tag.ignore());
+    private static ParameterMeta parameterMeta(int parameterIndex, Dbg dbg) {
+        return new ParameterMeta(parameterIndex, dbg.value(), dbg.useHash(), dbg.ignore());
     }
 }
