@@ -1,12 +1,14 @@
 package lorikeet.ecosphere.transcript;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class NumberValue implements Value {
     private final Number value;
 
     public NumberValue(Number value) {
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     public Number getValue() {
@@ -23,13 +25,20 @@ public class NumberValue implements Value {
             return false;
         }
 
-        StringValue that = (StringValue) o;
+        NumberValue that = (NumberValue) o;
 
-        return Objects.equals(this.getValue(), that.getValue());
+        return Objects.equals(this.getValue().doubleValue(), that.getValue().doubleValue());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.getValue());
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("value", this.getValue())
+            .toString();
     }
 }

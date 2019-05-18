@@ -1,5 +1,7 @@
 package lorikeet.ecosphere.transcript;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class StringValue implements Value {
@@ -31,5 +33,12 @@ public class StringValue implements Value {
     @Override
     public int hashCode() {
         return Objects.hash(this.getValue());
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("value", this.getValue())
+            .toString();
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class DataSerializationSupport {
 
+    // @TODO rename to serializeList
     public static String serializeCollection(Collection<?> collection, Class<?> context, DataSerializer serializer) {
         if (collection == null) {
             return DataSerializer.NULL_VALUE;

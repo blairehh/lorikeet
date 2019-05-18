@@ -23,7 +23,7 @@ public class BoolValue implements Value {
             return false;
         }
 
-        StringValue that = (StringValue) o;
+        BoolValue that = (BoolValue) o;
 
         return Objects.equals(this.getValue(), that.getValue());
     }

@@ -3,6 +3,8 @@ package lorikeet.ecosphere.transcript;
 import lorikeet.Err;
 import lorikeet.Opt;
 
+import java.util.Scanner;
+
 public class TextReader {
     private final String text;
     private int index;
@@ -12,12 +14,42 @@ public class TextReader {
         this.index = index;
     }
 
+    public TextReader fork() {
+        return new TextReader(this.text, this.index);
+    }
+
+    public void resetTo(TextReader reader) {
+        this.index = reader.getCurrentIndex();
+    }
+
     public int getCurrentIndex() {
         return this.index;
     }
 
+    public char getCurrentChar() {
+        return this.text.charAt(this.index);
+    }
+
+    public boolean isAtEnd() {
+        return this.index >= this.text.length();
+    }
+
+    public void skip() {
+        this.jumpWhitespace();
+        this.index++;
+        this.jumpWhitespace();
+    }
+
+    public void jumpWhitespace() {
+        for (; this.index < this.text.length(); this.index++) {
+            if (!Character.isWhitespace(this.text.charAt(this.index))) {
+                return;
+            }
+        }
+    }
+
     public String nextToken() {
-        this.jumpWhitesapce();
+        this.jumpWhitespace();
         final StringBuilder token = new StringBuilder();
         for (; this.index < this.text.length(); this.index++) {
             final char character = text.charAt(this.index);
@@ -30,10 +62,35 @@ public class TextReader {
     }
 
     public Opt<Number> nextNumber() {
-        this.jumpWhitesapce();
-        final String token = this.nextToken();
+        this.jumpWhitespace();
+        final StringBuilder number = new StringBuilder();
+        final int start = this.index;
+        boolean foundPeriod = false;
+        for(; this.index < this.text.length(); this.index++) {
+            final char current = this.getCurrentChar();
+            if (current == '.') {
+                if (!foundPeriod) {
+                    foundPeriod = true;
+                    number.append(current);
+                    continue;
+                }
+                break;
+            }
+            if (current == '-') {
+                if (start == this.index) {
+                    number.append(current);
+                    continue;
+                }
+                break;
+            }
+            if (Character.isDigit(current)) {
+                number.append(current);
+            } else {
+                break;
+            }
+        }
         try {
-            final Double decimal = Double.parseDouble(token);
+            final Double decimal = Double.parseDouble(number.toString());
             return Opt.of(decimal);
         } catch (NumberFormatException e) {
             return Opt.empty();
@@ -42,13 +99,13 @@ public class TextReader {
 
     public Err<String> nextQuote(char quoteMark) {
         final StringBuilder quote = new StringBuilder();
-        this.jumpWhitesapce();
-        if (this.currentChar() != quoteMark) {
+        this.jumpWhitespace();
+        if (this.getCurrentChar() != quoteMark) {
             return Err.failure();
         }
         this.index++;
         for (; this.index < this.text.length(); this.index++) {
-            final char current = this.currentChar();
+            final char current = this.getCurrentChar();
             if (current == '\\' && this.nextChar() == quoteMark) {
                 quote.append(quoteMark);
                 this.index++;
@@ -65,7 +122,7 @@ public class TextReader {
     }
 
     public Err<String> nextIdentifier() {
-        this.jumpWhitesapce();
+        this.jumpWhitespace();
         StringBuilder className = new StringBuilder();
         for (; this.index < this.text.length(); this.index++) {
             final char character = this.text.charAt(this.index);
@@ -87,20 +144,8 @@ public class TextReader {
         return -1;
     }
 
-    private char currentChar() {
-        return this.text.charAt(this.index);
-    }
-
     private char nextChar() {
         return this.text.charAt(this.index + 1);
-    }
-
-    private void jumpWhitesapce() {
-        for (; this.index < this.text.length(); this.index++) {
-            if (!Character.isWhitespace(this.text.charAt(this.index))) {
-                return;
-            }
-        }
     }
 
     static boolean isAllowedInName(char character) {

@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -97,6 +98,10 @@ public final class Seq<T> implements List<T>, May<T> {
         return new Seq<T>(this.vector.plusAll(seq));
     }
 
+    public Seq<T> push(May<T> may) {
+        return may.map(this::push).orElse(this);
+    }
+
     public Opt<T> fetch(int index) {
         if (index >= this.size()) {
             return Opt.empty();
@@ -126,6 +131,26 @@ public final class Seq<T> implements List<T>, May<T> {
             map = map.push(value, mapper.apply(value));
         }
         return map;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        Seq<?> seq = (Seq<?>) o;
+
+        return Objects.equals(this.vector, seq.vector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.vector);
     }
 
     @Override
