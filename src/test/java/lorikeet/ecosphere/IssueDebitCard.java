@@ -2,9 +2,9 @@ package lorikeet.ecosphere;
 
 import lorikeet.ecosphere.meta.Dbg;
 
-public class IssueDebitCard implements Edict1<Boolean, String> {
+public class IssueDebitCard implements Action1<Boolean, String> {
 
-    private Plug plug;
+    private Axon axon;
 
     private boolean issueDebitCard(String paymentCompany) {
         return true;
@@ -16,8 +16,8 @@ public class IssueDebitCard implements Edict1<Boolean, String> {
     }
 
     @Override
-    public void inject(Plug action) {
-        this.plug = plug;
+    public void inject(Axon action) {
+        this.axon = axon;
     }
 
 }

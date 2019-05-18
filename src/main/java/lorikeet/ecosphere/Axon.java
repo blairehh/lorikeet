@@ -1,20 +1,20 @@
 package lorikeet.ecosphere;
 
 
-public interface Plug {
+public interface Axon {
 
     String getCid();
 
-    <ReturnType, ParameterType> ReturnType yield(Edict1<ReturnType, ParameterType> edict, ParameterType parameter);
+    <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter);
 
     <ReturnType, ParameterType1, ParameterType2> ReturnType yield(
-        Edict2<ReturnType, ParameterType1, ParameterType2> edict,
+        Action2<ReturnType, ParameterType1, ParameterType2> action,
         ParameterType1 parameter1,
         ParameterType2 parameter2
     );
 
     <ReturnType, ParameterType1, ParameterType2, ParameterType3> ReturnType yield(
-        Edict3<ReturnType, ParameterType1, ParameterType2, ParameterType3> edict,
+        Action3<ReturnType, ParameterType1, ParameterType2, ParameterType3> action,
         ParameterType1 parameter1,
         ParameterType2 parameter2,
         ParameterType3 parameter3
@@ -22,7 +22,7 @@ public interface Plug {
 
 
     <ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4> ReturnType yield(
-        Edict4<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4> edict,
+        Action4<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4> action,
         ParameterType1 parameter1,
         ParameterType2 parameter2,
         ParameterType3 parameter3,
@@ -31,7 +31,7 @@ public interface Plug {
 
 
     <ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> ReturnType yield(
-        Edict5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> edict,
+        Action5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> action,
         ParameterType1 parameter1,
         ParameterType2 parameter2,
         ParameterType3 parameter3,

@@ -16,7 +16,7 @@ public class CrateGraphNodeTranscriberTest {
 
     @Test
     public void test() {
-        TestPlug action = new TestPlug();
+        TestAxon action = new TestAxon();
         User user = action.yield(new CreateUser(), "bob@gmail.com", "secret", Seq.of(1, 2));
 
         String transcript = new CrateGraphNodeTranscriber(serializer).transcribe(action.getGraph().getRootNode());

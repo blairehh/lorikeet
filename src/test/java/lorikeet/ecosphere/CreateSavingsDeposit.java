@@ -2,9 +2,9 @@ package lorikeet.ecosphere;
 
 import lorikeet.ecosphere.meta.Dbg;
 
-public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
+public class CreateSavingsDeposit implements Action1<Boolean, Double> {
 
-    private Plug plug;
+    private Axon axon;
 
     private boolean createSavingsAccount(double balance) {
         throw new RuntimeException();
@@ -16,7 +16,7 @@ public class CreateSavingsDeposit implements Edict1<Boolean, Double> {
     }
 
     @Override
-    public void inject(Plug plug) {
-        this.plug = plug;
+    public void inject(Axon axon) {
+        this.axon = axon;
     }
 }

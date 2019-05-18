@@ -4,18 +4,18 @@ package lorikeet.ecosphere;
 import lorikeet.Seq;
 import lorikeet.ecosphere.meta.Dbg;
 
-public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
+public class CreateUser implements Action3<User, String, String, Seq<Integer>> {
 
-    private Plug plug;
+    private Axon axon;
 
     public User createUser(String email, String password, Seq<Integer> codes) {
         User user = new User();
         user.email = email;
         user.password = password;
-        user.welcomeMessageSentAt = plug.yield(new SendWelcomeMessage(), email, "Hello");
+        user.welcomeMessageSentAt = axon.yield(new SendWelcomeMessage(), email, "Hello");
 
-        plug.yield(new ChargePayment(), "USD", 45.0);
-        plug.yield(new OpenAccount(), email);
+        axon.yield(new ChargePayment(), "USD", 45.0);
+        axon.yield(new OpenAccount(), email);
 
         return user;
     }
@@ -27,8 +27,8 @@ public class CreateUser implements Edict3<User, String, String, Seq<Integer>> {
     }
 
     @Override
-    public void inject(Plug action) {
-        this.plug = action;
+    public void inject(Axon action) {
+        this.axon = action;
     }
 
 }

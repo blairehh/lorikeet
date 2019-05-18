@@ -2,14 +2,14 @@ package lorikeet.ecosphere;
 
 import lorikeet.ecosphere.meta.Dbg;
 
-public class OpenAccount implements Edict1<Boolean, String> {
+public class OpenAccount implements Action1<Boolean, String> {
 
-    private Plug plug;
+    private Axon axon;
 
     private boolean openAccount(String email) {
-        plug.yield(new IssueDebitCard(), "mastercard");
+        axon.yield(new IssueDebitCard(), "mastercard");
         try {
-            plug.yield(new CreateSavingsDeposit(), 0.0);
+            axon.yield(new CreateSavingsDeposit(), 0.0);
         } catch (RuntimeException e) {
         }
         return true;
@@ -21,8 +21,8 @@ public class OpenAccount implements Edict1<Boolean, String> {
     }
 
     @Override
-    public void inject(Plug plug) {
-        this.plug = plug;
+    public void inject(Axon axon) {
+        this.axon = axon;
     }
 
 }

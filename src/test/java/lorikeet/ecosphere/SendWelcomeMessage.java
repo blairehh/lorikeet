@@ -4,7 +4,7 @@ import lorikeet.ecosphere.meta.Dbg;
 
 import java.time.Instant;
 
-public class SendWelcomeMessage implements Edict2<Instant, String, String> {
+public class SendWelcomeMessage implements Action2<Instant, String, String> {
 
     public Instant sendWelcomeMessage(String email, String message) {
         return Instant.now();
@@ -16,7 +16,7 @@ public class SendWelcomeMessage implements Edict2<Instant, String, String> {
     }
 
     @Override
-    public void inject(Plug plug) {
+    public void inject(Axon axon) {
         
     }
 }
