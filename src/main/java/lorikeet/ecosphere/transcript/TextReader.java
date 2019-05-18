@@ -11,6 +11,10 @@ public class TextReader {
         this.index = index;
     }
 
+    public int getCurrentIndex() {
+        return this.index;
+    }
+
     public String nextToken() {
         this.jumpWhitesapce();
         final StringBuilder token = new StringBuilder();
@@ -22,6 +26,30 @@ public class TextReader {
             token.append(character);
         }
         return token.toString();
+    }
+
+    public Err<String> nextQuote(char quoteMark) {
+        final StringBuilder quote = new StringBuilder();
+        this.jumpWhitesapce();
+        if (this.currentChar() != quoteMark) {
+            return Err.failure();
+        }
+        this.index++;
+        for (; this.index < this.text.length(); this.index++) {
+            final char current = this.currentChar();
+            if (current == '\\' && this.nextChar() == quoteMark) {
+                quote.append(quoteMark);
+                this.index++;
+                continue;
+            }
+            if (current == quoteMark) {
+                this.index++;
+                return Err.of(quote.toString());
+            }
+            quote.append(current);
+        }
+
+        return Err.failure();
     }
 
     public Err<String> nextIdentifier() {
@@ -36,6 +64,23 @@ public class TextReader {
             return validateName(className.toString());
         }
         return validateName(className.toString());
+    }
+
+    private int seek(int start, char character) {
+        for (int seekIndex = start; seekIndex < this.text.length(); seekIndex++) {
+            if (this.text.charAt(seekIndex) == character) {
+                return seekIndex;
+            }
+        }
+        return -1;
+    }
+
+    private char currentChar() {
+        return this.text.charAt(this.index);
+    }
+
+    private char nextChar() {
+        return this.text.charAt(this.index + 1);
     }
 
     private void jumpWhitesapce() {

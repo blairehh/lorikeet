@@ -152,6 +152,10 @@ public final class Err<T> implements May<T> {
         return optional.map(Err::of).orElse(Err.failure());
     }
 
+    public Opt<T> toOpt() {
+        return this.map(Opt::of).orElse(Opt.empty());
+    }
+
     /**
      * Returns an {@code Err} describing the given value, if
      * non-{@code null}, otherwise returns an empty {@code Err}.
