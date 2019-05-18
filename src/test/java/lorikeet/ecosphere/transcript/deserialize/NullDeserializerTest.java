@@ -1,6 +1,7 @@
 package lorikeet.ecosphere.transcript.deserialize;
 
 import lorikeet.ecosphere.transcript.NullValue;
+import lorikeet.ecosphere.transcript.TextReader;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,9 +12,9 @@ public class NullDeserializerTest {
 
     @Test
     public void testDeserializeNull() {
-        assertThat(deserializer.deserialize("null").orPanic()).isEqualTo(new NullValue());
-        assertThat(deserializer.deserialize("NULL").orPanic()).isEqualTo(new NullValue());
-        assertThat(deserializer.deserialize("  null  ").orPanic()).isEqualTo(new NullValue());
+        assertThat(deserializer.deserialize(new TextReader("null", 0)).orPanic()).isEqualTo(new NullValue());
+        assertThat(deserializer.deserialize(new TextReader("NULL", 0)).orPanic()).isEqualTo(new NullValue());
+        assertThat(deserializer.deserialize(new TextReader("  null  ", 0)).orPanic()).isEqualTo(new NullValue());
     }
 
 }
