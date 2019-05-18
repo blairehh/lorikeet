@@ -1,6 +1,7 @@
 package lorikeet.ecosphere.transcript;
 
 import lorikeet.Err;
+import lorikeet.Opt;
 
 public class TextReader {
     private final String text;
@@ -26,6 +27,17 @@ public class TextReader {
             token.append(character);
         }
         return token.toString();
+    }
+
+    public Opt<Number> nextNumber() {
+        this.jumpWhitesapce();
+        final String token = this.nextToken();
+        try {
+            final Double decimal = Double.parseDouble(token);
+            return Opt.of(decimal);
+        } catch (NumberFormatException e) {
+            return Opt.empty();
+        }
     }
 
     public Err<String> nextQuote(char quoteMark) {

@@ -82,4 +82,11 @@ public class TextReaderTest {
         TextReader textReader = new TextReader("abc'de\\'f", 3);
         assertThat(textReader.nextQuote('\'').isPresent()).isFalse();
     }
+
+    @Test
+    public void testNextNumber() {
+        TextReader textReader = new TextReader("56 '", 0);
+        assertThat(textReader.nextNumber().orPanic()).isEqualTo(56.0);
+        assertThat(textReader.getCurrentIndex()).isEqualTo(2);
+    }
 }
