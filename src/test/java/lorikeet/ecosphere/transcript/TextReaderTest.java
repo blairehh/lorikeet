@@ -154,4 +154,38 @@ public class TextReaderTest {
         TextReader textReader = new TextReader("1foo", 0);
         assertThat(textReader.nextAlphaNumericWord(true).orPanic()).isEqualTo("1foo");
     }
+
+    @Test
+    public void testIdentifierWithOneSegment() {
+        TextReader reader = new TextReader("Foo", 0);
+        assertThat(reader.nextIdentifier().orPanic()).isEqualTo("Foo");
+        assertThat(reader.getCurrentIndex()).isEqualTo(3);
+    }
+
+    @Test
+    public void testIdentifierWithTwoSegments() {
+        TextReader reader = new TextReader("app.Foo", 0);
+        assertThat(reader.nextIdentifier().orPanic()).isEqualTo("app.Foo");
+        assertThat(reader.getCurrentIndex()).isEqualTo(7);
+    }
+
+    @Test
+    public void testIdentifierWithThreeSegmentsWithSomeNumbersAndUnderscore() {
+        TextReader reader = new TextReader("com.foo.v2.Some_Class", 0);
+        assertThat(reader.nextIdentifier().orPanic()).isEqualTo("com.foo.v2.Some_Class");
+        assertThat(reader.getCurrentIndex()).isEqualTo(21);
+    }
+
+    @Test
+    public void testNextIdentifierJumpsWhiteSpacesAtEndAndStart() {
+        TextReader reader = new TextReader("   app.Foo   ", 0);
+        assertThat(reader.nextIdentifier().orPanic()).isEqualTo("app.Foo");
+        assertThat(reader.getCurrentIndex()).isEqualTo(13);
+    }
+
+    @Test
+    public void textIdentifierWithDoublePeriodFails() {
+        TextReader reader = new TextReader("app..Foo", 0);
+        assertThat(reader.nextIdentifier().isPresent()).isFalse();
+    }
 }

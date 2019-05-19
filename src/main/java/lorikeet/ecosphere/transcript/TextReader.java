@@ -53,20 +53,7 @@ public class TextReader {
             }
         }
     }
-
-//    public String nextToken() {
-//        this.jumpWhitespace();
-//        final StringBuilder token = new StringBuilder();
-//        for (; this.index < this.text.length(); this.index++) {
-//            final char character = text.charAt(this.index);
-//            if (Character.isWhitespace(character)) {
-//                return token.toString();
-//            }
-//            token.append(character);
-//        }
-//        return token.toString();
-//    }
-
+    
     public Opt<String> nextWord() {
         this.jumpWhitespace();
         final StringBuilder word = new StringBuilder();
@@ -91,6 +78,10 @@ public class TextReader {
 
     public Opt<String> nextAlphaNumericWord(boolean allowDigitAtStart) {
         this.jumpWhitespace();
+        return this.readAlphaNumericWord(allowDigitAtStart).then((value) -> this.jumpWhitespace());
+    }
+
+    private Opt<String> readAlphaNumericWord(boolean allowDigitAtStart) {
         final StringBuilder word = new StringBuilder();
         final int start = this.index;
         for (; this.index < this.text.length(); this.index++) {
@@ -104,7 +95,6 @@ public class TextReader {
                     if (word.length() == 0) {
                         return Opt.empty();
                     }
-                    this.jumpWhitespace();
                     return Opt.of(word.toString());
                 } else {
                     word.append(character);
@@ -114,13 +104,11 @@ public class TextReader {
             if (word.length() == 0) {
                 return Opt.empty();
             }
-            this.jumpWhitespace();
             return Opt.of(word.toString());
         }
         if (word.length() == 0) {
             return Opt.empty();
         }
-        this.jumpWhitespace();
         return Opt.of(word.toString());
     }
 
@@ -187,34 +175,40 @@ public class TextReader {
 
     public Err<String> nextIdentifier() {
         this.jumpWhitespace();
-        StringBuilder className = new StringBuilder();
-        for (; this.index < this.text.length(); this.index++) {
-            final char character = this.text.charAt(this.index);
-            if (isAllowedInIdentifier(character)) {
-                className.append(character);
+        return this.readIdentifier().then(value -> this.jumpWhitespace());
+    }
+
+    public Err<String> readIdentifier() {
+        final StringBuilder builder = new StringBuilder();
+
+        while (true) {
+            if (this.isAtEnd()) {
+                break;
+            }
+            final Opt<String> segment = this.readAlphaNumericWord(false);
+            if (!segment.isPresent()) {
+                return Err.failure();
+            }
+            builder.append(segment.orPanic());
+            if (this.isAtEnd()) {
+                break;
+            }
+            if (this.getCurrentChar() == '.') {
+                this.index++;
+                builder.append(".");
                 continue;
             }
-            return validateIdentifier(className.toString());
+            break;
         }
-        return validateIdentifier(className.toString());
+        final String className = builder.toString();
+        if (className.startsWith(".") || className.endsWith(".") || className.isBlank()) {
+            return Err.failure();
+        }
+        return Err.of(className);
     }
 
     private char nextChar() {
         return this.text.charAt(this.index + 1);
-    }
-
-    private static boolean isAllowedInIdentifier(char character) {
-        return Character.isLetterOrDigit(character) || character == '.' || character == '_';
-    }
-
-    static Err<String> validateIdentifier(String className) {
-        if (className.trim().isEmpty()) {
-            return Err.failure();
-        }
-        if (className.startsWith(".") || className.endsWith(".")) {
-            return Err.failure();
-        }
-        return Err.of(className);
     }
 
 }
