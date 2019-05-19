@@ -220,6 +220,21 @@ public final class Err<T> implements May<T> {
         return this;
     }
 
+    public Err<T> ifnot(Runnable runnable) {
+        if (!this.isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    public Err<T> ifso(Runnable runnable) {
+        if (this.isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+
     /**
      * If a value is present, performs the given action with the value,
      * otherwise performs the given empty-based action.

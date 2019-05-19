@@ -25,7 +25,11 @@ public class TextReader {
     }
 
     public void resetTo(TextReader reader) {
-        this.index = reader.getCurrentIndex();
+        this.resetTo(reader.getCurrentIndex());
+    }
+
+    private void resetTo(int indexAt) {
+        this.index = indexAt;
     }
 
     public int getCurrentIndex() {
@@ -53,9 +57,16 @@ public class TextReader {
             }
         }
     }
-    
+
     public Opt<String> nextWord() {
+        final int here = this.index;
         this.jumpWhitespace();
+        return this.readWord()
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
+    }
+
+    public Opt<String> readWord() {
         final StringBuilder word = new StringBuilder();
         for (; this.index < this.text.length(); this.index++) {
             final char character = this.getCurrentChar();
@@ -66,19 +77,20 @@ public class TextReader {
             if (word.length() == 0) {
                 return Opt.empty();
             }
-            this.jumpWhitespace();
             return Opt.of(word.toString());
         }
         if (word.length() == 0) {
             return Opt.empty();
         }
-        this.jumpWhitespace();
         return Opt.of(word.toString());
     }
 
     public Opt<String> nextAlphaNumericWord(boolean allowDigitAtStart) {
+        final int here = this.index;
         this.jumpWhitespace();
-        return this.readAlphaNumericWord(allowDigitAtStart).then((value) -> this.jumpWhitespace());
+        return this.readAlphaNumericWord(allowDigitAtStart)
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
     }
 
     private Opt<String> readAlphaNumericWord(boolean allowDigitAtStart) {
@@ -113,7 +125,14 @@ public class TextReader {
     }
 
     public Opt<Number> nextNumber() {
+        final int here = this.index;
         this.jumpWhitespace();
+        return this.readNumber()
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
+    }
+
+    public Opt<Number> readNumber() {
         final StringBuilder number = new StringBuilder();
         final int start = this.index;
         boolean foundPeriod = false;
@@ -142,7 +161,6 @@ public class TextReader {
         }
         try {
             final Double decimal = Double.parseDouble(number.toString());
-            this.jumpWhitespace();
             return Opt.of(decimal);
         } catch (NumberFormatException e) {
             return Opt.empty();
@@ -150,6 +168,14 @@ public class TextReader {
     }
 
     public Err<String> nextQuote(char quoteMark) {
+        final int here = this.index;
+        this.jumpWhitespace();
+        return this.readQuote(quoteMark)
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
+    }
+
+    public Err<String> readQuote(char quoteMark) {
         final StringBuilder quote = new StringBuilder();
         this.jumpWhitespace();
         if (this.getCurrentChar() != quoteMark) {
@@ -174,8 +200,11 @@ public class TextReader {
     }
 
     public Err<String> nextIdentifier() {
+        final int here = this.index;
         this.jumpWhitespace();
-        return this.readIdentifier().then(value -> this.jumpWhitespace());
+        return this.readIdentifier()
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
     }
 
     public Err<String> readIdentifier() {

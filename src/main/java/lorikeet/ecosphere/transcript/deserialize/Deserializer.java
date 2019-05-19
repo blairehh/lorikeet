@@ -20,13 +20,13 @@ public class Deserializer implements ValueDeserializer<Value> {
     );
 
     @Override
-    public Opt<Value> deserialize(TextReader text) {
+    public Opt<Value> deserialize(TextReader reader) {
         for (ValueDeserializer<? extends Value> deserializer : DESERIALIZERS) {
-            final TextReader textReader = text.fork();
+            final TextReader textReader = reader.fork();
             textReader.jumpWhitespace();
             final Opt<? extends Value> result = deserializer.deserialize(textReader);
             if (result.isPresent()) {
-                text.resetTo(textReader);
+                reader.resetTo(textReader);
                 return Opt.of(result.orPanic());
             }
         }

@@ -1,10 +1,12 @@
 package lorikeet;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.pcollections.HashPMap;
 import org.pcollections.HashTreePMap;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -55,6 +57,33 @@ public class Dict<K, V> implements Map<K, V> {
 
     public Opt<V> find(K key) {
         return Opt.ofNullable(this.map.get(key));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        Dict<?, ?> dict = (Dict<?, ?>) o;
+
+        return Objects.equals(this.map, dict.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.map);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("map", map)
+            .toString();
     }
 
     /*

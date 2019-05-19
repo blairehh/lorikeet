@@ -197,6 +197,20 @@ public final class Opt<T> implements May<T> {
         return this;
     }
 
+    public Opt<T> ifnot(Runnable runnable) {
+        if (!this.isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    public Opt<T> ifso(Runnable runnable) {
+        if (this.isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
     public Err<T> asErr(Exception e) {
         if (this.value == null) {
             return Err.failure(e);
