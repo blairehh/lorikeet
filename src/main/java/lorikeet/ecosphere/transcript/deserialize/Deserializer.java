@@ -6,9 +6,9 @@ import lorikeet.ecosphere.transcript.TextReader;
 import lorikeet.ecosphere.transcript.Value;
 
 
-public class Deserializer implements DatumDeserializer<Value> {
+public class Deserializer implements ValueDeserializer<Value> {
 
-    private static final Seq<DatumDeserializer<? extends Value>> DESERIALIZERS = Seq.of(
+    private static final Seq<ValueDeserializer<? extends Value>> DESERIALIZERS = Seq.of(
         new BoolValueDeserializer(),
         new HashValueDeserializer(),
         new NullDeserializer(),
@@ -21,7 +21,7 @@ public class Deserializer implements DatumDeserializer<Value> {
 
     @Override
     public Opt<Value> deserialize(TextReader text) {
-        for (DatumDeserializer<? extends Value> deserializer : DESERIALIZERS) {
+        for (ValueDeserializer<? extends Value> deserializer : DESERIALIZERS) {
             final TextReader textReader = text.fork();
             textReader.jumpWhitespace();
             final Opt<? extends Value> result = deserializer.deserialize(textReader);

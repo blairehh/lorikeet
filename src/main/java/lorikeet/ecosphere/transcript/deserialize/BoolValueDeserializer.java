@@ -4,7 +4,7 @@ import lorikeet.Opt;
 import lorikeet.ecosphere.transcript.BoolValue;
 import lorikeet.ecosphere.transcript.TextReader;
 
-public class BoolValueDeserializer implements DatumDeserializer<BoolValue> {
+public class BoolValueDeserializer implements ValueDeserializer<BoolValue> {
     @Override
     public Opt<BoolValue> deserialize(TextReader text) {
         final String token = text.nextWord().orElse("");

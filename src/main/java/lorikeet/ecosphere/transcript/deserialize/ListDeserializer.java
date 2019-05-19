@@ -6,7 +6,7 @@ import lorikeet.ecosphere.transcript.ListValue;
 import lorikeet.ecosphere.transcript.TextReader;
 import lorikeet.ecosphere.transcript.Value;
 
-public class ListDeserializer implements DatumDeserializer<ListValue> {
+public class ListDeserializer implements ValueDeserializer<ListValue> {
 
     private final Deserializer deserializer = new Deserializer();
 

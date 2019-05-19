@@ -4,9 +4,8 @@ import lorikeet.Opt;
 import lorikeet.ecosphere.transcript.HashValue;
 import lorikeet.ecosphere.transcript.TextReader;
 import lorikeet.java.JavaUtils;
-import org.apache.commons.lang3.StringUtils;
 
-public class HashValueDeserializer implements DatumDeserializer<HashValue> {
+public class HashValueDeserializer implements ValueDeserializer<HashValue> {
     @Override
     public Opt<HashValue> deserialize(TextReader text) {
         final String token = text.nextToken();
