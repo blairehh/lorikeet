@@ -8,30 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TextReaderTest {
 
     @Test
-    public void testNextToken() {
-        final String text = "abc def ghi jkl mnop";
-        assertThat(new TextReader(text, 4).nextToken()).isEqualTo("def");
-    }
-
-    @Test
-    public void testNextTokenInMiddleOfToken() {
-        final String text = "abcdef";
-        assertThat(new TextReader(text, 3).nextToken()).isEqualTo("def");
-    }
-
-    @Test
-    public void testNextTokenAtEnd() {
-        final String text = "abc def ghi jkl mnop";
-        assertThat(new TextReader(text, 16).nextToken()).isEqualTo("mnop");
-    }
-
-    @Test
-    public void testNextTokenSkipsWhiespaceAtStart() {
-        final String text = "  mnop";
-        assertThat(new TextReader(text, 0).nextToken()).isEqualTo("mnop");
-    }
-
-    @Test
     public void testExtractNextIdentifier() {
         assertThat(new TextReader("lorikeet.Seq", 0).nextIdentifier().orPanic())
             .isEqualTo("lorikeet.Seq");
@@ -87,7 +63,7 @@ public class TextReaderTest {
     public void testNextNumber() {
         TextReader textReader = new TextReader("56 '", 0);
         assertThat(textReader.nextNumber().orPanic()).isEqualTo(56.0);
-        assertThat(textReader.getCurrentIndex()).isEqualTo(2);
+        assertThat(textReader.getCurrentIndex()).isEqualTo(3);
     }
 
     @Test
@@ -122,14 +98,14 @@ public class TextReaderTest {
     public void testNextNumberAsNegative() {
         TextReader textReader = new TextReader("-5 ", 0);
         assertThat(textReader.nextNumber().orPanic()).isEqualTo(-5.0);
-        assertThat(textReader.getCurrentIndex()).isEqualTo(2);
+        assertThat(textReader.getCurrentIndex()).isEqualTo(3);
     }
 
     @Test
     public void testNextNumberAsNegativeFraction() {
         TextReader textReader = new TextReader("-5.99 ", 0);
         assertThat(textReader.nextNumber().orPanic()).isEqualTo(-5.99);
-        assertThat(textReader.getCurrentIndex()).isEqualTo(5);
+        assertThat(textReader.getCurrentIndex()).isEqualTo(6);
     }
 
     @Test

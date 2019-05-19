@@ -15,8 +15,10 @@ public class HashValueDeserializerTest {
     public void testHashValue() {
         assertThat(deserializer.deserialize(new TextReader("lorikeet.Seq#576686", 0)).orPanic())
             .isEqualTo(new HashValue("lorikeet.Seq", "576686"));
+    }
 
-
+    @Test
+    public void testHasValueIsZero() {
         assertThat(deserializer.deserialize(new TextReader("lorikeet.Seq#0", 0)).orPanic())
             .isEqualTo(new HashValue("lorikeet.Seq", "0"));
     }

@@ -32,7 +32,7 @@ public class TextReader {
         return this.index;
     }
 
-    public char getCurrentChar() {
+    public Character getCurrentChar() {
         return this.text.charAt(this.index);
     }
 
@@ -54,18 +54,18 @@ public class TextReader {
         }
     }
 
-    public String nextToken() {
-        this.jumpWhitespace();
-        final StringBuilder token = new StringBuilder();
-        for (; this.index < this.text.length(); this.index++) {
-            final char character = text.charAt(this.index);
-            if (Character.isWhitespace(character)) {
-                return token.toString();
-            }
-            token.append(character);
-        }
-        return token.toString();
-    }
+//    public String nextToken() {
+//        this.jumpWhitespace();
+//        final StringBuilder token = new StringBuilder();
+//        for (; this.index < this.text.length(); this.index++) {
+//            final char character = text.charAt(this.index);
+//            if (Character.isWhitespace(character)) {
+//                return token.toString();
+//            }
+//            token.append(character);
+//        }
+//        return token.toString();
+//    }
 
     public Opt<String> nextWord() {
         this.jumpWhitespace();
