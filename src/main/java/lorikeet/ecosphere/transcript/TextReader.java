@@ -2,10 +2,16 @@ package lorikeet.ecosphere.transcript;
 
 import lorikeet.Err;
 import lorikeet.Opt;
+import lorikeet.Seq;
 
-import java.util.Scanner;
 
 public class TextReader {
+
+    private final Seq<Character> SYMBOLS = Seq.of(
+        ',', '<', '.', '>', '/', '?', '\\', ']', '[', ';', ':', '{', '}', '!', '@', '#', '$', '%', '^', '&', '*',
+        '(', ')', '-', '=', '+');
+
+
     private final String text;
     private int index;
 
@@ -59,6 +65,58 @@ public class TextReader {
             token.append(character);
         }
         return token.toString();
+    }
+
+    public Opt<String> nextWord() {
+        this.jumpWhitespace();
+        final StringBuilder word = new StringBuilder();
+        for (; this.index < this.text.length(); this.index++) {
+            final char character = this.getCurrentChar();
+            if (Character.isLetter(character) || character == '_') {
+                word.append(character);
+                continue;
+            }
+            if (word.length() == 0) {
+                return Opt.empty();
+            }
+            return Opt.of(word.toString());
+        }
+        if (word.length() == 0) {
+            return Opt.empty();
+        }
+        return Opt.of(word.toString());
+    }
+
+    public Opt<String> nextAlphaNumericWord(boolean allowDigitAtStart) {
+        this.jumpWhitespace();
+        final StringBuilder word = new StringBuilder();
+        final int start = this.index;
+        for (; this.index < this.text.length(); this.index++) {
+            final char character = this.getCurrentChar();
+            if (Character.isLetter(character) || character == '_') {
+                word.append(character);
+                continue;
+            }
+            if (Character.isDigit(character)) {
+                if (start == this.index && !allowDigitAtStart) {
+                    if (word.length() == 0) {
+                        return Opt.empty();
+                    }
+                    return Opt.of(word.toString());
+                } else {
+                    word.append(character);
+                    continue;
+                }
+            }
+            if (word.length() == 0) {
+                return Opt.empty();
+            }
+            return Opt.of(word.toString());
+        }
+        if (word.length() == 0) {
+            return Opt.empty();
+        }
+        return Opt.of(word.toString());
     }
 
     public Opt<Number> nextNumber() {
@@ -126,33 +184,24 @@ public class TextReader {
         StringBuilder className = new StringBuilder();
         for (; this.index < this.text.length(); this.index++) {
             final char character = this.text.charAt(this.index);
-            if (isAllowedInName(character)) {
+            if (isAllowedInIdentifier(character)) {
                 className.append(character);
                 continue;
             }
-            return validateName(className.toString());
+            return validateIdentifier(className.toString());
         }
-        return validateName(className.toString());
-    }
-
-    private int seek(int start, char character) {
-        for (int seekIndex = start; seekIndex < this.text.length(); seekIndex++) {
-            if (this.text.charAt(seekIndex) == character) {
-                return seekIndex;
-            }
-        }
-        return -1;
+        return validateIdentifier(className.toString());
     }
 
     private char nextChar() {
         return this.text.charAt(this.index + 1);
     }
 
-    static boolean isAllowedInName(char character) {
+    private static boolean isAllowedInIdentifier(char character) {
         return Character.isLetterOrDigit(character) || character == '.' || character == '_';
     }
 
-    static Err<String> validateName(String className) {
+    static Err<String> validateIdentifier(String className) {
         if (className.trim().isEmpty()) {
             return Err.failure();
         }

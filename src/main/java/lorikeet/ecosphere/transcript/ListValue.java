@@ -11,6 +11,10 @@ public class ListValue implements Value {
         this.values = values;
     }
 
+    public ListValue(Value... values) {
+        this.values = Seq.of(values);
+    }
+
     public Seq<Value> getValues() {
         return this.values;
     }

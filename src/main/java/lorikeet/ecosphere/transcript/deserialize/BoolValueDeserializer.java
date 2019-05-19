@@ -7,7 +7,7 @@ import lorikeet.ecosphere.transcript.TextReader;
 public class BoolValueDeserializer implements DatumDeserializer<BoolValue> {
     @Override
     public Opt<BoolValue> deserialize(TextReader text) {
-        final String token = text.nextToken();
+        final String token = text.nextWord().orElse("");
         if (token.trim().equalsIgnoreCase("true")) {
             return Opt.of(new BoolValue(true));
         }

@@ -8,12 +8,14 @@ import lorikeet.ecosphere.transcript.Value;
 
 public class Deserializer implements DatumDeserializer<Value> {
 
-    private final Seq<DatumDeserializer<? extends Value>> DESERIALIZERS = Seq.of(
+    private static final Seq<DatumDeserializer<? extends Value>> DESERIALIZERS = Seq.of(
         new BoolValueDeserializer(),
         new HashValueDeserializer(),
         new NullDeserializer(),
         new NumberValueDeserializer(),
-        new StringValueDeserializer()
+        new StringValueDeserializer(),
+        new ListDeserializer(),
+        new ObjectDeserializer()
     );
 
     @Override

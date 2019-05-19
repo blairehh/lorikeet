@@ -138,4 +138,44 @@ public class TextReaderTest {
         assertThat(textReader.nextNumber().orPanic()).isEqualTo(-2.0);
         assertThat(textReader.getCurrentIndex()).isEqualTo(2);
     }
+
+    @Test
+    public void testNextAlphaNumericWord() {
+        TextReader textReader = new TextReader("fooBar", 0);
+        assertThat(textReader.nextAlphaNumericWord(false).orPanic()).isEqualTo("fooBar");
+        assertThat(textReader.getCurrentIndex()).isEqualTo(6);
+    }
+
+    @Test
+    public void testNextAlphaNumericWordWithUnderscore() {
+        TextReader textReader = new TextReader("foo_Bar", 0);
+        assertThat(textReader.nextAlphaNumericWord(false).orPanic()).isEqualTo("foo_Bar");
+        assertThat(textReader.getCurrentIndex()).isEqualTo(7);
+    }
+
+    @Test
+    public void testNextAlphaNumericWordEndedBySymbol() {
+        TextReader textReader = new TextReader("foo@", 0);
+        assertThat(textReader.nextAlphaNumericWord(false).orPanic()).isEqualTo("foo");
+        assertThat(textReader.getCurrentIndex()).isEqualTo(3);
+    }
+
+    @Test
+    public void testNextAlphaNumericWordWithNumber() {
+        TextReader textReader = new TextReader("foo2", 0);
+        assertThat(textReader.nextAlphaNumericWord(false).orPanic()).isEqualTo("foo2");
+        assertThat(textReader.getCurrentIndex()).isEqualTo(4);
+    }
+
+    @Test
+    public void testNextAlphaNumericCanNotHaveNumberAtStart() {
+        TextReader textReader = new TextReader("1foo", 0);
+        assertThat(textReader.nextAlphaNumericWord(false).isPresent()).isFalse();
+    }
+
+    @Test
+    public void testNextAlphaNumericCanHaveNumberAtStartIsSpecifiedToDoSo() {
+        TextReader textReader = new TextReader("1foo", 0);
+        assertThat(textReader.nextAlphaNumericWord(true).orPanic()).isEqualTo("1foo");
+    }
 }
