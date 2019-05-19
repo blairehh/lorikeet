@@ -79,11 +79,13 @@ public class TextReader {
             if (word.length() == 0) {
                 return Opt.empty();
             }
+            this.jumpWhitespace();
             return Opt.of(word.toString());
         }
         if (word.length() == 0) {
             return Opt.empty();
         }
+        this.jumpWhitespace();
         return Opt.of(word.toString());
     }
 
@@ -102,6 +104,7 @@ public class TextReader {
                     if (word.length() == 0) {
                         return Opt.empty();
                     }
+                    this.jumpWhitespace();
                     return Opt.of(word.toString());
                 } else {
                     word.append(character);
@@ -111,11 +114,13 @@ public class TextReader {
             if (word.length() == 0) {
                 return Opt.empty();
             }
+            this.jumpWhitespace();
             return Opt.of(word.toString());
         }
         if (word.length() == 0) {
             return Opt.empty();
         }
+        this.jumpWhitespace();
         return Opt.of(word.toString());
     }
 
@@ -149,6 +154,7 @@ public class TextReader {
         }
         try {
             final Double decimal = Double.parseDouble(number.toString());
+            this.jumpWhitespace();
             return Opt.of(decimal);
         } catch (NumberFormatException e) {
             return Opt.empty();

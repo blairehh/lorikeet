@@ -15,7 +15,8 @@ public class Deserializer implements DatumDeserializer<Value> {
         new NumberValueDeserializer(),
         new StringValueDeserializer(),
         new ListDeserializer(),
-        new ObjectDeserializer()
+        new ObjectDeserializer(),
+        new MapDeserializer()
     );
 
     @Override

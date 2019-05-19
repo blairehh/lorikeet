@@ -10,4 +10,9 @@ public class NullValue implements Value {
 
         return obj.getClass().equals(NullValue.class);
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }
