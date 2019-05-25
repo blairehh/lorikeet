@@ -211,9 +211,16 @@ public class TestAxon implements Axon {
     private Dict<String, Value> buildArguments(Meta meta, List<Object> params) {
         Dict<String, Value> arguments = Dict.empty();
         for (int i = 0; i < params.size(); i++) {
-            final String name = meta.findParameterOrCreate(i).getName();
-            final Value value = this.interpreter.interpret(params.get(i));
-            arguments = arguments.push(name, value);
+            final ParameterMeta parameter = meta.findParameterOrCreate(i);
+            if (parameter.isIgnore()) {
+                continue;
+            }
+
+            final Value value = parameter.isUseHash()
+                ? this.interpreter.interpretAsHash(params.get(i))
+                : this.interpreter.interpret(params.get(i));
+
+            arguments = arguments.push(parameter.getName(), value);
         }
         return arguments;
     }

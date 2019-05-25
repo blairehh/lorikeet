@@ -27,4 +27,9 @@ public class Interpreter {
         return new NotSupportedValue();
     }
 
+
+    public Value interpretAsHash(Object object) {
+        return new HashValueInterpreter().interpret(object);
+    }
+
 }
