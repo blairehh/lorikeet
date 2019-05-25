@@ -1,4 +1,4 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.ecosphere.testing.graph;
 
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.Value;

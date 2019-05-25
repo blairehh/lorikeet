@@ -1,4 +1,4 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.ecosphere.testing.graph;
 
 public class CellGraph {
 

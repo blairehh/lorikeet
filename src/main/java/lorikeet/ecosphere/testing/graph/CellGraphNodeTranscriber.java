@@ -1,6 +1,7 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.ecosphere.testing.graph;
 
 import lorikeet.ecosphere.testing.data.serialize.CellValueSerializer;
+import lorikeet.ecosphere.testing.graph.CellGraphNode;
 
 import java.util.Comparator;
 

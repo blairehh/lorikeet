@@ -16,6 +16,8 @@ import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.data.interpreter.Interpreter;
+import lorikeet.ecosphere.testing.graph.CellGraph;
+import lorikeet.ecosphere.testing.graph.CellGraphNode;
 
 import java.time.Instant;
 import java.util.ArrayList;

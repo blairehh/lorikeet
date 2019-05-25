@@ -1,8 +1,9 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.ecosphere.testing.graph;
 
 import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
+import lorikeet.ecosphere.testing.TestAxon;
 import org.junit.Test;
 
 

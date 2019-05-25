@@ -1,9 +1,10 @@
-package lorikeet.ecosphere.testing;
+package lorikeet.ecosphere.testing.graph;
 
 import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
+import lorikeet.ecosphere.testing.TestAxon;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.StringValue;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestActionCellTest {
+public class TestActionGraphTest {
 
     @Test
     public void test() {
