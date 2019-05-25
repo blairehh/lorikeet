@@ -16,7 +16,8 @@ public class Serializer {
         new StringValueSerializer(),
         new IdentifierValueSerializer(),
         new ListValueSerializer(),
-        new MapValueSerializer()
+        new MapValueSerializer(),
+        new ObjectValueSerializer()
     );
 
     public String serialize(Value value) {
