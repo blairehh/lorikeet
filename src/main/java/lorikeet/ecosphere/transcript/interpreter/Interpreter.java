@@ -13,7 +13,8 @@ public class Interpreter {
         new BoolValueInterpreter(),
         new NumberValueInterpreter(),
         new ListValueInterpreter(),
-        new ObjectValueInterpreter()
+        new ObjectValueInterpreter(),
+        new MapValueInterpreter()
     );
 
     public Value interpret(Object object) {
