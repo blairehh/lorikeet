@@ -1,6 +1,6 @@
 package lorikeet.ecosphere;
 
-public interface Action5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> extends Crate {
+public interface Action5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> extends Cell {
     ReturnType invoke(
         ParameterType1 parameter1,
         ParameterType2 parameter2,

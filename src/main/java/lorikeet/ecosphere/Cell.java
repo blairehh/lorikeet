@@ -1,5 +1,5 @@
 package lorikeet.ecosphere;
 
-public interface Crate {
+public interface Cell {
 
 }

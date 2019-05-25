@@ -3,7 +3,7 @@ package lorikeet.ecosphere.testing;
 
 import lorikeet.Dict;
 import lorikeet.ecosphere.Axon;
-import lorikeet.ecosphere.Crate;
+import lorikeet.ecosphere.Cell;
 import lorikeet.ecosphere.Action1;
 import lorikeet.ecosphere.Action2;
 import lorikeet.ecosphere.Action3;
@@ -136,7 +136,7 @@ public class TestAxon implements Axon {
         }
     }
 
-    private CellGraphNode prepareCellNode(Crate cell, Object... params) {
+    private CellGraphNode prepareCellNode(Cell cell, Object... params) {
         final Meta meta = MetaFromDbgAnnotations.meta(cell, params.length);
 
         CellValue cellValue = new CellValue(

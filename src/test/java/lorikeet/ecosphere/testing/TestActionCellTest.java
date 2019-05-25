@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestActionCrateTest {
+public class TestActionCellTest {
 
     @Test
     public void test() {
