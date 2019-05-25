@@ -14,7 +14,8 @@ public class Serializer {
         new NullValueSerializer(),
         new NumberValueSerializer(),
         new StringValueSerializer(),
-        new IdentifierValueSerializer()
+        new IdentifierValueSerializer(),
+        new ListValueSerializer()
     );
 
     public String serialize(Value value) {
