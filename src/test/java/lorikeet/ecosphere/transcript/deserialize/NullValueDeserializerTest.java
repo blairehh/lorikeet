@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NullDeserializerTest {
+public class NullValueDeserializerTest {
 
-    private NullDeserializer deserializer = new NullDeserializer();
+    private NullValueDeserializer deserializer = new NullValueDeserializer();
 
     @Test
     public void testDeserializeNull() {

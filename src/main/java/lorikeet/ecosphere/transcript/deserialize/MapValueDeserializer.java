@@ -6,7 +6,7 @@ import lorikeet.ecosphere.transcript.MapValue;
 import lorikeet.ecosphere.transcript.TextReader;
 import lorikeet.ecosphere.transcript.Value;
 
-public class MapDeserializer implements ValueDeserializer<MapValue> {
+public class MapValueDeserializer implements ValueDeserializer<MapValue> {
 
     private final Deserializer deserializer = new Deserializer();
 

@@ -11,12 +11,12 @@ public class Deserializer implements ValueDeserializer<Value> {
     private static final Seq<ValueDeserializer<? extends Value>> DESERIALIZERS = Seq.of(
         new BoolValueDeserializer(),
         new HashValueDeserializer(),
-        new NullDeserializer(),
+        new NullValueDeserializer(),
         new NumberValueDeserializer(),
         new StringValueDeserializer(),
-        new ListDeserializer(),
-        new ObjectDeserializer(),
-        new MapDeserializer(),
+        new ListValueDeserializer(),
+        new ObjectValueDeserializer(),
+        new MapValueDeserializer(),
         new IdentifierValueDeserializer()
     );
 

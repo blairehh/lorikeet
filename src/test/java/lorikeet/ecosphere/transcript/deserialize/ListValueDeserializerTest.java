@@ -7,9 +7,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ListDeserializerTest {
+public class ListValueDeserializerTest {
 
-    private final ListDeserializer deserializer = new ListDeserializer();
+    private final ListValueDeserializer deserializer = new ListValueDeserializer();
 
     @Test
     public void testListOfOne() {

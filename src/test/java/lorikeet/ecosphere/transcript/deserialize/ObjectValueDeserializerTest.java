@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ObjectDeserializerTest {
+public class ObjectValueDeserializerTest {
 
-    private final ObjectDeserializer deserializer = new ObjectDeserializer();
+    private final ObjectValueDeserializer deserializer = new ObjectValueDeserializer();
 
     @Test
     public void testEmptyObject() {
