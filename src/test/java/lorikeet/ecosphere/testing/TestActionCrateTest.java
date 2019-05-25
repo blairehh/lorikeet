@@ -1,9 +1,13 @@
 package lorikeet.ecosphere.testing;
 
+import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
 import lorikeet.ecosphere.meta.ParameterMeta;
+import lorikeet.ecosphere.transcript.CellValue;
+import lorikeet.ecosphere.transcript.NumberValue;
+import lorikeet.ecosphere.transcript.StringValue;
 import org.junit.Test;
 
 import java.util.List;
@@ -20,26 +24,27 @@ public class TestActionCrateTest {
         assertThat(user.password).isEqualTo("secret");
         assertThat(user.welcomeMessageSentAt).isNotNull();
 
-        CrateGraphNode root = action.getGraph().getRootNode();
-        assertThat(root.getName()).isEqualTo("lorikeet.ecosphere.CreateUser");
-        assertThat(root.getParameters()).contains(new CrateParameter(new ParameterMeta(0, "email"), "bob@gmail.com"));
-        assertThat(root.getParameters()).contains(new CrateParameter(new ParameterMeta(1, "password"), "secret"));
+        CellGraphNode root = action.getCellGraph().getRootNode();
+        CellValue cell = root.getCell();
+        assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.CreateUser");
+        assertThat(cell.getArguments()).containsEntry("email", new StringValue("bob@gmail.com"));
+        assertThat(cell.getArguments()).containsEntry("password", new StringValue("secret"));
 
-        List<CrateGraphNode> children = root.getChildren();
+        List<CellGraphNode> children = root.getChildren();
 
         assertThat(children).hasSize(3);
-        assertThat(children.get(0).getName()).isEqualTo("lorikeet.ecosphere.SendWelcomeMessage");
-        assertThat(children.get(0).getParameters()).contains(
-            new CrateParameter(new ParameterMeta(0), "bob@gmail.com"),
-            new CrateParameter(new ParameterMeta(1, "message"), "Hello")
-        );
-        assertThat(children.get(1).getName()).isEqualTo("lorikeet.ecosphere.ChargePayment");
-        assertThat(children.get(1).getParameters()).contains(
-            new CrateParameter(new ParameterMeta(0, "currency"), "USD"),
-            new CrateParameter(new ParameterMeta(1, "price"), 45.0)
-        );
-        assertThat(children.get(2).getName()).isEqualTo("lorikeet.ecosphere.OpenAccount");
-        assertThat(children.get(2).getParameters()).contains(new CrateParameter(new ParameterMeta(0, "email"), "bob@gmail.com"));
+        assertThat(children.get(0).getCell().getClassName()).isEqualTo("lorikeet.ecosphere.SendWelcomeMessage");
+        assertThat(children.get(0).getCell().getArguments()).containsAllEntriesOf(Dict.of(
+            "-0", new StringValue("bob@gmail.com"),
+            "message", new StringValue("Hello")
+        ));
+        assertThat(children.get(1).getCell().getClassName()).isEqualTo("lorikeet.ecosphere.ChargePayment");
+        assertThat(children.get(1).getCell().getArguments()).containsAllEntriesOf(Dict.of(
+            "currency",new StringValue("USD"),
+            "price", new NumberValue(45.0)
+        ));
+        assertThat(children.get(2).getCell().getClassName()).isEqualTo("lorikeet.ecosphere.OpenAccount");
+        assertThat(children.get(2).getCell().getArguments()).containsEntry("email", new StringValue("bob@gmail.com"));
     }
 
 }
