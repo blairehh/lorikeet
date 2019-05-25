@@ -2,6 +2,7 @@ package lorikeet.ecosphere.transcript.interpreter;
 
 import lorikeet.Opt;
 import lorikeet.Seq;
+import lorikeet.ecosphere.transcript.NotSupportedValue;
 import lorikeet.ecosphere.transcript.Value;
 
 public class Interpreter {
@@ -10,17 +11,18 @@ public class Interpreter {
         new NullValueInterpreter(),
         new StringValueInterpreter(),
         new BoolValueInterpreter(),
-        new NumberValueInterpreter()
+        new NumberValueInterpreter(),
+        new ListValueInterpreter()
     );
 
-    public Opt<Value> interpret(Object object) {
+    public Value interpret(Object object) {
         for (ValueInterpreter interpreter : INTERPRETERS) {
             final Opt<Value> interpreted = interpreter.interpret(object);
             if (interpreted.isPresent()) {
-                return interpreted;
+                return interpreted.orPanic();
             }
         }
-        return Opt.empty();
+        return new NotSupportedValue();
     }
 
 }
