@@ -1,16 +1,19 @@
 package lorikeet.ecosphere.transcript;
 
+import lorikeet.Dict;
 import lorikeet.Opt;
 
 import java.util.Objects;
 
-public class TranscriptNode {
+public class CellValue implements Value {
     private final String className;
-    private final String exceptionThrown;
+    private final Value exceptionThrown;
     private final Value returnValue;
+    private final Dict<String, Value> arguments;
 
-    public TranscriptNode(String className, String exceptionThrown, Value returnValue) {
+    public CellValue(String className, Dict<String, Value> arguments, Value exceptionThrown, Value returnValue) {
         this.className = className;
+        this.arguments = arguments;
         this.exceptionThrown = exceptionThrown;
         this.returnValue = returnValue;
     }
@@ -19,7 +22,11 @@ public class TranscriptNode {
         return this.className;
     }
 
-    public Opt<String> getExceptionThrown() {
+    public Dict<String, Value> getArguments() {
+        return this.arguments;
+    }
+
+    public Opt<Value> getExceptionThrown() {
         return Opt.ofNullable(this.exceptionThrown);
     }
 
@@ -37,15 +44,16 @@ public class TranscriptNode {
             return false;
         }
 
-        TranscriptNode that = (TranscriptNode) o;
+        CellValue that = (CellValue) o;
 
         return Objects.equals(this.getClassName(), that.getClassName())
+            && Objects.equals(this.getArguments(), that.getArguments())
             && Objects.equals(this.getExceptionThrown(), that.getExceptionThrown())
             && Objects.equals(this.getReturnValue(), that.getReturnValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClassName(), this.getExceptionThrown(), this.getReturnValue());
+        return Objects.hash(this.getClassName(), this.getArguments(), this.getExceptionThrown(), this.getReturnValue());
     }
 }

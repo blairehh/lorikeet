@@ -50,6 +50,10 @@ public class TextReader {
         this.jumpWhitespace();
     }
 
+    public void step() {
+        this.index++;
+    }
+
     public void jumpWhitespace() {
         for (; this.index < this.text.length(); this.index++) {
             if (!Character.isWhitespace(this.text.charAt(this.index))) {

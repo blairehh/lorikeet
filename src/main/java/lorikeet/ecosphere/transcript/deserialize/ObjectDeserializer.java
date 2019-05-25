@@ -17,6 +17,9 @@ public class ObjectDeserializer implements ValueDeserializer<ObjectValue> {
         if (!className.isPresent()) {
             return Opt.empty();
         }
+        if (reader.isAtEnd()) {
+            return Opt.empty();
+        }
         if (reader.getCurrentChar() != '(') {
             return Opt.empty();
         }

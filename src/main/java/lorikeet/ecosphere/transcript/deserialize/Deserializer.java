@@ -16,7 +16,8 @@ public class Deserializer implements ValueDeserializer<Value> {
         new StringValueDeserializer(),
         new ListDeserializer(),
         new ObjectDeserializer(),
-        new MapDeserializer()
+        new MapDeserializer(),
+        new IdentifierValueDeserializer()
     );
 
     @Override
