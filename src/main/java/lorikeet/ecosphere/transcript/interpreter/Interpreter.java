@@ -12,7 +12,8 @@ public class Interpreter {
         new StringValueInterpreter(),
         new BoolValueInterpreter(),
         new NumberValueInterpreter(),
-        new ListValueInterpreter()
+        new ListValueInterpreter(),
+        new ObjectValueInterpreter()
     );
 
     public Value interpret(Object object) {
