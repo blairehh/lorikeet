@@ -4,7 +4,6 @@ import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.ecosphere.transcript.HashValue;
 import lorikeet.ecosphere.transcript.TextReader;
-import lorikeet.java.JavaUtils;
 
 public class HashValueDeserializer implements ValueDeserializer<HashValue> {
     @Override

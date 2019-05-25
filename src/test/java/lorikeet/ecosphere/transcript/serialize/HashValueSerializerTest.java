@@ -11,7 +11,7 @@ public class HashValueSerializerTest {
 
     @Test
     public void test() {
-        assertThat(serializer.serialize(new HashValue("com.foo.Bar", "58745436")))
+        assertThat(serializer.serialize(new HashValue("com.foo.Bar", "58745436")).orPanic())
             .isEqualTo("com.foo.Bar#58745436");
     }
 }

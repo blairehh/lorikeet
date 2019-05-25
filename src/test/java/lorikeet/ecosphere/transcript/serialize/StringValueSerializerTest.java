@@ -11,7 +11,7 @@ public class StringValueSerializerTest {
 
     @Test
     public void testString() {
-        assertThat(serializer.serialize(new StringValue("hello"))).isEqualTo("'hello'");
+        assertThat(serializer.serialize(new StringValue("hello")).orPanic()).isEqualTo("'hello'");
     }
 
 }

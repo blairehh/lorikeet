@@ -12,12 +12,12 @@ public class BoolValueSerializerTest {
 
     @Test
     public void testTrue() {
-        assertThat(serializer.serialize(new BoolValue(true))).isEqualTo("true");
+        assertThat(serializer.serialize(new BoolValue(true)).orPanic()).isEqualTo("true");
     }
 
     @Test
     public void testFalse() {
-        assertThat(serializer.serialize(new BoolValue(false))).isEqualTo("false");
+        assertThat(serializer.serialize(new BoolValue(false)).orPanic()).isEqualTo("false");
     }
 
 }

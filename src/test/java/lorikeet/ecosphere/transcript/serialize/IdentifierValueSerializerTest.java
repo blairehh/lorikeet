@@ -11,6 +11,6 @@ public class IdentifierValueSerializerTest {
 
     @Test
     public void test() {
-        assertThat(serializer.serialize(new IdentifierValue("com.foo.Bar"))).isEqualTo("com.foo.Bar");
+        assertThat(serializer.serialize(new IdentifierValue("com.foo.Bar")).orPanic()).isEqualTo("com.foo.Bar");
     }
 }
