@@ -12,10 +12,10 @@ import lorikeet.ecosphere.Action5;
 import lorikeet.ecosphere.meta.Meta;
 import lorikeet.ecosphere.meta.MetaFromDbgAnnotations;
 import lorikeet.ecosphere.meta.ParameterMeta;
-import lorikeet.ecosphere.transcript.CellValue;
-import lorikeet.ecosphere.transcript.IdentifierValue;
-import lorikeet.ecosphere.transcript.Value;
-import lorikeet.ecosphere.transcript.interpreter.Interpreter;
+import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.IdentifierValue;
+import lorikeet.ecosphere.testing.data.Value;
+import lorikeet.ecosphere.testing.data.interpreter.Interpreter;
 
 import java.time.Instant;
 import java.util.ArrayList;

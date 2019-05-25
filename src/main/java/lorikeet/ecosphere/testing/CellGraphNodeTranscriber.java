@@ -1,6 +1,6 @@
 package lorikeet.ecosphere.testing;
 
-import lorikeet.ecosphere.transcript.serialize.CellValueSerializer;
+import lorikeet.ecosphere.testing.data.serialize.CellValueSerializer;
 
 import java.util.Comparator;
 

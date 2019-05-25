@@ -4,10 +4,9 @@ import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
-import lorikeet.ecosphere.meta.ParameterMeta;
-import lorikeet.ecosphere.transcript.CellValue;
-import lorikeet.ecosphere.transcript.NumberValue;
-import lorikeet.ecosphere.transcript.StringValue;
+import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.NumberValue;
+import lorikeet.ecosphere.testing.data.StringValue;
 import org.junit.Test;
 
 import java.util.List;

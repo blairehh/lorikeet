@@ -1,7 +1,7 @@
 package lorikeet.ecosphere.testing;
 
-import lorikeet.ecosphere.transcript.CellValue;
-import lorikeet.ecosphere.transcript.Value;
+import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.Value;
 
 import java.time.Instant;
 import java.util.List;
