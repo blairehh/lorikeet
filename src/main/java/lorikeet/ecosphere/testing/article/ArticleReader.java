@@ -12,7 +12,7 @@ public class ArticleReader {
         String doc = "";
         while (true) {
             if (reader.isAtEndOfArticle()) {
-                return Opt.of(new Article(stanzas));
+                return build(stanzas);
             }
             if (reader.isLineEmpty()) {
                 reader.skipToNextLine();
@@ -24,7 +24,7 @@ public class ArticleReader {
             final Opt<StanzaTitle> titleOpt = this.nextTitle(reader);
             if (!titleOpt.isPresent()) {
                 if (reader.isAtEndOfArticle() || stanzas.size() > 0) {
-                    return Opt.of(new Article(stanzas));
+                    return build(stanzas);
                 }
                 return Opt.empty();
             }
@@ -32,9 +32,6 @@ public class ArticleReader {
             final String contents = reader.collect(line -> Character.isWhitespace(line.charAt(0)));
             if (title.getName().equalsIgnoreCase("doc")) {
                 doc = contents.trim();
-            } else if (title.getName().equalsIgnoreCase("type")) {
-                stanzas = stanzas.push(new Stanza(title, doc, contents.trim()));
-                doc = "";
             } else {
                 stanzas = stanzas.push(new Stanza(title, doc, contents));
                 doc = "";
@@ -73,6 +70,26 @@ public class ArticleReader {
 
             attributes = attributes.push(attribute);
         }
+    }
+
+    private static Opt<Article> build(Seq<Stanza> stanzas) {
+        final Opt<String> type = stanzas
+            .stream()
+            .filter(stanza -> stanza.getName().equalsIgnoreCase("type"))
+            .map(stanza -> stanza.getContent().trim())
+            .collect(Seq.collector())
+            .first();
+
+        if (!type.isPresent()) {
+            return Opt.empty();
+        }
+
+        final Seq<Stanza> otherStanzas = stanzas
+            .stream()
+            .filter(stanza -> !stanza.getName().equalsIgnoreCase("type"))
+            .collect(Seq.collector());
+
+        return Opt.of(new Article(type.orPanic(), otherStanzas));
     }
 
 }

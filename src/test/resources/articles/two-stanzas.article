@@ -1,7 +1,10 @@
-doc:
-    This is a sample documentation section
 type:
-    cell
+    test
+
+doc:
+    somehting here
+case:
+    test subject
 
 doc:
     should be zero
