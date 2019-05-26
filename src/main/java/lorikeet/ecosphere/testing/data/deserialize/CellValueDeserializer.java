@@ -14,6 +14,11 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
 
     @Override
     public Opt<CellValue> deserialize(TextReader reader) {
+        reader.jumpWhitespace();
+        if (reader.getCurrentChar() != '<') {
+            return Opt.empty();
+        }
+        reader.skip();
         final Err<String> className = reader.nextIdentifier();
         Value exceptionThrown = null;
         Value returnValue = null;

@@ -37,6 +37,8 @@
 
 package lorikeet;
 
+import lorikeet.error.LorikeetException;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -181,7 +183,10 @@ public final class Err<T> implements May<T> {
     @Deprecated
     public T get() {
         if (value == null) {
-            throw new NoSuchElementException("No value present");
+            if (this.exception instanceof LorikeetException) {
+                throw (LorikeetException)this.exception;
+            }
+            throw new RuntimeException(this.exception);
         }
         return value;
     }

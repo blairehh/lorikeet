@@ -17,7 +17,7 @@ public class CellValueDeserializerTest {
 
     @Test
     public void testParseNodeWithJustIdentifier() {
-        TextReader reader = new TextReader("<com.Foo  >", 1);
+        TextReader reader = new TextReader("<com.Foo  >");
         CellValue cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getReturnValue().isPresent()).isFalse();
@@ -28,7 +28,7 @@ public class CellValueDeserializerTest {
 
     @Test
     public void testWithReturnValue() {
-        TextReader reader = new TextReader("<com.Foo  -return=34>", 1);
+        TextReader reader = new TextReader("<com.Foo  -return=34>");
         CellValue cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getReturnValue().orPanic()).isEqualTo(new NumberValue(34));
@@ -39,7 +39,7 @@ public class CellValueDeserializerTest {
 
     @Test
     public void testWithExceptionThrown() {
-        TextReader reader = new TextReader("<com.Foo  -exception=java.lang.NullPointerException>", 1);
+        TextReader reader = new TextReader("<com.Foo  -exception=java.lang.NullPointerException>");
         CellValue cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getArguments().isEmpty()).isTrue();
@@ -50,7 +50,7 @@ public class CellValueDeserializerTest {
 
     @Test
     public void testWithOneArgument() {
-        TextReader reader = new TextReader("<com.Baz bar='YES' >", 1);
+        TextReader reader = new TextReader("<com.Baz bar='YES' >");
         CellValue cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Baz");
         assertThat(cell.getArguments()).isEqualTo(Dict.of("bar", new StringValue("YES")));
@@ -61,7 +61,7 @@ public class CellValueDeserializerTest {
 
     @Test
     public void testWithTwoArguments() {
-        TextReader reader = new TextReader("<com.Baz bar='YES' foo=false>", 1);
+        TextReader reader = new TextReader("<com.Baz bar='YES' foo=false>");
         CellValue cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Baz");
         assertThat(cell.getArguments()).hasSize(2);
@@ -72,5 +72,16 @@ public class CellValueDeserializerTest {
         assertThat(reader.getCurrentIndex()).isEqualTo(29);
     }
 
+    @Test
+    public void testFromSampleArticle() {
+        TextReader reader = new TextReader("    <lorikeet.ecosphere.IssueDebitCard  paymentCompany='mastercard' -return=true>\n");
+
+        CellValue cell = deserializer.deserialize(reader).orPanic();
+        assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.IssueDebitCard");
+        assertThat(cell.getArguments()).hasSize(1);
+        assertThat(cell.getArguments()).containsEntry("paymentCompany", new StringValue("mastercard"));
+        assertThat(cell.getReturnValue().orPanic()).isEqualTo(new BoolValue(true));
+        assertThat(reader.getCurrentIndex()).isEqualTo(82);
+    }
 
 }
