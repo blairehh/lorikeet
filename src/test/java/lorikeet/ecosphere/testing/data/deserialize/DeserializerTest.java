@@ -7,7 +7,7 @@ import lorikeet.ecosphere.testing.data.HashValue;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.ObjectValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

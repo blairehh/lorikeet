@@ -3,7 +3,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 import lorikeet.Dict;
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.MapValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
 
 public class MapValueDeserializer implements ValueDeserializer<MapValue> {

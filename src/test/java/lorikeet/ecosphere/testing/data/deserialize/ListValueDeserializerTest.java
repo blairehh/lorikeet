@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Seq;
 import lorikeet.ecosphere.testing.data.NumberValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

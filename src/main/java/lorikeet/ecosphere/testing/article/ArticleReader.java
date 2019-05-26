@@ -2,11 +2,12 @@ package lorikeet.ecosphere.testing.article;
 
 import lorikeet.Opt;
 import lorikeet.Seq;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
+import lorikeet.ecosphere.testing.reader.LineReader;
 
 public class ArticleReader {
 
-    public Opt<Article> read(ArticleLineReader reader) {
+    public Opt<Article> read(LineReader reader) {
         Seq<Stanza> stanzas = Seq.empty();
         String doc = "";
         while (true) {
@@ -38,7 +39,7 @@ public class ArticleReader {
         }
     }
 
-    private Opt<StanzaTitle> nextTitle(ArticleLineReader reader) {
+    private Opt<StanzaTitle> nextTitle(LineReader reader) {
         final boolean found = reader.seek(line -> Character.isLetter(line.charAt(0)));
         if (!found) {
             reader.skipToNextLine();

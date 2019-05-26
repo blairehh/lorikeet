@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.NullValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 
 public class NullValueDeserializer implements ValueDeserializer<NullValue> {
     public Opt<NullValue> deserialize(TextReader text) {

@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 
 public class IdentifierValueDeserializer implements ValueDeserializer<IdentifierValue> {
 

@@ -4,7 +4,7 @@ import lorikeet.Dict;
 import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.ObjectValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
 
 public class ObjectValueDeserializer implements ValueDeserializer<ObjectValue> {

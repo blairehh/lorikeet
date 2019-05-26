@@ -1,12 +1,12 @@
-package lorikeet.ecosphere.testing.article;
+package lorikeet.ecosphere.testing.reader;
 
 import lorikeet.Fun;
 
-public class ArticleLineReader {
+public class LineReader {
     private final String[] lines;
     private int currentLine;
 
-    public ArticleLineReader(String articleText) {
+    public LineReader(String articleText) {
         this.lines = articleText.split("\n");
         this.currentLine = 0;
     }

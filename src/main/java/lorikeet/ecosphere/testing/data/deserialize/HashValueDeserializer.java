@@ -3,7 +3,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.HashValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 
 public class HashValueDeserializer implements ValueDeserializer<HashValue> {
     @Override

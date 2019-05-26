@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.BoolValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 
 public class BoolValueDeserializer implements ValueDeserializer<BoolValue> {
     @Override

@@ -4,7 +4,7 @@ import lorikeet.ecosphere.testing.data.MapValue;
 import lorikeet.ecosphere.testing.data.NullValue;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.StringValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

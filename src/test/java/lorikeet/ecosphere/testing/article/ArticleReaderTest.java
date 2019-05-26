@@ -1,6 +1,7 @@
 package lorikeet.ecosphere.testing.article;
 
 import lorikeet.IO;
+import lorikeet.ecosphere.testing.reader.LineReader;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +13,7 @@ public class ArticleReaderTest {
     @Test
     public void testOneStanza() {
         String articleContents = IO.readResource("articles/one-stanza.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(1);
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
@@ -23,7 +24,7 @@ public class ArticleReaderTest {
     @Test
     public void testOneStanzaWithoutDoc() {
         String articleContents = IO.readResource("articles/one-stanza-no-doc.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(1);
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
@@ -34,7 +35,7 @@ public class ArticleReaderTest {
     @Test
     public void testTwoStanzas() {
         String articleContents = IO.readResource("articles/two-stanzas.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(2);
 
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
@@ -51,7 +52,7 @@ public class ArticleReaderTest {
     @Test
     public void testTwoStanzasNoDoc() {
         String articleContents = IO.readResource("articles/two-stanzas-no-doc.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(2);
 
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
@@ -68,7 +69,7 @@ public class ArticleReaderTest {
     @Test
     public void testArticleWithMultiLineDoc() {
         String articleContents = IO.readResource("articles/stanza-with-multi-line-doc.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(1);
 
         String doc = "This is a sample documentation section\n" +
@@ -84,7 +85,7 @@ public class ArticleReaderTest {
     @Test
     public void testArticleWithMultiLineContent() {
         String articleContents = IO.readResource("articles/stanza-with-multi-line-content.article").orPanic();
-        Article article = reader.read(new ArticleLineReader(articleContents)).orPanic();
+        Article article = reader.read(new LineReader(articleContents)).orPanic();
         assertThat(article.getStanzas()).hasSize(1);
 
         String query = "    INSERT INTO users(id, name) VALUES(1, \"Bob\");\n" +

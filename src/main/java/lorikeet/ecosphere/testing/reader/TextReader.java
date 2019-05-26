@@ -1,4 +1,4 @@
-package lorikeet.ecosphere.testing.data;
+package lorikeet.ecosphere.testing.reader;
 
 import lorikeet.Err;
 import lorikeet.Opt;

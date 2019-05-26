@@ -5,7 +5,7 @@ import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
-import lorikeet.ecosphere.testing.data.TextReader;
+import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
 
 public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
