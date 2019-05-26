@@ -195,6 +195,20 @@ public final class Err<T> implements May<T> {
         return this.get();
     }
 
+    public boolean failedWith(Class<? extends Exception> failedWith) {
+        if (this.exception == null || failedWith == null) {
+            return false;
+        }
+        return failedWith.equals(this.exception.getClass());
+    }
+
+    public boolean failedWith(Exception failedWith) {
+        if (this.exception == null || failedWith == null) {
+            return false;
+        }
+        return failedWith.equals(this.exception);
+    }
+
     /**
      * If a value is present, returns {@code true}, otherwise {@code false}.
      *

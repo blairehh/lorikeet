@@ -4,16 +4,10 @@ import java.util.Objects;
 
 public class LorikeetException extends RuntimeException {
 
-    private final String code;
     private final Class<?> klass;
 
-    protected LorikeetException(String code, Class<?> klass) {
-        this.code = code;
+    protected LorikeetException(Class<?> klass) {
         this.klass = klass;
-    }
-
-    public String getCode() {
-        return this.code;
     }
 
     @Override
@@ -28,11 +22,11 @@ public class LorikeetException extends RuntimeException {
 
         LorikeetException that = (LorikeetException) o;
 
-        return Objects.equals(this.getCode(), that.getCode());
+        return Objects.equals(this.klass, that.klass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getCode());
+        return Objects.hash(this.klass);
     }
 }
