@@ -20,6 +20,11 @@ public class TextReader {
         this.index = index;
     }
 
+    public TextReader(String text) {
+        this.text = text;
+        this.index = 0;
+    }
+
     public TextReader fork() {
         return new TextReader(this.text, this.index);
     }
@@ -60,6 +65,33 @@ public class TextReader {
                 return;
             }
         }
+    }
+
+    public Opt<String> nextKebabWord() {
+        final int here = this.index;
+        this.jumpWhitespace();
+        return this.readKebabWord()
+            .ifso(this::jumpWhitespace)
+            .ifnot(() -> this.resetTo(here));
+    }
+
+    Opt<String> readKebabWord() {
+        final StringBuilder word = new StringBuilder();
+        for (; this.index < this.text.length(); this.index++) {
+            final char character = this.getCurrentChar();
+            if (Character.isLetter(character) || character == '-') {
+                word.append(character);
+                continue;
+            }
+            if (word.length() == 0) {
+                return Opt.empty();
+            }
+            return Opt.of(word.toString());
+        }
+        if (word.length() == 0) {
+            return Opt.empty();
+        }
+        return Opt.of(word.toString());
     }
 
     public Opt<String> nextWord() {

@@ -188,4 +188,25 @@ public class TextReaderTest {
         TextReader reader = new TextReader("app..Foo", 0);
         assertThat(reader.nextIdentifier().isPresent()).isFalse();
     }
+
+    @Test
+    public void textNextKebabWord() {
+        TextReader reader = new TextReader("type");
+        assertThat(reader.nextKebabWord().orPanic()).isEqualTo("type");
+        assertThat(reader.getCurrentIndex()).isEqualTo(4);
+    }
+
+    @Test
+    public void textNextKebabWordEndedBySemiColon() {
+        TextReader reader = new TextReader("type:");
+        assertThat(reader.nextKebabWord().orPanic()).isEqualTo("type");
+        assertThat(reader.getCurrentIndex()).isEqualTo(4);
+    }
+
+    @Test
+    public void textNextKebabWordWithDash() {
+        TextReader reader = new TextReader("type-now");
+        assertThat(reader.nextKebabWord().orPanic()).isEqualTo("type-now");
+        assertThat(reader.getCurrentIndex()).isEqualTo(8);
+    }
 }

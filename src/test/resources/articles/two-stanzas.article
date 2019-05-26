@@ -1,0 +1,9 @@
+doc:
+    This is a sample documentation section
+type:
+    cell
+
+doc:
+    should be zero
+verify:
+    0
