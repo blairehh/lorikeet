@@ -18,7 +18,7 @@ public class ArticleReaderTest {
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEqualTo("This is a sample documentation section");
-        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("    cell\n");
+        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("cell");
     }
 
     @Test
@@ -29,7 +29,7 @@ public class ArticleReaderTest {
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEmpty();
-        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("    cell\n");
+        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("cell");
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ArticleReaderTest {
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEqualTo("This is a sample documentation section");
-        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("    cell\n");
+        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("cell");
 
         assertThat(article.getStanzas().get(1).getName()).isEqualTo("verify");
         assertThat(article.getStanzas().get(1).getAttributes()).isEmpty();
@@ -58,7 +58,7 @@ public class ArticleReaderTest {
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEmpty();
-        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("    cell\n");
+        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("cell");
 
         assertThat(article.getStanzas().get(1).getName()).isEqualTo("verify");
         assertThat(article.getStanzas().get(1).getAttributes()).isEmpty();
@@ -79,7 +79,7 @@ public class ArticleReaderTest {
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("type");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEqualTo(doc);
-        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("    cell\n");
+        assertThat(article.getStanzas().get(0).getContent()).isEqualTo("cell");
     }
 
     @Test

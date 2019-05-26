@@ -32,6 +32,9 @@ public class ArticleReader {
             final String contents = reader.collect(line -> Character.isWhitespace(line.charAt(0)));
             if (title.getName().equalsIgnoreCase("doc")) {
                 doc = contents.trim();
+            } else if (title.getName().equalsIgnoreCase("type")) {
+                stanzas = stanzas.push(new Stanza(title, doc, contents.trim()));
+                doc = "";
             } else {
                 stanzas = stanzas.push(new Stanza(title, doc, contents));
                 doc = "";
