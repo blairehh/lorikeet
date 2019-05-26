@@ -4,6 +4,7 @@ import lorikeet.Err;
 import lorikeet.ecosphere.testing.data.StringValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.StringValueMustBeOneCharacterToGenerateChar;
+import lorikeet.error.ValueGeneratorDoesNotSupportType;
 import lorikeet.error.ValueGeneratorDoesNotSupportValue;
 
 public class StringValueGenerator implements ValueGenerator {
@@ -23,7 +24,7 @@ public class StringValueGenerator implements ValueGenerator {
             return (Err<T>)generateCharacter(stringValue);
         }
 
-        return null;
+        return Err.failure(new ValueGeneratorDoesNotSupportType());
     }
 
     private static String generateString(StringValue stringValue) {
