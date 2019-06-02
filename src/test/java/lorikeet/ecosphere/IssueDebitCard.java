@@ -12,8 +12,6 @@ public class IssueDebitCard implements Action1<Boolean, String> {
 
     @Override
     public Boolean invoke(@Dbg("paymentCompany") String paymentCompany) {
-        System.out.print("payment company is ");
-        System.out.println(paymentCompany);
         return true;
     }
 

@@ -1,49 +1,48 @@
 package lorikeet.ecosphere.testing.article.type;
 
-import lorikeet.Seq;
+import lorikeet.Err;
 import lorikeet.ecosphere.Action1;
-import lorikeet.ecosphere.Action2;
 import lorikeet.ecosphere.Cell;
-import lorikeet.ecosphere.meta.Meta;
-import lorikeet.ecosphere.meta.MetaFromDbgAnnotations;
 import lorikeet.ecosphere.meta.ParameterMeta;
 import lorikeet.ecosphere.testing.CellForm;
 import lorikeet.ecosphere.testing.CellStructure;
 import lorikeet.ecosphere.testing.Microscope;
-import lorikeet.ecosphere.testing.TestAxon;
+import lorikeet.ecosphere.testing.article.RunResult;
+import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.NullValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.data.generator.Generator;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import lorikeet.ecosphere.testing.data.interpreter.Interpreter;
+import lorikeet.error.CouldNotConstructCellFromArticle;
+import lorikeet.error.CouldNotFindCellFormToInvoke;
+import lorikeet.error.CouldNotInvokeCell;
 
 public class CellArticleRunner {
 
     private final Generator generator = new Generator();
+    private final Interpreter interpreter = new Interpreter();
     private final Microscope microscope = new Microscope();
 
-    public void run(CellArticle article) {
+    public Err<RunResult> run(CellArticle article) {
         try {
             Cell cell = this.load(article.getCell().getClassName());
             if (cell instanceof Action1) {
-                this.runAction1(article, (Action1)cell);
+                return this.runAction1(article, (Action1)cell);
             }
-
-
+            return Err.failure(new CouldNotFindCellFormToInvoke());
         } catch (ReflectiveOperationException err) {
-            err.printStackTrace();
+            return Err.failure(new CouldNotConstructCellFromArticle());
         }
-
     }
 
-    private void runAction1(CellArticle article, Action1<?, ?> action) {
+    private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action) {
         final CellStructure structure = this.microscope.inspect(action.getClass());
-        structure.formFor(1)
-            .then(form -> this.runAction1(article, action, form));
+        return structure.formFor(1)
+            .map(form -> this.runAction1(article, action, form))
+            .orElse(Err.failure(new CouldNotFindCellFormToInvoke()));
     }
 
-    private void runAction1(CellArticle article, Action1<?, ?> action, CellForm form) {
+    private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action, CellForm form) {
         final Object[] invokeParameters = new Object[form.getParameters().size()];
         for (ParameterMeta param : form.getParameters()) {
             final Value parameterValue = article.getCell()
@@ -55,9 +54,10 @@ public class CellArticleRunner {
                 .orElse(null);
         }
         try {
-            form.getInvokeMethod().invoke(action, invokeParameters);
+            final Object result = form.getInvokeMethod().invoke(action, invokeParameters);
+            return Err.of(determineResult(article.getCell(), this.interpreter.interpret(result)));
         } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
+            return Err.failure(new CouldNotInvokeCell());
         }
     }
 
@@ -68,4 +68,12 @@ public class CellArticleRunner {
             .newInstance();
     }
 
+    private static RunResult determineResult(CellValue cell, Value returnValue) {
+        if (!cell.getReturnValue().isPresent()) {
+            return new RunResult(returnValue, false, null, true);
+        }
+
+        final boolean matched = cell.getReturnValue().orPanic().equals(returnValue);
+        return new RunResult(returnValue, matched, null, true);
+    }
 }

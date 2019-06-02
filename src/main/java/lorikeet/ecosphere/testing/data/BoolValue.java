@@ -1,5 +1,8 @@
 package lorikeet.ecosphere.testing.data;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.util.Objects;
 
 public class BoolValue implements Value {
@@ -31,5 +34,12 @@ public class BoolValue implements Value {
     @Override
     public int hashCode() {
         return Objects.hash(this.getValue());
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+            .append("value", value)
+            .toString();
     }
 }

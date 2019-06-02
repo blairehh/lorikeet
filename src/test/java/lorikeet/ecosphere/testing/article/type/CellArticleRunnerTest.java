@@ -1,10 +1,13 @@
 package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Dict;
+import lorikeet.ecosphere.testing.article.RunResult;
 import lorikeet.ecosphere.testing.data.BoolValue;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.StringValue;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CellArticleRunnerTest {
 
@@ -20,7 +23,9 @@ public class CellArticleRunnerTest {
         );
         CellArticle article = new CellArticle(cell);
 
-        runner.run(article);
+        RunResult result = runner.run(article).orPanic();
+
+        assertThat(result.isReturnValueMatched()).isTrue();
     }
 
 }
