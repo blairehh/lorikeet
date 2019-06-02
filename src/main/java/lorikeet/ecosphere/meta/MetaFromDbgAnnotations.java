@@ -45,10 +45,10 @@ public class MetaFromDbgAnnotations {
     }
 
     private static ParameterMeta parameterMeta(int parameterIndex) {
-        return new ParameterMeta(parameterIndex);
+        return new ParameterMeta(parameterIndex, null);
     }
 
     private static ParameterMeta parameterMeta(int parameterIndex, Dbg dbg) {
-        return new ParameterMeta(parameterIndex, dbg.value(), dbg.useHash(), dbg.ignore());
+        return new ParameterMeta(parameterIndex, dbg.value(), dbg.useHash(), dbg.ignore(), null);
     }
 }

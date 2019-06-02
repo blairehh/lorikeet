@@ -22,7 +22,7 @@ public class Meta {
             final String parameterName = parameterNames[i] == null
                 ? null
                 : parameterNames[i].trim().isEmpty() ? null : parameterNames[i];
-            parameters = parameters.push(new ParameterMeta(i, parameterName, false, false));
+            parameters = parameters.push(new ParameterMeta(i, parameterName, false, false, null));
         }
         return new Meta(parameters);
     }
@@ -38,7 +38,7 @@ public class Meta {
 
     public ParameterMeta findParameterOrCreate(int index) {
         return this.parameters.fetch(index)
-            .orElse(new ParameterMeta(index));
+            .orElse(new ParameterMeta(index, null));
     }
 
     @Override

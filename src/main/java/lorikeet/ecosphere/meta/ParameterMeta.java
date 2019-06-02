@@ -9,26 +9,32 @@ public class ParameterMeta {
     private final String name;
     private final boolean useHash;
     private final boolean ignore;
+    private final Class<?> type;
 
-    public ParameterMeta(int position, String name, boolean useHash, boolean ignore) {
+    public ParameterMeta(int position, String name, boolean useHash, boolean ignore, Class<?> type) {
         this.position = position;
         this.name = parameterName(position, name);
         this.useHash = useHash;
         this.ignore = ignore;
+        this.type = type;
     }
 
-    public ParameterMeta(int position, String name) {
+
+
+    public ParameterMeta(int position, String name, Class<?> type) {
         this.position = position;
         this.name = parameterName(position, name);
         this.useHash = false;
         this.ignore = false;
+        this.type = type;
     }
 
-    public ParameterMeta(int position) {
+    public ParameterMeta(int position, Class<?> type) {
         this.position = position;
         this.name = parameterName(position, null);
         this.useHash = false;
         this.ignore = false;
+        this.type = type;
     }
 
     static String parameterName(int position, String suppliedName) {
@@ -54,6 +60,10 @@ public class ParameterMeta {
         return this.ignore;
     }
 
+    public Class<?> getType() {
+        return this.type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -69,12 +79,13 @@ public class ParameterMeta {
         return Objects.equals(this.getPosition(), that.getPosition())
             && Objects.equals(this.isUseHash(), that.isUseHash())
             && Objects.equals(this.isIgnore(), that.isIgnore())
-            && Objects.equals(this.getName(), that.getName());
+            && Objects.equals(this.getName(), that.getName())
+            && Objects.equals(this.getType(), that.getType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getPosition(), this.getName(), this.isUseHash(), this.isIgnore());
+        return Objects.hash(this.getPosition(), this.getName(), this.isUseHash(), this.isIgnore(), this.getType());
     }
 
     @Override
@@ -84,6 +95,7 @@ public class ParameterMeta {
             .append("name", this.getName())
             .append("useHash", this.isUseHash())
             .append("ignore", this.isIgnore())
+            .append("type", this.getType())
             .toString();
     }
 }
