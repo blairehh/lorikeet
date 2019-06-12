@@ -40,14 +40,13 @@ public class CellArticleRunner {
     private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action) {
         final CellStructure structure = this.microscope.inspect(action.getClass());
         return structure.formFor(1)
-            .map(form -> this.runAction1(article, action, form))
+            .map(form -> this.run(article, action, form))
             .orElse(Err.failure(new CouldNotFindCellFormToInvoke()));
     }
 
-    private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action, CellForm form) {
+    private Err<RunResult> run(CellArticle article, Cell cell, CellForm form) {
         final Object[] invokeParameters = new Object[form.getParameters().size()];
         for (ParameterMeta param : form.getParameters()) {
-            System.out.println(param.getIdentifier());
             final Value parameterValue = article.getCell()
                 .getArguments()
                 .find(param.getIdentifier())
@@ -57,7 +56,7 @@ public class CellArticleRunner {
                 .orElse(null);
         }
         try {
-            final Object result = form.getInvokeMethod().invoke(action, invokeParameters);
+            final Object result = form.getInvokeMethod().invoke(cell, invokeParameters);
             return Err.of(determineResult(article.getCell(), this.interpreter.interpret(result)));
         } catch (InvocationTargetException e) {
             return Err.of(exceptionThrownResult(article.getCell(), e.getCause()));
