@@ -38,8 +38,6 @@ public class CellForm {
         return this.parameters;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (o == this) {

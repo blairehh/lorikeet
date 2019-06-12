@@ -66,7 +66,7 @@ public class CellValueSerializerTest {
         CellValue cell = new CellValue(
             "com.foo.Bar",
             Dict.empty(),
-            new IdentifierValue("java.lang.NullPointerException"),
+            "java.lang.NullPointerException",
             null
         );
         assertThat(serializer.serialize(cell).orPanic()).isEqualTo("<com.foo.Bar -exception=java.lang.NullPointerException >");
@@ -77,7 +77,7 @@ public class CellValueSerializerTest {
         CellValue cell = new CellValue(
             "com.foo.Bar",
             Dict.of("data", new ObjectValue("com.foo.Baz", Dict.of("rank", new NumberValue(1)))),
-            new IdentifierValue("java.lang.NullPointerException"),
+            "java.lang.NullPointerException",
             null
         );
         assertThat(serializer.serialize(cell).orPanic()).isEqualTo("<com.foo.Bar data=com.foo.Baz(rank=1) -exception=java.lang.NullPointerException >");

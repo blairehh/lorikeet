@@ -7,11 +7,11 @@ import java.util.Objects;
 
 public class CellValue implements Value {
     private final String className;
-    private final Value exceptionThrown;
+    private final String exceptionThrown;
     private final Value returnValue;
     private final Dict<String, Value> arguments;
 
-    public CellValue(String className, Dict<String, Value> arguments, Value exceptionThrown, Value returnValue) {
+    public CellValue(String className, Dict<String, Value> arguments, String exceptionThrown, Value returnValue) {
         this.className = className;
         this.arguments = arguments;
         this.exceptionThrown = exceptionThrown;
@@ -26,7 +26,7 @@ public class CellValue implements Value {
         return this.arguments;
     }
 
-    public Opt<Value> getExceptionThrown() {
+    public Opt<String> getExceptionThrown() {
         return Opt.ofNullable(this.exceptionThrown);
     }
 

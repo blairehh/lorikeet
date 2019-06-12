@@ -35,7 +35,7 @@ public class TestActionGraphTest {
         assertThat(children).hasSize(3);
         assertThat(children.get(0).getCell().getClassName()).isEqualTo("lorikeet.ecosphere.SendWelcomeMessage");
         assertThat(children.get(0).getCell().getArguments()).containsAllEntriesOf(Dict.of(
-            "-0", new StringValue("bob@gmail.com"),
+            "0", new StringValue("bob@gmail.com"),
             "message", new StringValue("Hello")
         ));
         assertThat(children.get(1).getCell().getClassName()).isEqualTo("lorikeet.ecosphere.ChargePayment");

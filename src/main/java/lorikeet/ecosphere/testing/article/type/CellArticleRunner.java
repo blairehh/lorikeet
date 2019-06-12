@@ -17,6 +17,8 @@ import lorikeet.error.CouldNotConstructCellFromArticle;
 import lorikeet.error.CouldNotFindCellFormToInvoke;
 import lorikeet.error.CouldNotInvokeCell;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class CellArticleRunner {
 
     private final Generator generator = new Generator();
@@ -45,9 +47,10 @@ public class CellArticleRunner {
     private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action, CellForm form) {
         final Object[] invokeParameters = new Object[form.getParameters().size()];
         for (ParameterMeta param : form.getParameters()) {
+            System.out.println(param.getIdentifier());
             final Value parameterValue = article.getCell()
                 .getArguments()
-                .find(param.getName())
+                .find(param.getIdentifier())
                 .orElse(new NullValue());
 
             invokeParameters[param.getPosition()] = this.generator.generate(param.getType(), parameterValue)
@@ -56,8 +59,10 @@ public class CellArticleRunner {
         try {
             final Object result = form.getInvokeMethod().invoke(action, invokeParameters);
             return Err.of(determineResult(article.getCell(), this.interpreter.interpret(result)));
+        } catch (InvocationTargetException e) {
+            return Err.of(exceptionThrownResult(article.getCell(), e.getCause()));
         } catch (ReflectiveOperationException e) {
-            return Err.failure(new CouldNotInvokeCell());
+            return Err.failure(new CouldNotInvokeCell(e));
         }
     }
 
@@ -75,5 +80,15 @@ public class CellArticleRunner {
 
         final boolean matched = cell.getReturnValue().orPanic().equals(returnValue);
         return new RunResult(returnValue, matched, null, true);
+    }
+
+    private static RunResult exceptionThrownResult(CellValue cell, Throwable exception) {
+        final String exceptionName = exception.getClass().getName();
+        final boolean exceptionMatched = cell.getExceptionThrown().map(exc -> exc.toString().equalsIgnoreCase(exceptionName))
+                .orElse(false);
+
+        final boolean returnValueMatched = !cell.getReturnValue().isPresent();
+
+        return new RunResult(null, returnValueMatched, exceptionName, exceptionMatched);
     }
 }

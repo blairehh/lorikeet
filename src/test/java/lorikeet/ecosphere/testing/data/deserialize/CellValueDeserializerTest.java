@@ -44,7 +44,7 @@ public class CellValueDeserializerTest {
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getArguments().isEmpty()).isTrue();
         assertThat(cell.getReturnValue().isPresent()).isFalse();
-        assertThat(cell.getExceptionThrown().orPanic()).isEqualTo(new IdentifierValue("java.lang.NullPointerException"));
+        assertThat(cell.getExceptionThrown().orPanic()).isEqualTo("java.lang.NullPointerException");
         assertThat(reader.getCurrentIndex()).isEqualTo(52);
     }
 
@@ -82,6 +82,19 @@ public class CellValueDeserializerTest {
         assertThat(cell.getArguments()).containsEntry("paymentCompany", new StringValue("mastercard"));
         assertThat(cell.getReturnValue().orPanic()).isEqualTo(new BoolValue(true));
         assertThat(reader.getCurrentIndex()).isEqualTo(82);
+    }
+
+    @Test
+    public void testWithNoNameParameter() {
+        TextReader reader = new TextReader("<lorikeet.ecosphere.CreateSavingsDeposit -0=34.67 -exception=java.lang.RuntimeException>");
+
+        CellValue cell = deserializer.deserialize(reader).orPanic();
+
+        assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.CreateSavingsDeposit");
+        assertThat(cell.getArguments()).hasSize(1);
+        assertThat(cell.getArguments()).containsEntry("0", new NumberValue(34.67));
+        assertThat(cell.getReturnValue().isPresent()).isFalse();
+        assertThat(cell.getExceptionThrown().orPanic()).isEqualTo("java.lang.RuntimeException");
     }
 
 }

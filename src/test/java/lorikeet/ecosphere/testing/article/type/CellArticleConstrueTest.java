@@ -6,6 +6,7 @@ import lorikeet.IO;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.ArticleReader;
 import lorikeet.ecosphere.testing.data.BoolValue;
+import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.StringValue;
 import lorikeet.ecosphere.testing.reader.LineReader;
@@ -27,6 +28,22 @@ public class CellArticleConstrueTest {
             Dict.of("paymentCompany", new StringValue("mastercard")),
             null,
             new BoolValue(true)
+        );
+
+        assertThat(cellArticle.getCell()).isEqualTo(cell);
+    }
+
+    @Test
+    public void testWithParameterWithNoName() {
+        Article article = articleFrom("cell-articles/create-savings-deposit.article");
+
+        CellArticle cellArticle = construe.construe(article).orPanic();
+
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.CreateSavingsDeposit",
+            Dict.of("0", new NumberValue(34.67)),
+            "java.lang.RuntimeException",
+            null
         );
 
         assertThat(cellArticle.getCell()).isEqualTo(cell);

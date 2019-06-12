@@ -1,0 +1,5 @@
+type:
+    cell
+
+case:
+    <lorikeet.ecosphere.CreateSavingsDeposit -0=34.67 -exception=java.lang.RuntimeException>

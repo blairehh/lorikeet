@@ -32,11 +32,11 @@ public class CellGraphNode {
         return this;
     }
 
-    public CellGraphNode setExceptionThrown(Value value) {
+    public CellGraphNode setExceptionThrown(String exceptionThrown) {
         this.cell = new CellValue(
             this.cell.getClassName(),
             this.cell.getArguments(),
-            value,
+            exceptionThrown,
             this.cell.getReturnValue().orElse(null)
         );
         return this;

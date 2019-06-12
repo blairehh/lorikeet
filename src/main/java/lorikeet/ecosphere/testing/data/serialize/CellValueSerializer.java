@@ -33,7 +33,11 @@ public class CellValueSerializer implements ValueSerializer {
             .collect(Collectors.toList());
 
         for (Map.Entry<String, Value> arg : entryList) {
-            serialized.append(arg.getKey());
+            if (arg.getKey().matches("^\\d+$")) {
+                serialized.append("-" + arg.getKey());
+            } else {
+                serialized.append(arg.getKey());
+            }
             serialized.append("=");
             serialized.append(this.serializer.serialize(arg.getValue()));
             serialized.append(" ");
@@ -47,7 +51,7 @@ public class CellValueSerializer implements ValueSerializer {
 
         cell.getExceptionThrown().then(exception -> {
             serialized.append("-exception=");
-            serialized.append(this.serializer.serialize(exception));
+            serialized.append(exception);
             serialized.append(" ");
         });
 

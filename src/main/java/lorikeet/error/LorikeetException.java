@@ -10,6 +10,11 @@ public class LorikeetException extends RuntimeException {
         this.klass = klass;
     }
 
+    protected LorikeetException(Exception cause, Class<?> klass) {
+        super(cause);
+        this.klass = klass;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {

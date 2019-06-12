@@ -20,7 +20,7 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
         }
         reader.skip();
         final Err<String> className = reader.nextIdentifier();
-        Value exceptionThrown = null;
+        String exceptionThrown = null;
         Value returnValue = null;
         Dict<String, Value> arguments = Dict.empty();
 
@@ -40,7 +40,7 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
 
             if (reader.getCurrentChar() == '-') {
                 reader.step();
-                final Err<String> identifierErr = reader.nextIdentifier();
+                final Err<String> identifierErr = identifier(reader);
                 if (!identifierErr.isPresent()) {
                     return Opt.empty();
                 }
@@ -54,6 +54,11 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
                     return Opt.empty();
                 }
 
+                if (identifierErr.orPanic().matches("\\d+")) {
+                    arguments = arguments.push(identifierErr.orPanic(), valueErr.orPanic());
+                    continue;
+                }
+
                 final String identifier = identifierErr.orPanic();
                 final Value value = valueErr.orPanic();
 
@@ -64,7 +69,7 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
                     if (!(value instanceof IdentifierValue)) {
                         return Opt.empty();
                     }
-                    exceptionThrown = value;
+                    exceptionThrown = ((IdentifierValue)value).getIdentifier();
                 }
                 continue;
             }
@@ -84,4 +89,13 @@ public class CellValueDeserializer implements ValueDeserializer<CellValue>  {
             arguments = arguments.push(identifier.orPanic(), valueErr.orPanic());
         }
     }
+
+    private Err<String> identifier(TextReader reader) {
+        final Opt<Number> number = reader.nextNumber();
+        if (number.isPresent()) {
+            return Err.of(String.valueOf(number.orPanic().intValue()));
+        }
+        return reader.nextIdentifier();
+    }
+
 }

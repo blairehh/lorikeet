@@ -55,7 +55,7 @@ public class TestAxon implements Axon {
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            child.setExceptionThrown(new IdentifierValue(e.getClass().getName()));
+            child.setExceptionThrown(e.getClass().getName());
             throw e;
         }
     }
@@ -73,7 +73,7 @@ public class TestAxon implements Axon {
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            child.setExceptionThrown(new IdentifierValue(e.getClass().getName()));
+            child.setExceptionThrown(e.getClass().getName());
             throw e;
         }
     }
@@ -92,7 +92,7 @@ public class TestAxon implements Axon {
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            child.setExceptionThrown(new IdentifierValue(e.getClass().getName()));
+            child.setExceptionThrown(e.getClass().getName());
             throw e;
         }
     }
@@ -112,7 +112,7 @@ public class TestAxon implements Axon {
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            child.setExceptionThrown(new IdentifierValue(e.getClass().getName()));
+            child.setExceptionThrown(e.getClass().getName());
             throw e;
         }
     }
@@ -133,7 +133,7 @@ public class TestAxon implements Axon {
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            child.setExceptionThrown(new IdentifierValue(e.getClass().getName()));
+            child.setExceptionThrown(e.getClass().getName());
             throw e;
         }
     }
@@ -174,7 +174,7 @@ public class TestAxon implements Axon {
                 ? this.interpreter.interpretAsHash(params.get(i))
                 : this.interpreter.interpret(params.get(i));
 
-            arguments = arguments.push(parameter.getName(), value);
+            arguments = arguments.push(parameter.getIdentifier(), value);
         }
         return arguments;
     }

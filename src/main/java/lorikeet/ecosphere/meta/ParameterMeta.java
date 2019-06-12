@@ -2,6 +2,7 @@ package lorikeet.ecosphere.meta;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import lorikeet.Opt;
 import java.util.Objects;
 
 public class ParameterMeta {
@@ -13,17 +14,15 @@ public class ParameterMeta {
 
     public ParameterMeta(int position, String name, boolean useHash, boolean ignore, Class<?> type) {
         this.position = position;
-        this.name = parameterName(position, name);
+        this.name = cleanName(name);
         this.useHash = useHash;
         this.ignore = ignore;
         this.type = type;
     }
 
-
-
     public ParameterMeta(int position, String name, Class<?> type) {
         this.position = position;
-        this.name = parameterName(position, name);
+        this.name = cleanName(name);
         this.useHash = false;
         this.ignore = false;
         this.type = type;
@@ -31,25 +30,25 @@ public class ParameterMeta {
 
     public ParameterMeta(int position, Class<?> type) {
         this.position = position;
-        this.name = parameterName(position, null);
+        this.name = null;
         this.useHash = false;
         this.ignore = false;
         this.type = type;
     }
 
-    static String parameterName(int position, String suppliedName) {
-        if (suppliedName == null || suppliedName.trim().isEmpty()) {
-            return "-" + position;
+    private static String cleanName(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
         }
-        return suppliedName;
+        return name.trim();
     }
 
     public int getPosition() {
         return this.position;
     }
 
-    public String getName() {
-        return this.name;
+    public Opt<String> getName() {
+        return Opt.ofNullable(this.name);
     }
 
     public boolean isUseHash() {
@@ -62,6 +61,13 @@ public class ParameterMeta {
 
     public Class<?> getType() {
         return this.type;
+    }
+
+    public String getIdentifier() {
+        if (this.name == null) {
+            return String.valueOf(this.position);
+        }
+        return this.name;
     }
 
     @Override
