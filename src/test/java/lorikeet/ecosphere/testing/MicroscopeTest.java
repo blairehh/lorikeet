@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class MicroscopeTest {
 
     private final Microscope microscope = new Microscope();

@@ -24,6 +24,14 @@ public class CellStructure {
             .first();
     }
 
+    public Opt<CellForm> formFor(CellFormType type) {
+        return this.forms
+            .stream()
+            .filter(form -> form.getType() == type)
+            .collect(Seq.collector())
+            .first();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {

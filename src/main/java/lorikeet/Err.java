@@ -253,6 +253,13 @@ public final class Err<T> implements May<T> {
         return this;
     }
 
+    public <X> Err<X> pipe(Fun<T, Err<X>> functor) {
+        if (!this.isPresent()) {
+            return Err.failure(this.exception);
+        }
+        return functor.apply(this.value);
+    }
+
 
     /**
      * If a value is present, performs the given action with the value,

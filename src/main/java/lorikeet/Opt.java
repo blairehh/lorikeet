@@ -197,6 +197,21 @@ public final class Opt<T> implements May<T> {
         return this;
     }
 
+    public <X> Opt<X> pipe(Fun<T, Opt<X>> fun) {
+        if (!this.isPresent()) {
+            return Opt.empty();
+        }
+
+        return fun.apply(this.value);
+    }
+
+    public T orNull() {
+        if (this.isPresent()) {
+            return this.value;
+        }
+        return null;
+    }
+
     public Opt<T> ifnot(Runnable runnable) {
         if (!this.isPresent()) {
             runnable.run();
@@ -214,6 +229,20 @@ public final class Opt<T> implements May<T> {
     public Err<T> asErr(Exception e) {
         if (this.value == null) {
             return Err.failure(e);
+        }
+        return Err.of(this.value);
+    }
+
+    public Err<T> asErr() {
+        if (this.value == null) {
+            return Err.failure();
+        }
+        return Err.of(this.value);
+    }
+
+    public Err<T> asErr(Err<T> err) {
+        if (this.value == null) {
+            return err;
         }
         return Err.of(this.value);
     }

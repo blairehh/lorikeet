@@ -3,6 +3,7 @@ package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Dict;
 import lorikeet.IO;
+import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.ArticleReader;
 import lorikeet.ecosphere.testing.data.BoolValue;
@@ -30,6 +31,7 @@ public class CellArticleConstrueTest {
             new BoolValue(true)
         );
 
+        assertThat(cellArticle.getCellFormType().isPresent()).isFalse();
         assertThat(cellArticle.getCell()).isEqualTo(cell);
     }
 
@@ -46,7 +48,25 @@ public class CellArticleConstrueTest {
             null
         );
 
+        assertThat(cellArticle.getCellFormType().isPresent()).isFalse();
         assertThat(cellArticle.getCell()).isEqualTo(cell);
+    }
+
+    @Test
+    public void testWithFormSpecified() {
+        Article article = articleFrom("cell-articles/charge-payment.article");
+
+        CellArticle cellArticle = construe.construe(article).orPanic();
+
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.ChargePayment",
+            Dict.of("currency", new StringValue("AUD"), "price", new NumberValue(12.00)),
+            null,
+            new BoolValue(true)
+        );
+
+        assertThat(cellArticle.getCellFormType().orPanic()).isEqualTo(CellFormType.ACTION_2);
+        assertThat(cellArticle.getCell()).isEqualTo(cell);  
     }
 
     static Article articleFrom(String file) {

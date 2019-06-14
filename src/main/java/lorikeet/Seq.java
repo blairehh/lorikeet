@@ -322,4 +322,9 @@ public final class Seq<T> implements List<T>, May<T> {
     public List<T> subList(int fromIndex, int toIndex) {
         return this.vector.subList(fromIndex, toIndex);
     }
+
+    @Override
+    public String toString() {
+        return this.vector.toString();
+    }
 }

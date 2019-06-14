@@ -10,16 +10,22 @@ import java.util.Objects;
 
 public class CellForm {
 
+    private final CellFormType type;
     private final Class<? extends Cell> form;
     private final Method invokeMethod;
     private final Method connectMethod;
     private final Seq<ParameterMeta> parameters;
 
     public CellForm(Class<? extends Cell> form, Method invokeMethod, Method connectMethod, Seq<ParameterMeta> parameters) {
+        this.type = CellFormType.fromJavaClass(form).orPanic();
         this.form = form;
         this.invokeMethod = invokeMethod;
         this.connectMethod = connectMethod;
         this.parameters = parameters;
+    }
+
+    public CellFormType getType() {
+        return this.type;
     }
 
     public Class<? extends Cell> getForm() {
@@ -50,7 +56,8 @@ public class CellForm {
 
         CellForm cellForm = (CellForm) o;
 
-        return Objects.equals(this.getForm(), cellForm.getForm())
+        return Objects.equals(this.getType(), cellForm.getType())
+            && Objects.equals(this.getForm(), cellForm.getForm())
             && Objects.equals(this.getInvokeMethod(), cellForm.getInvokeMethod())
             && Objects.equals(this.getConnectMethod(), cellForm.getConnectMethod())
             && Objects.equals(this.getParameters(), cellForm.getParameters());
@@ -58,6 +65,12 @@ public class CellForm {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getForm(), this.getInvokeMethod(), this.getConnectMethod(), this.getParameters());
+        return Objects.hash(
+            this.getType(),
+            this.getForm(),
+            this.getInvokeMethod(),
+            this.getConnectMethod(),
+            this.getParameters()
+        );
     }
 }

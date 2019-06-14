@@ -30,10 +30,10 @@ public class CellArticleRunnerTest {
     @Test
     public void testThrowsException() {
         CellValue cell = new CellValue(
-                "lorikeet.ecosphere.CreateSavingsDeposit",
-                Dict.of("0", new NumberValue(34.67)),
-                "java.lang.RuntimeException",
-                null
+            "lorikeet.ecosphere.CreateSavingsDeposit",
+            Dict.of("0", new NumberValue(34.67)),
+            "java.lang.RuntimeException",
+            null
         );
 
         CellArticle article = new CellArticle(cell);

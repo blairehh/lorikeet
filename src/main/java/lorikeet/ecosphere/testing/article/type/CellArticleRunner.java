@@ -1,10 +1,11 @@
 package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Err;
-import lorikeet.ecosphere.Action1;
+import lorikeet.Seq;
 import lorikeet.ecosphere.Cell;
 import lorikeet.ecosphere.meta.ParameterMeta;
 import lorikeet.ecosphere.testing.CellForm;
+import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.CellStructure;
 import lorikeet.ecosphere.testing.Microscope;
 import lorikeet.ecosphere.testing.article.RunResult;
@@ -16,6 +17,8 @@ import lorikeet.ecosphere.testing.data.interpreter.Interpreter;
 import lorikeet.error.CouldNotConstructCellFromArticle;
 import lorikeet.error.CouldNotFindCellFormToInvoke;
 import lorikeet.error.CouldNotInvokeCell;
+import lorikeet.error.CouldNotDetermineCellFormTypeToTest;
+import lorikeet.error.CellTooAmbiguousToNotSpecifyFormTypeToTest;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -27,20 +30,39 @@ public class CellArticleRunner {
 
     public Err<RunResult> run(CellArticle article) {
         try {
-            Cell cell = this.load(article.getCell().getClassName());
-            if (cell instanceof Action1) {
-                return this.runAction1(article, (Action1)cell);
-            }
-            return Err.failure(new CouldNotFindCellFormToInvoke());
+            final Cell cell = this.load(article.getCell().getClassName());
+            final CellStructure structure = this.microscope.inspect(cell.getClass());
+
+            return article.getCellFormType()
+                .asErr(this.determineFormTypeToRun(article, structure))
+                .pipe(formType -> this.run(article, cell, formType));
+
         } catch (ReflectiveOperationException err) {
             return Err.failure(new CouldNotConstructCellFromArticle());
         }
     }
 
-    private Err<RunResult> runAction1(CellArticle article, Action1<?, ?> action) {
-        final CellStructure structure = this.microscope.inspect(action.getClass());
-        return structure.formFor(1)
-            .map(form -> this.run(article, action, form))
+    private Err<CellFormType> determineFormTypeToRun(CellArticle article, CellStructure structure) {
+        final int argCount = article.getCell().getArguments().size();
+        final Seq<CellForm> applicbleForms = structure.getForms()
+            .filter(form -> form.getParameters().size() == argCount);
+        if (applicbleForms.size() == 0) {
+            return Err.failure(new CouldNotDetermineCellFormTypeToTest());
+        }
+        if (applicbleForms.size() != 1) {
+            return Err.failure(new CellTooAmbiguousToNotSpecifyFormTypeToTest());
+        }
+
+        return applicbleForms
+            .first()
+            .map(CellForm::getType)
+            .asErr();
+    }
+
+    private Err<RunResult> run(CellArticle article, Cell cell, CellFormType formType) {
+        final CellStructure structure = this.microscope.inspect(cell.getClass());
+        return structure.formFor(formType)
+            .map(cellForm -> this.run(article, cell, cellForm))
             .orElse(Err.failure(new CouldNotFindCellFormToInvoke()));
     }
 

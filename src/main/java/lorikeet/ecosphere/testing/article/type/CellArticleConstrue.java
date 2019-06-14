@@ -2,6 +2,7 @@ package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Err;
 import lorikeet.Opt;
+import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.Stanza;
 import lorikeet.ecosphere.testing.data.deserialize.CellValueDeserializer;
@@ -23,12 +24,18 @@ public class CellArticleConstrue {
             .filter(stanza -> stanza.getName().equalsIgnoreCase("case"))
             .first();
 
+        final CellFormType formType = article.getStanzas()
+            .filter(stanza -> stanza.getName().equalsIgnoreCase("form"))
+            .first()
+            .pipe(stanza -> CellFormType.fromName(stanza.getContent().trim()))
+            .orNull();
+
         if (!caseStanza.isPresent()) {
             return Err.failure(new CellArticleMustHaveCaseStanza());
         }
 
         return this.cellValueDeserializer.deserialize(new TextReader(caseStanza.orPanic().getContent()))
-            .map(cell -> Err.of(new CellArticle(cell)))
+            .map(cell -> Err.of(new CellArticle(cell, formType)))
             .orElse(Err.failure(new CouldNotDeserializeCellValue()));
     }
 
