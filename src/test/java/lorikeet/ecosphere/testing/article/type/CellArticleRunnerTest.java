@@ -3,7 +3,15 @@ package lorikeet.ecosphere.testing.article.type;
 import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.testing.article.RunResult;
-import lorikeet.ecosphere.testing.data.*;
+import lorikeet.ecosphere.testing.data.BoolValue;
+import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.ListValue;
+import lorikeet.ecosphere.testing.data.NotSupportedValue;
+import lorikeet.ecosphere.testing.data.NullValue;
+import lorikeet.ecosphere.testing.data.NumberValue;
+import lorikeet.ecosphere.testing.data.ObjectValue;
+import lorikeet.ecosphere.testing.data.StringValue;
+import lorikeet.ecosphere.testing.data.Value;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
