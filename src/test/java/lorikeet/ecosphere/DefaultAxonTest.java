@@ -14,5 +14,6 @@ public class DefaultAxonTest {
         assertThat(user.email).isEqualTo("bob@gmail.com");
         assertThat(user.password).isEqualTo("secret");
         assertThat(user.welcomeMessageSentAt).isNotNull();
+        assertThat(user.account).isNull();
     }
 }

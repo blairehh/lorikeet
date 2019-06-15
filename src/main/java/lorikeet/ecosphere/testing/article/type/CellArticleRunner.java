@@ -8,6 +8,7 @@ import lorikeet.ecosphere.testing.CellForm;
 import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.CellStructure;
 import lorikeet.ecosphere.testing.Microscope;
+import lorikeet.ecosphere.testing.TestAxon;
 import lorikeet.ecosphere.testing.article.RunResult;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.NullValue;
@@ -78,6 +79,8 @@ public class CellArticleRunner {
                 .orElse(null);
         }
         try {
+            final TestAxon axon = new TestAxon();
+            form.getConnectMethod().invoke(cell, axon);
             final Object result = form.getInvokeMethod().invoke(cell, invokeParameters);
             return Err.of(determineResult(article.getCell(), this.interpreter.interpret(result)));
         } catch (InvocationTargetException e) {

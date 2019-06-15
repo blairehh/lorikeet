@@ -1,6 +1,7 @@
 package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Dict;
+import lorikeet.Seq;
 import lorikeet.ecosphere.testing.article.RunResult;
 import lorikeet.ecosphere.testing.data.*;
 import org.junit.Test;
@@ -34,6 +35,37 @@ public class CellArticleRunnerTest {
             Dict.of("0", new NumberValue(34.67)),
             "java.lang.RuntimeException",
             null
+        );
+
+        CellArticle article = new CellArticle(cell);
+
+        RunResult result = runner.run(article).orPanic();
+
+        assertThat(result.isReturnValueMatched()).isTrue();
+        assertThat(result.isExceptionThrownMatched()).isTrue();
+    }
+
+    @Test
+    public void testCellThatInvokesAnotherCell() {
+        Dict<String, Value> arguments = Dict.empty();
+        arguments = arguments
+            .push("email", new StringValue("me@mail.com"))
+            .push("password", new StringValue("secret"))
+            .push("codes", new ListValue(Seq.of(new NumberValue(1), new NumberValue(2))));
+
+        Dict<String, Value> returnData = Dict.empty();
+        returnData = returnData
+                .push("email", new StringValue("me@mail.com"))
+                .push("password", new StringValue("secret"))
+                .push("welcomeMessageSentAt", new NotSupportedValue())
+                .push("account", new NullValue());
+        ObjectValue returnValue = new ObjectValue("lorikeet.ecosphere.User", returnData);
+
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.CreateUser",
+            arguments,
+            null,
+            returnValue
         );
 
         CellArticle article = new CellArticle(cell);
