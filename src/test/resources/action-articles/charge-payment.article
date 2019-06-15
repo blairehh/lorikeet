@@ -2,4 +2,4 @@ type:
     action2
 
 expect:
-    <lorikeet.ecosphere.ChargePayment currency='AUD' price=12.00 -return=true>
+    lorikeet.ecosphere.ChargePayment('AUD', 12.00) returns true

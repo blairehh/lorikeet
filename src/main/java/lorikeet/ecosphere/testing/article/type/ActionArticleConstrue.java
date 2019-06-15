@@ -7,7 +7,7 @@ import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.CellKind;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.Stanza;
-import lorikeet.ecosphere.testing.data.deserialize.CellValueDeserializer;
+import lorikeet.ecosphere.testing.data.deserialize.ArticleCellDeserializer;
 import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.error.CellArticleMustHaveCaseStanza;
 import lorikeet.error.CouldNotDeserializeCellValue;
@@ -15,7 +15,7 @@ import lorikeet.error.NotApplicable;
 
 public class ActionArticleConstrue {
 
-    private final CellValueDeserializer cellValueDeserializer = new CellValueDeserializer();
+    private final ArticleCellDeserializer cellDeserializer = new ArticleCellDeserializer();
 
     public Err<ActionArticle> construe(Article article) {
         if (!isApplicableType(article.getType())) {
@@ -36,7 +36,7 @@ public class ActionArticleConstrue {
             return Err.failure(new CellArticleMustHaveCaseStanza());
         }
 
-        return this.cellValueDeserializer.deserialize(new TextReader(expectStanza.orPanic().getContent()))
+        return this.cellDeserializer.deserialize(new TextReader(expectStanza.orPanic().getContent()))
             .map(cell -> Err.of(new ActionArticle(cell, cellFormType.orNull())))
             .orElse(Err.failure(new CouldNotDeserializeCellValue()));
     }

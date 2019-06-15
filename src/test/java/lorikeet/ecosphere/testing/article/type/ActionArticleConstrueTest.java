@@ -26,7 +26,7 @@ public class ActionArticleConstrueTest {
 
         CellValue cell = new CellValue(
             "lorikeet.ecosphere.IssueDebitCard",
-            Dict.of("paymentCompany", new StringValue("mastercard")),
+            Dict.of("0", new StringValue("mastercard")),
             null,
             new BoolValue(true)
         );
@@ -60,7 +60,7 @@ public class ActionArticleConstrueTest {
 
         CellValue cell = new CellValue(
             "lorikeet.ecosphere.ChargePayment",
-            Dict.of("currency", new StringValue("AUD"), "price", new NumberValue(12.00)),
+            Dict.of("0", new StringValue("AUD"), "1", new NumberValue(12.00)),
             null,
             new BoolValue(true)
         );
