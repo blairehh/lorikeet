@@ -26,27 +26,27 @@ public class ArticleCellDeserializerTest {
         assertThat(reader.getCurrentIndex()).isEqualTo(9);
     }
 
-//    @Test
-//    public void testWithReturnValue() {
-//        TextReader reader = new TextReader("com.Foo(-return=34)");
-//        CellValue cell = deserializer.deserialize(reader).orPanic();
-//        assertThat(cell.getClassName()).isEqualTo("com.Foo");
-//        assertThat(cell.getReturnValue().orPanic()).isEqualTo(new NumberValue(34));
-//        assertThat(cell.getExceptionThrown().isPresent()).isFalse();
-//        assertThat(cell.getArguments().isEmpty()).isTrue();
-//        assertThat(reader.getCurrentIndex()).isEqualTo(21);
-//    }
+    @Test
+    public void testWithReturnValue() {
+        TextReader reader = new TextReader("com.Foo() returns 34");
+        CellValue cell = deserializer.deserialize(reader).orPanic();
+        assertThat(cell.getClassName()).isEqualTo("com.Foo");
+        assertThat(cell.getReturnValue().orPanic()).isEqualTo(new NumberValue(34));
+        assertThat(cell.getExceptionThrown().isPresent()).isFalse();
+        assertThat(cell.getArguments().isEmpty()).isTrue();
+        assertThat(reader.getCurrentIndex()).isEqualTo(20);
+    }
 
-//    @Test
-//    public void testWithExceptionThrown() {
-//        TextReader reader = new TextReader("com.Foo(-exception=java.lang.NullPointerException)");
-//        CellValue cell = deserializer.deserialize(reader).orPanic();
-//        assertThat(cell.getClassName()).isEqualTo("com.Foo");
-//        assertThat(cell.getArguments().isEmpty()).isTrue();
-//        assertThat(cell.getReturnValue().isPresent()).isFalse();
-//        assertThat(cell.getExceptionThrown().orPanic()).isEqualTo("java.lang.NullPointerException");
-//        assertThat(reader.getCurrentIndex()).isEqualTo(52);
-//    }
+    @Test
+    public void testWithExceptionThrown() {
+        TextReader reader = new TextReader("com.Foo() throws java.lang.NullPointerException");
+        CellValue cell = deserializer.deserialize(reader).orPanic();
+        assertThat(cell.getClassName()).isEqualTo("com.Foo");
+        assertThat(cell.getArguments().isEmpty()).isTrue();
+        assertThat(cell.getReturnValue().isPresent()).isFalse();
+        assertThat(cell.getExceptionThrown().orPanic()).isEqualTo("java.lang.NullPointerException");
+        assertThat(reader.getCurrentIndex()).isEqualTo(47);
+    }
 
     @Test
     public void testWithOneArgument() {
@@ -74,6 +74,19 @@ public class ArticleCellDeserializerTest {
     }
 
     @Test
+    public void testWithTwoArgumentsWithReturn() {
+        TextReader reader = new TextReader("com.Baz('YES', false)  returns  111");
+        CellValue cell = deserializer.deserialize(reader).orPanic();
+        assertThat(cell.getClassName()).isEqualTo("com.Baz");
+        assertThat(cell.getArguments()).hasSize(2);
+        assertThat(cell.getArguments()).containsEntry("0", new StringValue("YES"));
+        assertThat(cell.getArguments()).containsEntry("1", new BoolValue(false));
+        assertThat(cell.getReturnValue().orPanic()).isEqualTo(new NumberValue(111));
+        assertThat(cell.getExceptionThrown().isPresent()).isFalse();
+        assertThat(reader.getCurrentIndex()).isEqualTo(35);
+    }
+
+    @Test
     public void testInconsistentWhiteSpacing() {
         TextReader reader = new TextReader("    lorikeet.ecosphere.IssueDebitCard ('mastercard'  )\n");
 
@@ -84,19 +97,6 @@ public class ArticleCellDeserializerTest {
         assertThat(cell.getReturnValue().isPresent()).isFalse();
         assertThat(reader.getCurrentIndex()).isEqualTo(55);
     }
-
-
-//    @Test
-//    public void testFromSampleArticle() {
-//        TextReader reader = new TextReader("    lorikeet.ecosphere.IssueDebitCard ('mastercard', -return=true)\n");
-//
-//        CellValue cell = deserializer.deserialize(reader).orPanic();
-//        assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.IssueDebitCard");
-//        assertThat(cell.getArguments()).hasSize(1);
-//        assertThat(cell.getArguments()).containsEntry("paymentCompany", new StringValue("mastercard"));
-//        assertThat(cell.getReturnValue().orPanic()).isEqualTo(new BoolValue(true));
-//        assertThat(reader.getCurrentIndex()).isEqualTo(82);
-//    }
 
 
 }
