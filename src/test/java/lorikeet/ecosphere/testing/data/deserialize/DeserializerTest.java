@@ -2,6 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 
 import lorikeet.Dict;
+import lorikeet.ecosphere.testing.data.AnyValue;
 import lorikeet.ecosphere.testing.data.BoolValue;
 import lorikeet.ecosphere.testing.data.HashValue;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
@@ -48,5 +49,13 @@ public class DeserializerTest {
         IdentifierValue result = (IdentifierValue)new Deserializer().deserialize(reader).orPanic();
         assertThat(result).isEqualTo(new IdentifierValue("BAR"));
         assertThat(reader.getCurrentIndex()).isEqualTo(3);
+    }
+
+    @Test
+    public void testSymbol() {
+        TextReader reader = new TextReader("@any()", 0);
+        AnyValue result = (AnyValue)new Deserializer().deserialize(reader).orPanic();
+        assertThat(result).isEqualTo(new AnyValue());
+        assertThat(reader.getCurrentIndex()).isEqualTo(6);
     }
 }
