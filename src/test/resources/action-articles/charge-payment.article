@@ -1,3 +1,8 @@
+doc:
+    A payment should be made of 12 dollars
+name:
+    Charge payment
+
 type:
     action2
 

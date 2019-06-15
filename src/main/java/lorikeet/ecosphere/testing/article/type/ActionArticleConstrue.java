@@ -35,9 +35,7 @@ public class ActionArticleConstrue {
             .filter(formType -> formType.getName().equalsIgnoreCase(article.getType()))
             .first();
 
-        final Opt<Stanza> expectStanza = article.getStanzas()
-            .filter(stanza -> stanza.getName().equalsIgnoreCase("expect"))
-            .first();
+        final Opt<Stanza> expectStanza = article.findStanza("expect");
 
         if (!expectStanza.isPresent()) {
             // @TODO rename the error below
@@ -51,9 +49,7 @@ public class ActionArticleConstrue {
 
         CellValue cell = cellValueErr.orPanic();
 
-        final Opt<Stanza> toReturnStanza = article.getStanzas()
-            .filter(stanza -> stanza.getName().equalsIgnoreCase("to-return"))
-            .first();
+        final Opt<Stanza> toReturnStanza = article.findStanza("to-return");
 
         if (toReturnStanza.isPresent()) {
             if (cell.getReturnValue().isPresent()) {
@@ -68,9 +64,7 @@ public class ActionArticleConstrue {
         }
 
 
-        final Opt<Stanza> toThrowStanza = article.getStanzas()
-            .filter(stanza -> stanza.getName().equalsIgnoreCase("to-throw"))
-            .first();
+        final Opt<Stanza> toThrowStanza = article.findStanza("to-throw");
 
         if (toThrowStanza.isPresent()) {
             if (cell.getExceptionThrown().isPresent()) {
@@ -84,7 +78,11 @@ public class ActionArticleConstrue {
             cell = cell.withExceptionThrown(exception.orPanic());
         }
 
-        return Err.of(Err.of(new ActionArticle(cell, cellFormType.orNull())));
+        final Opt<Stanza> nameStanza = article.findStanza("name");
+        final String name = nameStanza.map(stanza -> stanza.getContent().trim()).orNull();
+        final String doc = nameStanza.map(Stanza::getDocumentation).orNull();
+
+        return Err.of(Err.of(new ActionArticle(article.getFilePath(), name, doc, cell, cellFormType.orNull())));
     }
 
     private boolean isApplicableType(String type) {

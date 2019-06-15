@@ -8,17 +8,38 @@ import java.util.Objects;
 
 public class ActionArticle {
 
+    private final String filePath;
+    private final String name;
+    private final String documentation;
     private final CellValue cell;
     private final CellFormType formType;
 
     public ActionArticle(CellValue cell) {
+        this.filePath = "";
+        this.name = null;
+        this.documentation = null;
         this.cell = cell;
         this.formType = null;
     }
 
-    public ActionArticle(CellValue cell, CellFormType formType) {
+    public ActionArticle(String filePath, String name, String documentation, CellValue cell, CellFormType formType) {
+        this.filePath = filePath;
+        this.name = name;
+        this.documentation = documentation;
         this.cell = cell;
         this.formType = formType;
+    }
+
+    public String getFilePath() {
+        return this.filePath;
+    }
+
+    public Opt<String> getName() {
+        return Opt.ofNullable(this.name);
+    }
+
+    public Opt<String> getDocumentation() {
+        return Opt.ofNullable(this.documentation);
     }
 
     public CellValue getCell() {
@@ -41,12 +62,15 @@ public class ActionArticle {
 
         ActionArticle that = (ActionArticle) o;
 
-        return Objects.equals(this.getCell(), that.getCell())
+        return Objects.equals(this.getFilePath(), that.getFilePath())
+            && Objects.equals(this.getName(), that.getName())
+            && Objects.equals(this.getDocumentation(), that.getDocumentation())
+            && Objects.equals(this.getCell(), that.getCell())
             && Objects.equals(this.getFormType(), that.getFormType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getCell(), this.getFormType());
+        return Objects.hash(this.getFilePath(), this.getName(), this.getDocumentation(), this.getCell(), this.getFormType());
     }
 }

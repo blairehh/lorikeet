@@ -7,12 +7,12 @@ import lorikeet.ecosphere.testing.reader.LineReader;
 
 public class ArticleReader {
 
-    public Opt<Article> read(LineReader reader) {
+    public Opt<Article> read(String filePath, LineReader reader) {
         Seq<Stanza> stanzas = Seq.empty();
         String doc = "";
         while (true) {
             if (reader.isAtEndOfArticle()) {
-                return build(stanzas);
+                return build(filePath, stanzas);
             }
             if (reader.isLineEmpty()) {
                 reader.skipToNextLine();
@@ -24,7 +24,7 @@ public class ArticleReader {
             final Opt<StanzaTitle> titleOpt = this.nextTitle(reader);
             if (!titleOpt.isPresent()) {
                 if (reader.isAtEndOfArticle() || stanzas.size() > 0) {
-                    return build(stanzas);
+                    return build(filePath, stanzas);
                 }
                 return Opt.empty();
             }
@@ -72,7 +72,7 @@ public class ArticleReader {
         }
     }
 
-    private static Opt<Article> build(Seq<Stanza> stanzas) {
+    private static Opt<Article> build(String filePath, Seq<Stanza> stanzas) {
         final Opt<String> type = stanzas
             .stream()
             .filter(stanza -> stanza.getName().equalsIgnoreCase("type"))
@@ -89,7 +89,7 @@ public class ArticleReader {
             .filter(stanza -> !stanza.getName().equalsIgnoreCase("type"))
             .collect(Seq.collector());
 
-        return Opt.of(new Article(type.orPanic(), otherStanzas));
+        return Opt.of(new Article(filePath, type.orPanic(), otherStanzas));
     }
 
 }

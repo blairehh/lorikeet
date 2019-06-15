@@ -13,9 +13,10 @@ public class ArticleReaderTest {
     @Test
     public void testOneStanza() {
         String articleContents = IO.readResource("articles/one-stanza.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("cell");
         assertThat(article.getStanzas()).hasSize(1);
+        assertThat(article.getFilePath()).isEqualTo("foo.article");
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("foo");
         assertThat(article.getStanzas().get(0).getAttributes()).isEmpty();
         assertThat(article.getStanzas().get(0).getDocumentation()).isEqualTo("This is a sample documentation section");
@@ -25,7 +26,7 @@ public class ArticleReaderTest {
     @Test
     public void testOneStanzaWithoutDoc() {
         String articleContents = IO.readResource("articles/one-stanza-no-doc.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("cell");
         assertThat(article.getStanzas()).hasSize(1);
         assertThat(article.getStanzas().get(0).getName()).isEqualTo("bar");
@@ -37,7 +38,7 @@ public class ArticleReaderTest {
     @Test
     public void testTwoStanzas() {
         String articleContents = IO.readResource("articles/two-stanzas.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("test");
         assertThat(article.getStanzas()).hasSize(2);
 
@@ -55,7 +56,7 @@ public class ArticleReaderTest {
     @Test
     public void testTwoStanzasNoDoc() {
         String articleContents = IO.readResource("articles/two-stanzas-no-doc.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("cell");
         assertThat(article.getStanzas()).hasSize(2);
 
@@ -73,7 +74,7 @@ public class ArticleReaderTest {
     @Test
     public void testArticleWithMultiLineDoc() {
         String articleContents = IO.readResource("articles/stanza-with-multi-line-doc.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("cell");
         assertThat(article.getStanzas()).hasSize(1);
 
@@ -90,7 +91,7 @@ public class ArticleReaderTest {
     @Test
     public void testArticleWithMultiLineContent() {
         String articleContents = IO.readResource("articles/stanza-with-multi-line-content.article").orPanic();
-        Article article = reader.read(new LineReader(articleContents)).orPanic();
+        Article article = reader.read("foo.article", new LineReader(articleContents)).orPanic();
         assertThat(article.getType()).isEqualTo("sql-query");
         assertThat(article.getStanzas()).hasSize(1);
 

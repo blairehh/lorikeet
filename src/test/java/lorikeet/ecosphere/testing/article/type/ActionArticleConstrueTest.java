@@ -86,8 +86,6 @@ public class ActionArticleConstrueTest {
         assertThat(actionArticle.getCell()).isEqualTo(cell);
     }
 
-
-
     @Test
     public void testWithFormSpecified() {
         Article article = articleFrom("action-articles/charge-payment.article");
@@ -105,7 +103,18 @@ public class ActionArticleConstrueTest {
         assertThat(actionArticle.getCell()).isEqualTo(cell);
     }
 
+    @Test
+    public void testReadsNameAndDocumentation() {
+        Article article = articleFrom("action-articles/charge-payment.article");
+
+        ActionArticle actionArticle = construe.construe(article).orPanic();
+
+        assertThat(actionArticle.getFilePath()).isEqualTo("action-articles/charge-payment.article");
+        assertThat(actionArticle.getName().orPanic()).isEqualTo("Charge payment");
+        assertThat(actionArticle.getDocumentation().orPanic()).isEqualTo("A payment should be made of 12 dollars");
+    }
+
     static Article articleFrom(String file) {
-        return new ArticleReader().read(new LineReader(IO.readResource(file).orPanic())).orPanic();
+        return new ArticleReader().read(file, new LineReader(IO.readResource(file).orPanic())).orPanic();
     }
 }
