@@ -1,0 +1,5 @@
+type:
+    action2
+
+expect:
+    <lorikeet.ecosphere.ChargePayment currency='AUD' price=12.00 -return=true>
