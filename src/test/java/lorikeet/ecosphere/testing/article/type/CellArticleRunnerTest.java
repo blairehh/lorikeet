@@ -37,6 +37,22 @@ public class CellArticleRunnerTest {
     }
 
     @Test
+    public void testParameterWithDbgWorksWithJustParameterNumber() {
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.IssueDebitCard",
+            Dict.of("0", new StringValue("mastercard")),
+            null,
+            new BoolValue(true)
+        );
+        CellArticle article = new CellArticle(cell);
+
+        RunResult result = runner.run(article).orPanic();
+
+        assertThat(result.isReturnValueMatched()).isTrue();
+        assertThat(result.isExceptionThrownMatched()).isTrue();
+    }
+
+    @Test
     public void testThrowsException() {
         CellValue cell = new CellValue(
             "lorikeet.ecosphere.CreateSavingsDeposit",
