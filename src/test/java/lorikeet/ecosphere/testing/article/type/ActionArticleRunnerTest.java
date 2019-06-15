@@ -16,9 +16,9 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CellArticleRunnerTest {
+public class ActionArticleRunnerTest {
 
-    private final CellArticleRunner runner = new CellArticleRunner();
+    private final ActionArticleRunner runner = new ActionArticleRunner();
 
     @Test
     public void testReturnsValue() {
@@ -28,7 +28,7 @@ public class CellArticleRunnerTest {
             null,
             new BoolValue(true)
         );
-        CellArticle article = new CellArticle(cell);
+        ActionArticle article = new ActionArticle(cell);
 
         RunResult result = runner.run(article).orPanic();
 
@@ -44,7 +44,7 @@ public class CellArticleRunnerTest {
             null,
             new BoolValue(true)
         );
-        CellArticle article = new CellArticle(cell);
+        ActionArticle article = new ActionArticle(cell);
 
         RunResult result = runner.run(article).orPanic();
 
@@ -61,7 +61,7 @@ public class CellArticleRunnerTest {
             null
         );
 
-        CellArticle article = new CellArticle(cell);
+        ActionArticle article = new ActionArticle(cell);
 
         RunResult result = runner.run(article).orPanic();
 
@@ -92,7 +92,7 @@ public class CellArticleRunnerTest {
             returnValue
         );
 
-        CellArticle article = new CellArticle(cell);
+        ActionArticle article = new ActionArticle(cell);
 
         RunResult result = runner.run(article).orPanic();
 

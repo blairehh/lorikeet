@@ -6,6 +6,7 @@ import lorikeet.ecosphere.Cell;
 import lorikeet.ecosphere.meta.ParameterMeta;
 import lorikeet.ecosphere.testing.CellForm;
 import lorikeet.ecosphere.testing.CellFormType;
+import lorikeet.ecosphere.testing.CellKind;
 import lorikeet.ecosphere.testing.CellStructure;
 import lorikeet.ecosphere.testing.Microscope;
 import lorikeet.ecosphere.testing.TestAxon;
@@ -23,18 +24,18 @@ import lorikeet.error.CellTooAmbiguousToNotSpecifyFormTypeToTest;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class CellArticleRunner {
+public class ActionArticleRunner {
 
     private final Generator generator = new Generator();
     private final Interpreter interpreter = new Interpreter();
     private final Microscope microscope = new Microscope();
 
-    public Err<RunResult> run(CellArticle article) {
+    public Err<RunResult> run(ActionArticle article) {
         try {
             final Cell cell = this.load(article.getCell().getClassName());
             final CellStructure structure = this.microscope.inspect(cell.getClass());
 
-            return article.getCellFormType()
+            return article.getFormType()
                 .asErr(this.determineFormTypeToRun(article, structure))
                 .pipe(formType -> this.run(article, cell, formType));
 
@@ -43,31 +44,33 @@ public class CellArticleRunner {
         }
     }
 
-    private Err<CellFormType> determineFormTypeToRun(CellArticle article, CellStructure structure) {
+    private Err<CellFormType> determineFormTypeToRun(ActionArticle article, CellStructure structure) {
         final int argCount = article.getCell().getArguments().size();
-        final Seq<CellForm> applicbleForms = structure.getForms()
+        final Seq<CellForm> applicableForms = structure.getForms()
+            .filter(form -> form.getType().getKind() == CellKind.ACTION)
             .filter(form -> form.getParameters().size() == argCount);
-        if (applicbleForms.size() == 0) {
+
+        if (applicableForms.size() == 0) {
             return Err.failure(new CouldNotDetermineCellFormTypeToTest());
         }
-        if (applicbleForms.size() != 1) {
+        if (applicableForms.size() != 1) {
             return Err.failure(new CellTooAmbiguousToNotSpecifyFormTypeToTest());
         }
 
-        return applicbleForms
+        return applicableForms
             .first()
             .map(CellForm::getType)
             .asErr();
     }
 
-    private Err<RunResult> run(CellArticle article, Cell cell, CellFormType formType) {
+    private Err<RunResult> run(ActionArticle article, Cell cell, CellFormType formType) {
         final CellStructure structure = this.microscope.inspect(cell.getClass());
         return structure.formFor(formType)
             .map(cellForm -> this.run(article, cell, cellForm))
             .orElse(Err.failure(new CouldNotFindCellFormToInvoke()));
     }
 
-    private Err<RunResult> run(CellArticle article, Cell cell, CellForm form) {
+    private Err<RunResult> run(ActionArticle article, Cell cell, CellForm form) {
         final Object[] invokeParameters = new Object[form.getParameters().size()];
         for (ParameterMeta param : form.getParameters()) {
             final Value parameterValue = article.getCell()
@@ -108,7 +111,7 @@ public class CellArticleRunner {
 
     private static RunResult exceptionThrownResult(CellValue cell, Throwable exception) {
         final String exceptionName = exception.getClass().getName();
-        final boolean exceptionMatched = cell.getExceptionThrown().map(exc -> exc.toString().equalsIgnoreCase(exceptionName))
+        final boolean exceptionMatched = cell.getExceptionThrown().map(exc -> exc.equalsIgnoreCase(exceptionName))
                 .orElse(false);
 
         final boolean returnValueMatched = !cell.getReturnValue().isPresent();
