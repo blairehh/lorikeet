@@ -122,6 +122,18 @@ public final class Err<T> implements May<T> {
         return new Err<>(e);
     }
 
+    public static <A,B,C> Err<C> join(Err<A> errA, Err<B> errB, Fun2<A,B,C> join) {
+        if (!errA.isPresent()) {
+            return Err.failure(errA.exception);
+        }
+
+        if (!errB.isPresent()) {
+            return Err.failure(errB.exception);
+        }
+
+        return Err.of(join.apply(errA.orPanic(), errB.orPanic()));
+    }
+
     /**
      * Constructs an instance with the described value.
      *

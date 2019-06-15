@@ -24,6 +24,14 @@ public class CellForm {
         this.parameters = parameters;
     }
 
+    public CellForm(CellFormType type, Method invokeMethod, Method connectMethod, Seq<ParameterMeta> parameters) {
+        this.type = type;
+        this.form = type.getJavaClass();
+        this.invokeMethod = invokeMethod;
+        this.connectMethod = connectMethod;
+        this.parameters = parameters;
+    }
+
     public CellFormType getType() {
         return this.type;
     }

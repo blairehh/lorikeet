@@ -1,16 +1,14 @@
 package lorikeet.ecosphere.testing;
 
 import lorikeet.Opt;
+import lorikeet.Err;
 import lorikeet.Seq;
-import lorikeet.ecosphere.Action1;
-import lorikeet.ecosphere.Action2;
-import lorikeet.ecosphere.Action3;
-import lorikeet.ecosphere.Action4;
-import lorikeet.ecosphere.Action5;
 import lorikeet.ecosphere.Cell;
 import lorikeet.ecosphere.meta.Dbg;
-import lorikeet.ecosphere.meta.Meta;
 import lorikeet.ecosphere.meta.ParameterMeta;
+import lorikeet.error.CouldNotFindConnectMethodOnCell;
+import lorikeet.error.CouldNotFindInvokeMethodOnCell;
+import lorikeet.error.CouldNotFindCellFormTypeFromParameterizedType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -20,20 +18,18 @@ import java.util.stream.Stream;
 
 public class Microscope {
 
-    private static final Seq<Class<? extends Cell>> ACTION_CLASSES = Seq.of(
-        Action1.class,
-        Action2.class,
-        Action3.class,
-        Action4.class,
-        Action5.class
-    );
-
-    private static final Seq<String> ACTION_CLASSES_NAMES = ACTION_CLASSES.map(Class::getName);
+    private static final String METHOD_NAME_INVOKE      = "invoke";
+    private static final String METHOD_NAME_CONNECT     = "inject";
 
     public CellStructure inspect(Class<? extends Cell> cellClass) {
         final Seq<ParameterizedType> cellTypes = filterCellTypes(cellClass);
 
-        final Seq<CellForm> forms = cellTypes.map(type -> buildCellForm(cellClass, type));
+        final Seq<CellForm> forms = cellTypes.stream()
+            .map(type -> buildCellForm(cellClass, type))
+            .filter(form -> form.isPresent())
+            .map(Err::orPanic)
+            .collect(Seq.collector());
+
         return new CellStructure(forms);
     }
 
@@ -54,13 +50,29 @@ public class Microscope {
             return false;
         }
         final ParameterizedType parameterizedType = (ParameterizedType)type;
-        return ACTION_CLASSES_NAMES.contains(parameterizedType.getRawType().getTypeName());
+        return CellFormType.asJavaClassNames().contains(parameterizedType.getRawType().getTypeName());
     }
 
-    private static CellForm buildCellForm(Class<? extends Cell> cellClass, ParameterizedType type) {
-        final Class<? extends Cell> formClass = ACTION_CLASSES.filter(actionClass -> type.getRawType().getTypeName().equals(actionClass.getName()))
-            .orPanic(); //@TODO supply exception here
-        final Method invokeMethod = findInvokeMethod(cellClass, type.getActualTypeArguments().length - 1);
+    private static Err<CellForm> buildCellForm(Class<? extends Cell> cellClass, ParameterizedType type) {
+        final Opt<CellFormType> formTypeOpt = CellFormType.fromJavaClassName(type.getRawType().getTypeName());
+        if (!formTypeOpt.isPresent()) {
+            return Err.failure(new CouldNotFindCellFormTypeFromParameterizedType());
+        }
+        final CellFormType formType = formTypeOpt.orPanic();
+
+        final Opt<Method> invokeMethodOpt = findInvokeMethod(cellClass, formType);
+        if (!invokeMethodOpt.isPresent()) {
+            return Err.failure(new CouldNotFindInvokeMethodOnCell());
+        }
+        final Method invokeMethod = invokeMethodOpt.orPanic();
+
+        final Opt<Method> connectMethodOpt = findConnectMethod(cellClass);
+        if (!connectMethodOpt.isPresent()) {
+            return Err.failure(new CouldNotFindConnectMethodOnCell());
+        }
+        final Method connectMethod = connectMethodOpt.orPanic();
+
+
         final Annotation[][] parameterAnnotations = invokeMethod.getParameterAnnotations();
 
         Seq<ParameterMeta> parameters = Seq.empty();
@@ -70,7 +82,6 @@ public class Microscope {
             try {
                 final Class<?> parameterClass = Microscope.class.getClassLoader().loadClass(parameterType.getTypeName());
                 final ParameterMeta parameterMeta = findTagAnnotation(parameterAnnotations[position])
-                    .ifnot(() -> System.out.println("did not find debug tag"))
                     .map(dbg -> new ParameterMeta(position, dbg.value(), dbg.useHash(), dbg.ignore(), parameterClass))
                     .orElse(new ParameterMeta(position, parameterClass));
 
@@ -80,27 +91,25 @@ public class Microscope {
             }
         }
 
-        // @TODO add the connect method
-        return new CellForm(formClass, invokeMethod, null, parameters);
+        return Err.of(new CellForm(formType, invokeMethod, connectMethod, parameters));
     }
 
-
-    private static Method findInvokeMethod(Class<? extends Cell> cellClass, int invokeParameterCount) {
+    private static Opt<Method> findInvokeMethod(Class<? extends Cell> cellClass, CellFormType formType) {
         final Seq<Method> methods = Seq.of(cellClass.getDeclaredMethods());
         return methods.stream()
-            .filter(method -> method.getName().equals("invoke"))
-            .filter(method -> method.getParameterCount() == invokeParameterCount)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("could not find invoke method on class " + cellClass.getName()));
+            .filter(method -> method.getName().equals(METHOD_NAME_INVOKE))
+            .filter(method -> method.getParameterCount() == formType.getNumberOfInputArguments())
+            .collect(Seq.collector())
+            .first();
     }
 
-    private static Method findConnectMethod(Class<? extends Cell> cellClass) {
+    private static Opt<Method> findConnectMethod(Class<? extends Cell> cellClass) {
         final Seq<Method> methods = Seq.of(cellClass.getDeclaredMethods());
         return methods.stream()
-            .filter(method -> method.getName().equals("inject"))
+            .filter(method -> method.getName().equals(METHOD_NAME_CONNECT))
             .filter(method -> method.getParameterCount() == 1)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("could not find connect method on class " + cellClass.getName()));
+            .collect(Seq.collector())
+            .first();
     }
 
     private static Opt<Dbg> findTagAnnotation(Annotation[] annotations) {

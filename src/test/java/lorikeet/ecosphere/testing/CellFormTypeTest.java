@@ -18,4 +18,11 @@ public class CellFormTypeTest {
         assertThat(CellFormType.fromJavaClass(String.class).isPresent()).isFalse();
         assertThat(CellFormType.fromJavaClass(Action1.class).orPanic()).isEqualTo(CellFormType.ACTION_1);
     }
+
+    @Test
+    public void testFromJavaClassName() {
+        assertThat(CellFormType.fromJavaClassName("FooBar1").isPresent()).isFalse();
+        assertThat(CellFormType.fromJavaClassName("lorikeet.ecosphere.Action2").orPanic())
+            .isEqualTo(CellFormType.ACTION_2);
+    }
 }
