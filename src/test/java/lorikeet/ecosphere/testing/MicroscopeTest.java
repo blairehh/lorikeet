@@ -34,4 +34,10 @@ public class MicroscopeTest {
        assertThat(form.getParameters()).contains(new ParameterMeta(0, null, true, false, Double.class));
    }
 
+   @Test
+   public void testTypeNameToClassName() {
+        assertThat(Microscope.typeNameToClassName("java.lang.String")).isEqualTo("java.lang.String");
+        assertThat(Microscope.typeNameToClassName("lorikeet.Seq<java.lang.String>")).isEqualTo("lorikeet.Seq");
+   }
+
 }

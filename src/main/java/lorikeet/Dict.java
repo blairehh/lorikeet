@@ -79,12 +79,26 @@ public class Dict<K, V> implements Map<K, V> {
         return Objects.hash(this.map);
     }
 
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-            .append("map", map)
-            .toString();
+        StringBuilder builder = new StringBuilder();
+        
+        for (Map.Entry<?, ?> entry : this.map.entrySet()) {
+            builder.append(entry.getKey());
+            builder.append("=");
+            builder.append(String.format("`%s`", entry.getValue().toString()));
+            builder.append(" ");
+        }
+        
+        return builder.toString();
     }
+    // @Override
+    // public String toString() {
+    //     return new ToStringBuilder(this)
+    //         .append("map", map)
+    //         .toString();
+    // }
 
     /*
     Map

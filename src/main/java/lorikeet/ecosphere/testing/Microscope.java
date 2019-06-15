@@ -81,7 +81,8 @@ public class Microscope {
             final int position = i - 1;
             final Type parameterType = type.getActualTypeArguments()[i];
             try {
-                final Class<?> parameterClass = Microscope.class.getClassLoader().loadClass(parameterType.getTypeName());
+                final String className = typeNameToClassName(parameterType.getTypeName());
+                final Class<?> parameterClass = Microscope.class.getClassLoader().loadClass(className);
                 final ParameterMeta parameterMeta = findTagAnnotation(parameterAnnotations[position])
                     .map(dbg -> new ParameterMeta(position, dbg.value(), dbg.useHash(), dbg.ignore(), parameterClass))
                     .orElse(new ParameterMeta(position, parameterClass));
@@ -93,6 +94,14 @@ public class Microscope {
         }
 
         return Err.of(new CellForm(formType, invokeMethod, connectMethod, parameters));
+    }
+
+    static String typeNameToClassName(String typeName) {
+        final int indexOf = typeName.indexOf("<", 0);
+        if (indexOf < 0) {
+            return typeName;
+        }
+        return typeName.substring(0, indexOf);
     }
 
     private static Opt<Method> findInvokeMethod(Class<? extends Cell> cellClass, CellFormType formType) {

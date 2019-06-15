@@ -1,6 +1,7 @@
 package lorikeet.ecosphere.meta;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import lorikeet.Opt;
 import java.util.Objects;
@@ -96,7 +97,7 @@ public class ParameterMeta {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
             .append("position", this.getPosition())
             .append("name", this.getName())
             .append("useHash", this.isUseHash())

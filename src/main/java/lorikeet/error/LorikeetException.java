@@ -8,11 +8,20 @@ public class LorikeetException extends RuntimeException {
 
     protected LorikeetException(Class<?> klass) {
         this.klass = klass;
+        this.outputDebug();
     }
 
     protected LorikeetException(Exception cause, Class<?> klass) {
         super(cause);
         this.klass = klass;
+        this.outputDebug();
+    }
+
+    private void outputDebug() {
+        if ("true".equalsIgnoreCase(System.getenv("LORIKEET_PRINT_ERRORS"))) {
+            System.out.println(this.klass.getName());
+            this.getCause().printStackTrace();
+        }
     }
 
     @Override

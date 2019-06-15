@@ -41,4 +41,9 @@ public class ObjectValue implements Value {
     public int hashCode() {
         return Objects.hash(this.getClassName(), this.getData());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s={%s}", this.className, this.data);
+    }
 }

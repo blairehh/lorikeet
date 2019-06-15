@@ -37,8 +37,6 @@ public class NumberValue implements Value {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-            .append("value", this.getValue())
-            .toString();
+        return String.valueOf(this.value);
     }
 }
