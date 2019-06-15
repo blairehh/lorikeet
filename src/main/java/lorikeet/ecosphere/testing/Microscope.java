@@ -9,6 +9,7 @@ import lorikeet.ecosphere.meta.ParameterMeta;
 import lorikeet.error.CouldNotFindConnectMethodOnCell;
 import lorikeet.error.CouldNotFindInvokeMethodOnCell;
 import lorikeet.error.CouldNotFindCellFormTypeFromParameterizedType;
+import lorikeet.error.CouldNotLoadCellParameterClass;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -87,7 +88,7 @@ public class Microscope {
 
                 parameters = parameters.push(parameterMeta);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                return Err.failure(new CouldNotLoadCellParameterClass(e));
             }
         }
 
