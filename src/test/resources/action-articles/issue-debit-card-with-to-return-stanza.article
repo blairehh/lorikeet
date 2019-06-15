@@ -1,0 +1,8 @@
+type:
+    action
+
+expect:
+    lorikeet.ecosphere.IssueDebitCard('mastercard')
+
+to-return:
+    true

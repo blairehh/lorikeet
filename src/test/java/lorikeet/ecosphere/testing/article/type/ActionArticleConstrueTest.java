@@ -36,6 +36,23 @@ public class ActionArticleConstrueTest {
     }
 
     @Test
+    public void testWithToReturnStanza() {
+        Article article = articleFrom("action-articles/issue-debit-card-with-to-return-stanza.article");
+
+        ActionArticle actionArticle = construe.construe(article).orPanic();
+
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.IssueDebitCard",
+            Dict.of("0", new StringValue("mastercard")),
+            null,
+            new BoolValue(true)
+        );
+
+        assertThat(actionArticle.getFormType().isPresent()).isFalse();
+        assertThat(actionArticle.getCell()).isEqualTo(cell);
+    }
+
+    @Test
     public void testWithParameterWithNoName() {
         Article article = articleFrom("action-articles/create-savings-deposit.article");
 
@@ -51,6 +68,25 @@ public class ActionArticleConstrueTest {
         assertThat(actionArticle.getFormType().isPresent()).isFalse();
         assertThat(actionArticle.getCell()).isEqualTo(cell);
     }
+
+    @Test
+    public void testWithToThrowStanza() {
+        Article article = articleFrom("action-articles/create-savings-deposit-with-to-throw-stanza.article");
+
+        ActionArticle actionArticle = construe.construe(article).orPanic();
+
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.CreateSavingsDeposit",
+            Dict.of("0", new NumberValue(34.67)),
+            "java.lang.RuntimeException",
+            null
+        );
+
+        assertThat(actionArticle.getFormType().isPresent()).isFalse();
+        assertThat(actionArticle.getCell()).isEqualTo(cell);
+    }
+
+
 
     @Test
     public void testWithFormSpecified() {

@@ -3,6 +3,7 @@ package lorikeet.ecosphere.testing.data;
 import lorikeet.Dict;
 import lorikeet.Opt;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class CellValue implements Value {
@@ -34,6 +35,14 @@ public class CellValue implements Value {
         return Opt.ofNullable(this.returnValue);
     }
 
+    public CellValue withReturnValue(Value value) {
+        return new CellValue(this.className, this.arguments, this.exceptionThrown, value);
+    }
+
+    public CellValue withExceptionThrown(String exception) {
+        return new CellValue(this.className, this.arguments, exception, this.returnValue);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -55,5 +64,29 @@ public class CellValue implements Value {
     @Override
     public int hashCode() {
         return Objects.hash(this.getClassName(), this.getArguments(), this.getExceptionThrown(), this.getReturnValue());
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(this.className);
+        builder.append("(");
+
+        for (Value value : this.arguments.values()) {
+            builder.append(value.toString());
+        }
+        builder.append(")");
+
+        if (this.returnValue != null) {
+            builder.append(" returns ");
+            builder.append(this.returnValue.toString());
+        }
+
+        if (this.exceptionThrown!= null) {
+            builder.append(" throws ");
+            builder.append(this.exceptionThrown);
+        }
+
+        return builder.toString();
     }
 }
