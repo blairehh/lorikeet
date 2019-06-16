@@ -20,7 +20,8 @@ public class Deserializer implements ValueDeserializer<Value> {
         new ObjectValueDeserializer(false),
         new MapValueDeserializer(false),
         new IdentifierValueDeserializer(false),
-        new AnyValueDeserializer(false)
+        new AnyValueDeserializer(false),
+        new NotValueDeserializer(false)
     );
 
     @Override

@@ -33,9 +33,9 @@ public class AnyValueDeserializer implements ValueDeserializer<AnyValue> {
     private Err<AnyValue> toAnyValue(GenericSymbolicValue value) {
         if (!value.getName().equalsIgnoreCase("any")) {
             if (this.directDeserialization) {
-                return Err.failure(new InconclusiveError(new AnyValueMustBeNamedAny()));
+                return Err.failure(new AnyValueMustBeNamedAny());
             }
-            return Err.failure(new AnyValueMustBeNamedAny());
+            return Err.failure(new InconclusiveError(new AnyValueMustBeNamedAny()));
         }
 
         if (!value.getArguments().isEmpty()) {
