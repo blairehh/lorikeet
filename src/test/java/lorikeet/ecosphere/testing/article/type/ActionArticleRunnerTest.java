@@ -3,6 +3,7 @@ package lorikeet.ecosphere.testing.article.type;
 import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.testing.article.RunResult;
+import lorikeet.ecosphere.testing.data.AnyValue;
 import lorikeet.ecosphere.testing.data.BoolValue;
 import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.ListValue;
@@ -27,6 +28,22 @@ public class ActionArticleRunnerTest {
             Dict.of("paymentCompany", new StringValue("mastercard")),
             null,
             new BoolValue(true)
+        );
+        ActionArticle article = new ActionArticle(cell);
+
+        RunResult result = runner.run(article).orPanic();
+
+        assertThat(result.isReturnValueMatched()).isTrue();
+        assertThat(result.isExceptionThrownMatched()).isTrue();
+    }
+
+    @Test
+    public void testReturnsValueMatchesAgainstAnyValue() {
+        CellValue cell = new CellValue(
+            "lorikeet.ecosphere.IssueDebitCard",
+            Dict.of("paymentCompany", new StringValue("mastercard")),
+            null,
+            new AnyValue()
         );
         ActionArticle article = new ActionArticle(cell);
 

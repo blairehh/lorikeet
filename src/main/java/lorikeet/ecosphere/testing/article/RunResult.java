@@ -1,5 +1,7 @@
 package lorikeet.ecosphere.testing.article;
 
+import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.EqualityChecker;
 import lorikeet.ecosphere.testing.data.Value;
 
 import java.util.Objects;
@@ -20,6 +22,29 @@ public class RunResult {
         this.returnValueMatched = returnValueMatched;
         this.exceptionThrown = exceptionThrown;
         this.exceptionThrownMatched = exceptionThrownMatched;
+    }
+
+    public static RunResult resultForReturn(CellValue specified, Value actualReturnValue) {
+        final EqualityChecker equality = new EqualityChecker();
+
+        final boolean returnMatched = specified.getReturnValue()
+            .map(value ->  equality.checkEquality(value, actualReturnValue))
+            .orElse(false);
+
+        final boolean exceptionMatched = !specified.getExceptionThrown().isPresent();
+
+        return new RunResult(actualReturnValue, returnMatched, null, exceptionMatched);
+    }
+
+    public static RunResult resultForException(CellValue specified, String exception) {
+
+        final boolean exceptionMatched = specified.getExceptionThrown()
+            .map(exc -> exc.equals(exception))
+            .orElse(false);
+
+        final boolean returnMatched = !specified.getReturnValue().isPresent();
+
+        return new RunResult(null, returnMatched, exception, exceptionMatched);
     }
 
     public Value getReturnValue() {

@@ -85,9 +85,9 @@ public class ActionArticleRunner {
             final TestAxon axon = new TestAxon();
             form.getConnectMethod().invoke(cell, axon);
             final Object result = form.getInvokeMethod().invoke(cell, invokeParameters);
-            return Err.of(determineResult(article.getCell(), this.interpreter.interpret(result)));
+            return Err.of(RunResult.resultForReturn(article.getCell(), this.interpreter.interpret(result)));
         } catch (InvocationTargetException e) {
-            return Err.of(exceptionThrownResult(article.getCell(), e.getCause()));
+            return Err.of(RunResult.resultForException(article.getCell(), e.getCause().getClass().getName()));
         } catch (ReflectiveOperationException e) {
             return Err.failure(new CouldNotInvokeCell(e));
         }
@@ -98,24 +98,5 @@ public class ActionArticleRunner {
             .loadClass(className)
             .getDeclaredConstructor()
             .newInstance();
-    }
-
-    private static RunResult determineResult(CellValue cell, Value returnValue) {
-        if (!cell.getReturnValue().isPresent()) {
-            return new RunResult(returnValue, false, null, true);
-        }
-
-        final boolean matched = cell.getReturnValue().orPanic().equals(returnValue);
-        return new RunResult(returnValue, matched, null, true);
-    }
-
-    private static RunResult exceptionThrownResult(CellValue cell, Throwable exception) {
-        final String exceptionName = exception.getClass().getName();
-        final boolean exceptionMatched = cell.getExceptionThrown().map(exc -> exc.equalsIgnoreCase(exceptionName))
-                .orElse(false);
-
-        final boolean returnValueMatched = !cell.getReturnValue().isPresent();
-
-        return new RunResult(null, returnValueMatched, exceptionName, exceptionMatched);
     }
 }
