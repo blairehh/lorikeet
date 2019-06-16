@@ -17,6 +17,23 @@ public class BoolValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (other.isSymbolic()) {
+            return Equality.UNKNOWN;
+        }
+
+        if (!(other instanceof BoolValue)) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final boolean otherValue = ((BoolValue)other).getValue();
+        if (value == otherValue) {
+            return Equality.EQUAL;
+        }
+        return Equality.NOT_EQUAL;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;

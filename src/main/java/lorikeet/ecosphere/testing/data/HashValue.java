@@ -20,6 +20,23 @@ public class HashValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (other.isSymbolic()) {
+            return Equality.UNKNOWN;
+        }
+
+        if (!(other instanceof HashValue)) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final HashValue otherValue = (HashValue)other;
+        if (this.equals(otherValue)) {
+            return Equality.EQUAL;
+        }
+        return Equality.NOT_EQUAL;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;

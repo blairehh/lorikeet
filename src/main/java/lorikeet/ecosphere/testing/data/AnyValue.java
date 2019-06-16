@@ -7,6 +7,11 @@ public class AnyValue implements Value {
     }
 
     @Override
+    public Equality equality(Value value) {
+        return Equality.EQUAL;
+    }
+
+    @Override
     public int hashCode() {
         return AnyValue.class.hashCode();
     }

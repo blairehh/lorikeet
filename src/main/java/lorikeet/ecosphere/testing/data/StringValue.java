@@ -16,6 +16,23 @@ public class StringValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (other.isSymbolic()) {
+            return Equality.UNKNOWN;
+        }
+
+        if (!(other instanceof StringValue)) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final StringValue otherValue = (StringValue) other;
+        if (this.equals(otherValue)) {
+            return Equality.EQUAL;
+        }
+        return Equality.NOT_EQUAL;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;

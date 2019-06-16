@@ -23,6 +23,19 @@ public class GenericSymbolicValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (!other.isSymbolic()) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final GenericSymbolicValue symbol  = (GenericSymbolicValue)other;
+        if (this.equals(symbol)) {
+            return Equality.EQUAL;
+        }
+        return Equality.UNKNOWN;
+    }
+
+    @Override
     public boolean isSymbolic() {
         return true;
     }

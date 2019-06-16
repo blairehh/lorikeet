@@ -14,6 +14,23 @@ public class IdentifierValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (other.isSymbolic()) {
+            return Equality.UNKNOWN;
+        }
+
+        if (!(other instanceof IdentifierValue)) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final IdentifierValue otherValue = (IdentifierValue)other;
+        if (this.equals(otherValue)) {
+            return Equality.EQUAL;
+        }
+        return Equality.NOT_EQUAL;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;

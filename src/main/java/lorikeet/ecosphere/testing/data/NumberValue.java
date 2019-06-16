@@ -16,6 +16,23 @@ public class NumberValue implements Value {
     }
 
     @Override
+    public Equality equality(Value other) {
+        if (other.isSymbolic()) {
+            return Equality.UNKNOWN;
+        }
+
+        if (!(other instanceof NumberValue)) {
+            return Equality.NOT_EQUAL;
+        }
+
+        final NumberValue otherValue = (NumberValue) other;
+        if (this.equals(otherValue)) {
+            return Equality.EQUAL;
+        }
+        return Equality.NOT_EQUAL;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
