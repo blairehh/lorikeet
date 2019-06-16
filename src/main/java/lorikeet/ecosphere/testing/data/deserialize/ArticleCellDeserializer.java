@@ -44,7 +44,7 @@ public class ArticleCellDeserializer {
                 return deserializeReturnsOrThrows(reader, className.orPanic(), arguments);
             }
 
-            final Opt<Value> argument= this.deserializer.deserialize(reader);
+            final Err<Value> argument= this.deserializer.deserialize(reader);
             if (!argument.isPresent()) {
                 return Err.failure(new CouldNotDeserializeArgumentValueOfCell());
             }
@@ -73,7 +73,7 @@ public class ArticleCellDeserializer {
         final String word = reader.nextWord().orElse("");
 
         if (word.equalsIgnoreCase("returns")) {
-            final Opt<Value> value = this.deserializer.deserialize(reader);
+            final Err<Value> value = this.deserializer.deserialize(reader);
             if (!value.isPresent()) {
                 return Err.failure(new CouldNotDeserializeReturnValueOfCell());
             }

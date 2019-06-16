@@ -166,6 +166,10 @@ public final class Err<T> implements May<T> {
         return optional.map(Err::of).orElse(Err.failure());
     }
 
+    public static <X,T> Err<T> from(Err<X> err) {
+        return Err.failure(err.exception);
+    }
+
     public Opt<T> toOpt() {
         return this.map(Opt::of).orElse(Opt.empty());
     }

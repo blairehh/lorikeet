@@ -56,7 +56,7 @@ public class ActionArticleConstrue {
                 return Err.failure(new CanNotSpecifyReturnValueInExpectAndToReturnStanza());
             }
             final String toReturnContent = toReturnStanza.orPanic().getContent();
-            final Opt<Value> returnValueOpt = this.deserializer.deserialize(new TextReader(toReturnContent));
+            final Err<Value> returnValueOpt = this.deserializer.deserialize(new TextReader(toReturnContent));
             if (!returnValueOpt.isPresent()) {
                 return Err.failure(new CouldNotDeserializeValueInToReturnStanza());
             }

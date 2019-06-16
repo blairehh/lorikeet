@@ -1,9 +1,10 @@
 package lorikeet.ecosphere.testing.data.deserialize;
 
-import lorikeet.Opt;
+import lorikeet.Err;
 import lorikeet.Seq;
 import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
+import lorikeet.error.CouldNotDeserializeValue;
 
 
 public class Deserializer implements ValueDeserializer<Value> {
@@ -22,16 +23,16 @@ public class Deserializer implements ValueDeserializer<Value> {
     );
 
     @Override
-    public Opt<Value> deserialize(TextReader reader) {
+    public Err<Value> deserialize(TextReader reader) {
         for (ValueDeserializer<? extends Value> deserializer : DESERIALIZERS) {
             final TextReader textReader = reader.fork();
             textReader.jumpWhitespace();
-            final Opt<? extends Value> result = deserializer.deserialize(textReader);
+            final Err<? extends Value> result = deserializer.deserialize(textReader);
             if (result.isPresent()) {
                 reader.resetTo(textReader);
-                return Opt.of(result.orPanic());
+                return Err.of(result.orPanic());
             }
         }
-        return Opt.empty();
+        return Err.failure(new CouldNotDeserializeValue());
     }
 }

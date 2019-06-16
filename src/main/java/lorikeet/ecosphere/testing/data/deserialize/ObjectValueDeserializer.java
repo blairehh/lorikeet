@@ -6,51 +6,58 @@ import lorikeet.Opt;
 import lorikeet.ecosphere.testing.data.ObjectValue;
 import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
+import lorikeet.error.CommaMustComeAfterFieldInObjectValue;
+import lorikeet.error.CouldNotDeserializeObjectFieldValue;
+import lorikeet.error.ObjectValueClassNameMustBeFollowedByOpenParenthesis;
+import lorikeet.error.ObjectValueFieldMustBeAValidAlphaNumericWord;
+import lorikeet.error.ObjectValueFieldMustBeFollowedByColon;
+import lorikeet.error.ObjectValueMustStartWithClassName;
+import lorikeet.error.UnexpectedEndOfContentWhileParsing;
 
 public class ObjectValueDeserializer implements ValueDeserializer<ObjectValue> {
 
     private final Deserializer deserializer = new Deserializer();
 
     @Override
-    public Opt<ObjectValue> deserialize(TextReader reader) {
+    public Err<ObjectValue> deserialize(TextReader reader) {
         final Err<String> className = reader.nextIdentifier();
         if (!className.isPresent()) {
-            return Opt.empty();
+            return Err.failure(new ObjectValueMustStartWithClassName());
         }
         if (reader.isAtEnd()) {
-            return Opt.empty();
+            return Err.failure(new UnexpectedEndOfContentWhileParsing());
         }
         if (reader.getCurrentChar() != '(') {
-            return Opt.empty();
+            return Err.failure(new ObjectValueClassNameMustBeFollowedByOpenParenthesis());
         }
         reader.skip();
         Dict<String, Value> data = Dict.empty();
         while (true) {
             if (reader.isAtEnd()) {
-                return Opt.empty();
+                return Err.failure(new UnexpectedEndOfContentWhileParsing());
             }
             if (reader.getCurrentChar() == ',') {
                 if (!data.isEmpty()) {
                     reader.skip();
                 } else {
-                    return Opt.empty();
+                    return Err.failure(new CommaMustComeAfterFieldInObjectValue());
                 }
             }
             if (reader.getCurrentChar() == ')') {
                 reader.skip();
-                return Opt.of(new ObjectValue(className.orPanic(), data));
+                return Err.of(new ObjectValue(className.orPanic(), data));
             }
             final Opt<String> field = reader.nextAlphaNumericWord(false);
             if (!field.isPresent()) {
-                return Opt.empty();
+                return Err.failure(new ObjectValueFieldMustBeAValidAlphaNumericWord());
             }
             if (reader.getCurrentChar() != ':') {
-                return Opt.empty();
+                return Err.failure(new ObjectValueFieldMustBeFollowedByColon());
             }
             reader.skip();
-            final Opt<Value> value = deserializer.deserialize(reader);
+            final Err<Value> value = deserializer.deserialize(reader);
             if (!value.isPresent()) {
-                return Opt.empty();
+                return Err.failure(new CouldNotDeserializeObjectFieldValue());
             }
             data = data.push(field.orPanic(), value.orPanic());
         }

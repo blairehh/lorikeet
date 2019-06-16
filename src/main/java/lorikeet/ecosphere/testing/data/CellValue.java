@@ -6,6 +6,9 @@ import lorikeet.Opt;
 import java.util.Map;
 import java.util.Objects;
 
+/*
+ * @TODO this should not be a "value"
+ */
 public class CellValue implements Value {
     private final String className;
     private final String exceptionThrown;

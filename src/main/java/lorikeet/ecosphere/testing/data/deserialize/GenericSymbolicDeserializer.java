@@ -41,9 +41,9 @@ public class GenericSymbolicDeserializer {
 
         while (true) {
 
-            final Opt<Value> argument = this.deserializer.deserialize(reader);
+            final Err<Value> argument = this.deserializer.deserialize(reader);
             if (!argument.isPresent()) {
-                return Err.failure(); // @TODO make deserialize return Err and use that error
+                return Err.from(argument);
             }
             arguments = arguments.push(argument);
 
