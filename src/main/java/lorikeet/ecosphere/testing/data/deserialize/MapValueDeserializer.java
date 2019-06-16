@@ -9,18 +9,31 @@ import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.CommaMustComeAfterKeyValuePairInMapValue;
 import lorikeet.error.CouldNotDeserializeKeyValueInMapValue;
 import lorikeet.error.CouldNotDeserializeValueInMapValue;
+import lorikeet.error.InconclusiveError;
+import lorikeet.error.LorikeetException;
 import lorikeet.error.MapValueKeyMustBeFollowedByColon;
 import lorikeet.error.MapValueMustStartWithOpenBraces;
 import lorikeet.error.UnexpectedEndOfContentWhileParsing;
 
 public class MapValueDeserializer implements ValueDeserializer<MapValue> {
 
-    private final Deserializer deserializer = new Deserializer();
+    private final Deserializer deserializer;
+    private final boolean directDeserialization;
+
+    public MapValueDeserializer() {
+        this.deserializer = new Deserializer();
+        this.directDeserialization = true;
+    }
+
+    public MapValueDeserializer(boolean directDeserialization) {
+        this.deserializer = new Deserializer();
+        this.directDeserialization = directDeserialization;
+    }
 
     @Override
     public Err<MapValue> deserialize(TextReader reader) {
         if (reader.getCurrentChar() != '{') {
-            return Err.failure(new MapValueMustStartWithOpenBraces());
+            return Err.failure(this.potentiallyInconclusive(new MapValueMustStartWithOpenBraces()));
         }
         reader.skip();
         Dict<Value, Value> data = Dict.empty();
@@ -53,5 +66,12 @@ public class MapValueDeserializer implements ValueDeserializer<MapValue> {
             }
             data = data.push(key.orPanic(), value.orPanic());
         }
+    }
+
+    private LorikeetException potentiallyInconclusive(LorikeetException err) {
+        if (this.directDeserialization) {
+            return err;
+        }
+        return new InconclusiveError(err);
     }
 }

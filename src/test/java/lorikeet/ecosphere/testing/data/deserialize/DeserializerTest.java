@@ -6,9 +6,11 @@ import lorikeet.ecosphere.testing.data.AnyValue;
 import lorikeet.ecosphere.testing.data.BoolValue;
 import lorikeet.ecosphere.testing.data.HashValue;
 import lorikeet.ecosphere.testing.data.IdentifierValue;
+import lorikeet.ecosphere.testing.data.ListValue;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.ObjectValue;
 import lorikeet.ecosphere.testing.reader.TextReader;
+import lorikeet.error.CommaMustComeAfterValueInListValue;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +28,19 @@ public class DeserializerTest {
     public void testDeserializeNumber() {
         TextReader reader = new TextReader("45", 0);
         assertThat(new Deserializer().deserialize(reader).orPanic()).isEqualTo(new NumberValue(45));
+    }
+
+    @Test
+    public void testList() {
+        TextReader reader = new TextReader("[4, 5]", 0);
+        assertThat(new Deserializer().deserialize(reader).orPanic())
+            .isEqualTo(new ListValue(new NumberValue(4), new NumberValue(5)));
+    }
+
+    @Test
+    public void testBadList() {
+        TextReader reader = new TextReader("[4,, 5]", 0);
+        assertThat(new Deserializer().deserialize(reader).failedWith(CommaMustComeAfterValueInListValue.class)).isTrue();
     }
 
     @Test

@@ -8,6 +8,8 @@ import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.CommaMustComeAfterFieldInObjectValue;
 import lorikeet.error.CouldNotDeserializeObjectFieldValue;
+import lorikeet.error.InconclusiveError;
+import lorikeet.error.LorikeetException;
 import lorikeet.error.ObjectValueClassNameMustBeFollowedByOpenParenthesis;
 import lorikeet.error.ObjectValueFieldMustBeAValidAlphaNumericWord;
 import lorikeet.error.ObjectValueFieldMustBeFollowedByColon;
@@ -16,19 +18,30 @@ import lorikeet.error.UnexpectedEndOfContentWhileParsing;
 
 public class ObjectValueDeserializer implements ValueDeserializer<ObjectValue> {
 
-    private final Deserializer deserializer = new Deserializer();
+    private final Deserializer deserializer;
+    private final boolean directDeserialization;
+
+    public ObjectValueDeserializer() {
+        this.deserializer = new Deserializer();
+        this.directDeserialization = true;
+    }
+
+    public ObjectValueDeserializer(boolean directDeserialization) {
+        this.deserializer = new Deserializer();
+        this.directDeserialization = directDeserialization;
+    }
 
     @Override
     public Err<ObjectValue> deserialize(TextReader reader) {
         final Err<String> className = reader.nextIdentifier();
         if (!className.isPresent()) {
-            return Err.failure(new ObjectValueMustStartWithClassName());
+            return Err.failure(this.potentiallyInconclusive(new ObjectValueMustStartWithClassName()));
         }
         if (reader.isAtEnd()) {
             return Err.failure(new UnexpectedEndOfContentWhileParsing());
         }
         if (reader.getCurrentChar() != '(') {
-            return Err.failure(new ObjectValueClassNameMustBeFollowedByOpenParenthesis());
+            return Err.failure(this.potentiallyInconclusive(new ObjectValueClassNameMustBeFollowedByOpenParenthesis()));
         }
         reader.skip();
         Dict<String, Value> data = Dict.empty();
@@ -61,5 +74,12 @@ public class ObjectValueDeserializer implements ValueDeserializer<ObjectValue> {
             }
             data = data.push(field.orPanic(), value.orPanic());
         }
+    }
+
+    private LorikeetException potentiallyInconclusive(LorikeetException err) {
+        if (this.directDeserialization) {
+            return err;
+        }
+        return new InconclusiveError(err);
     }
 }

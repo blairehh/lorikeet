@@ -276,6 +276,17 @@ public final class Err<T> implements May<T> {
         return functor.apply(this.value);
     }
 
+    public Err<T> mapError(Exception exception) {
+        if (this.isPresent()) {
+            return this;
+        }
+        return Err.failure(exception);
+    }
+
+    public Opt<Exception> getException() {
+        return Opt.ofNullable(this.exception);
+    }
+
 
     /**
      * If a value is present, performs the given action with the value,

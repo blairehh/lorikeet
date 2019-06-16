@@ -6,18 +6,34 @@ import lorikeet.Seq;
 import lorikeet.ecosphere.testing.data.GenericSymbolicValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.reader.TextReader;
+import lorikeet.error.InconclusiveError;
+import lorikeet.error.LorikeetException;
 import lorikeet.error.SymbolicValueMustStartWithAtSymbol;
 import lorikeet.error.SymbolicValueNameMustOnlyBeLetters;
 import lorikeet.error.UnexpectedTokenWhileParsing;
 
 public class GenericSymbolicDeserializer {
-    private final Deserializer deserializer = new Deserializer();
+    private final Deserializer deserializer;
+    private final boolean directDeserializatoin;
+
+    public GenericSymbolicDeserializer() {
+        this.deserializer = new Deserializer();
+        this.directDeserializatoin = true;
+    }
+
+    public GenericSymbolicDeserializer(boolean directDeserializatoin) {
+        this.deserializer = new Deserializer();
+        this.directDeserializatoin = directDeserializatoin;
+    }
 
     public Err<GenericSymbolicValue> deserialize(TextReader reader) {
         reader.jumpWhitespace();
 
         if (reader.getCurrentChar() != '@') {
-            return Err.failure(new SymbolicValueMustStartWithAtSymbol());
+            final LorikeetException error = this.directDeserializatoin
+                ? new SymbolicValueMustStartWithAtSymbol()
+                : new InconclusiveError(new SymbolicValueMustStartWithAtSymbol());
+            return Err.failure(error);
         }
         reader.skip();
 
