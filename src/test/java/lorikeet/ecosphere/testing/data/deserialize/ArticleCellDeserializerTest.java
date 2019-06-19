@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Dict;
 import lorikeet.ecosphere.testing.data.BoolValue;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.StringValue;
 import lorikeet.ecosphere.testing.reader.TextReader;
@@ -18,7 +18,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testParseNodeWithJustIdentifier() {
         TextReader reader = new TextReader("com.Foo()");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getReturnValue().isPresent()).isFalse();
         assertThat(cell.getExceptionThrown().isPresent()).isFalse();
@@ -29,7 +29,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testWithReturnValue() {
         TextReader reader = new TextReader("com.Foo() returns 34");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getReturnValue().orPanic()).isEqualTo(new NumberValue(34));
         assertThat(cell.getExceptionThrown().isPresent()).isFalse();
@@ -40,7 +40,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testWithExceptionThrown() {
         TextReader reader = new TextReader("com.Foo() throws java.lang.NullPointerException");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Foo");
         assertThat(cell.getArguments().isEmpty()).isTrue();
         assertThat(cell.getReturnValue().isPresent()).isFalse();
@@ -51,7 +51,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testWithOneArgument() {
         TextReader reader = new TextReader("com.Baz('YES')");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Baz");
         assertThat(cell.getArguments()).hasSize(1);
         assertThat(cell.getArguments()).isEqualTo(Dict.of("0", new StringValue("YES")));
@@ -63,7 +63,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testWithTwoArguments() {
         TextReader reader = new TextReader("com.Baz('YES', false)");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Baz");
         assertThat(cell.getArguments()).hasSize(2);
         assertThat(cell.getArguments()).containsEntry("0", new StringValue("YES"));
@@ -76,7 +76,7 @@ public class ArticleCellDeserializerTest {
     @Test
     public void testWithTwoArgumentsWithReturn() {
         TextReader reader = new TextReader("com.Baz('YES', false)  returns  111");
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("com.Baz");
         assertThat(cell.getArguments()).hasSize(2);
         assertThat(cell.getArguments()).containsEntry("0", new StringValue("YES"));
@@ -90,7 +90,7 @@ public class ArticleCellDeserializerTest {
     public void testInconsistentWhiteSpacing() {
         TextReader reader = new TextReader("    lorikeet.ecosphere.IssueDebitCard ('mastercard'  )\n");
 
-        CellValue cell = deserializer.deserialize(reader).orPanic();
+        CellDefinition cell = deserializer.deserialize(reader).orPanic();
         assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.IssueDebitCard");
         assertThat(cell.getArguments()).hasSize(1);
         assertThat(cell.getArguments()).containsEntry("0", new StringValue("mastercard"));

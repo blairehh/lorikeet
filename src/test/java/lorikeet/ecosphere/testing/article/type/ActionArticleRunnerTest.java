@@ -5,7 +5,7 @@ import lorikeet.Seq;
 import lorikeet.ecosphere.testing.article.RunResult;
 import lorikeet.ecosphere.testing.data.AnyValue;
 import lorikeet.ecosphere.testing.data.BoolValue;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.ListValue;
 import lorikeet.ecosphere.testing.data.NotSupportedValue;
 import lorikeet.ecosphere.testing.data.NullValue;
@@ -23,7 +23,7 @@ public class ActionArticleRunnerTest {
 
     @Test
     public void testReturnsValue() {
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.IssueDebitCard",
             Dict.of("paymentCompany", new StringValue("mastercard")),
             null,
@@ -39,7 +39,7 @@ public class ActionArticleRunnerTest {
 
     @Test
     public void testReturnsValueMatchesAgainstAnyValue() {
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.IssueDebitCard",
             Dict.of("paymentCompany", new StringValue("mastercard")),
             null,
@@ -55,7 +55,7 @@ public class ActionArticleRunnerTest {
 
     @Test
     public void testParameterWithDbgWorksWithJustParameterNumber() {
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.IssueDebitCard",
             Dict.of("0", new StringValue("mastercard")),
             null,
@@ -71,7 +71,7 @@ public class ActionArticleRunnerTest {
 
     @Test
     public void testThrowsException() {
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.CreateSavingsDeposit",
             Dict.of("0", new NumberValue(34.67)),
             "java.lang.RuntimeException",
@@ -102,7 +102,7 @@ public class ActionArticleRunnerTest {
                 .push("account", new NullValue());
         ObjectValue returnValue = new ObjectValue("lorikeet.ecosphere.User", returnData);
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.CreateUser",
             arguments,
             null,

@@ -2,8 +2,7 @@ package lorikeet.ecosphere.testing.data.deserialize;
 
 import lorikeet.Dict;
 import lorikeet.Err;
-import lorikeet.Opt;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.error.ArticleCellMustStartWithIdentifier;
@@ -18,7 +17,7 @@ public class ArticleCellDeserializer {
 
     private final Deserializer deserializer = new Deserializer();
 
-    public Err<CellValue> deserialize(TextReader reader) {
+    public Err<CellDefinition> deserialize(TextReader reader) {
         final Err<String> className = reader.nextIdentifier();
         if (!className.isPresent()) {
             return Err.failure(new ArticleCellMustStartWithIdentifier());
@@ -66,7 +65,7 @@ public class ArticleCellDeserializer {
         }
     }
 
-    private Err<CellValue> deserializeReturnsOrThrows(TextReader reader, String className, Dict<String, Value> arguments) {
+    private Err<CellDefinition> deserializeReturnsOrThrows(TextReader reader, String className, Dict<String, Value> arguments) {
         String exceptionThrown = null;
         Value returnValue = null;
 
@@ -88,6 +87,6 @@ public class ArticleCellDeserializer {
             exceptionThrown = exceptionClass.orPanic();
         }
 
-        return Err.of(new CellValue(className, arguments, exceptionThrown, returnValue));
+        return Err.of(new CellDefinition(className, arguments, exceptionThrown, returnValue));
     }
 }

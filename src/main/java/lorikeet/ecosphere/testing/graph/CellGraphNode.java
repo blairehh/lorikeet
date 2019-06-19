@@ -1,6 +1,6 @@
 package lorikeet.ecosphere.testing.graph;
 
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.Value;
 
 import java.time.Instant;
@@ -8,22 +8,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class CellGraphNode {
-    private CellValue cell;
+    private CellDefinition cell;
     private final List<CellGraphNode> children;
     private final Instant timestamp;
 
-    public CellGraphNode(CellValue cell, List<CellGraphNode> children, Instant timestamp) {
+    public CellGraphNode(CellDefinition cell, List<CellGraphNode> children, Instant timestamp) {
         this.cell = cell;
         this.children = children;
         this.timestamp = timestamp;
     }
 
-    public CellValue getCell() {
+    public CellDefinition getCell() {
         return this.cell;
     }
 
     public CellGraphNode setReturnValue(Value value) {
-        this.cell = new CellValue(
+        this.cell = new CellDefinition(
             this.cell.getClassName(),
             this.cell.getArguments(),
             this.cell.getExceptionThrown().orElse(null),
@@ -33,7 +33,7 @@ public class CellGraphNode {
     }
 
     public CellGraphNode setExceptionThrown(String exceptionThrown) {
-        this.cell = new CellValue(
+        this.cell = new CellDefinition(
             this.cell.getClassName(),
             this.cell.getArguments(),
             exceptionThrown,

@@ -11,7 +11,6 @@ import lorikeet.ecosphere.testing.CellStructure;
 import lorikeet.ecosphere.testing.Microscope;
 import lorikeet.ecosphere.testing.TestAxon;
 import lorikeet.ecosphere.testing.article.RunResult;
-import lorikeet.ecosphere.testing.data.CellValue;
 import lorikeet.ecosphere.testing.data.NullValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.data.generator.Generator;

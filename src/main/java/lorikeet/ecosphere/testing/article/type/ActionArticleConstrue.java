@@ -2,20 +2,18 @@ package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Err;
 import lorikeet.Opt;
-import lorikeet.Seq;
 import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.CellKind;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.Stanza;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.data.deserialize.ArticleCellDeserializer;
 import lorikeet.ecosphere.testing.data.deserialize.Deserializer;
 import lorikeet.ecosphere.testing.reader.TextReader;
 import lorikeet.error.CanNotSpecifyExceptionThrownInExpectAndToThrowStanza;
 import lorikeet.error.CanNotSpecifyReturnValueInExpectAndToReturnStanza;
-import lorikeet.error.CellArticleMustHaveCaseStanza;
-import lorikeet.error.CouldNotDeserializeCellValue;
+import lorikeet.error.ActionArticleMustHaveCaseStanza;
 import lorikeet.error.CouldNotDeserializeExceptionClassInToThrowStanza;
 import lorikeet.error.CouldNotDeserializeValueInToReturnStanza;
 import lorikeet.error.NotApplicable;
@@ -38,16 +36,15 @@ public class ActionArticleConstrue {
         final Opt<Stanza> expectStanza = article.findStanza("expect");
 
         if (!expectStanza.isPresent()) {
-            // @TODO rename the error below
-            return Err.failure(new CellArticleMustHaveCaseStanza());
+            return Err.failure(new ActionArticleMustHaveCaseStanza());
         }
 
-        final Err<CellValue> cellValueErr = this.cellDeserializer.deserialize(new TextReader(expectStanza.orPanic().getContent()));
-        if (!cellValueErr.isPresent()) {
-            return Err.failure(new CouldNotDeserializeCellValue());
+        final Err<CellDefinition> cellDefinitionErr = this.cellDeserializer.deserialize(new TextReader(expectStanza.orPanic().getContent()));
+        if (!cellDefinitionErr.isPresent()) {
+            return Err.from(cellDefinitionErr);
         }
 
-        CellValue cell = cellValueErr.orPanic();
+        CellDefinition cell = cellDefinitionErr.orPanic();
 
         final Opt<Stanza> toReturnStanza = article.findStanza("to-return");
 

@@ -3,19 +3,15 @@ package lorikeet.ecosphere.testing.data;
 import lorikeet.Dict;
 import lorikeet.Opt;
 
-import java.util.Map;
 import java.util.Objects;
 
-/*
- * @TODO this should not be a "value"
- */
-public class CellValue implements Value {
+public class CellDefinition {
     private final String className;
     private final String exceptionThrown;
     private final Value returnValue;
     private final Dict<String, Value> arguments;
 
-    public CellValue(String className, Dict<String, Value> arguments, String exceptionThrown, Value returnValue) {
+    public CellDefinition(String className, Dict<String, Value> arguments, String exceptionThrown, Value returnValue) {
         this.className = className;
         this.arguments = arguments;
         this.exceptionThrown = exceptionThrown;
@@ -38,29 +34,12 @@ public class CellValue implements Value {
         return Opt.ofNullable(this.returnValue);
     }
 
-    public CellValue withReturnValue(Value value) {
-        return new CellValue(this.className, this.arguments, this.exceptionThrown, value);
+    public CellDefinition withReturnValue(Value value) {
+        return new CellDefinition(this.className, this.arguments, this.exceptionThrown, value);
     }
 
-    public CellValue withExceptionThrown(String exception) {
-        return new CellValue(this.className, this.arguments, exception, this.returnValue);
-    }
-
-    @Override
-    public Equality equality(Value other) {
-        if (other.isSymbolic()) {
-            return Equality.UNKNOWN;
-        }
-
-        if (!(other instanceof CellValue)) {
-            return Equality.NOT_EQUAL;
-        }
-
-        final CellValue otherValue = (CellValue) other;
-        if (this.equals(otherValue)) {
-            return Equality.EQUAL;
-        }
-        return Equality.NOT_EQUAL;
+    public CellDefinition withExceptionThrown(String exception) {
+        return new CellDefinition(this.className, this.arguments, exception, this.returnValue);
     }
 
     @Override
@@ -73,7 +52,7 @@ public class CellValue implements Value {
             return false;
         }
 
-        CellValue that = (CellValue) o;
+        CellDefinition that = (CellDefinition) o;
 
         return Objects.equals(this.getClassName(), that.getClassName())
             && Objects.equals(this.getArguments(), that.getArguments())

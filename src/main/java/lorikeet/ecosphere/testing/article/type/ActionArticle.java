@@ -2,7 +2,7 @@ package lorikeet.ecosphere.testing.article.type;
 
 import lorikeet.Opt;
 import lorikeet.ecosphere.testing.CellFormType;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 
 import java.util.Objects;
 
@@ -11,10 +11,10 @@ public class ActionArticle {
     private final String filePath;
     private final String name;
     private final String documentation;
-    private final CellValue cell;
+    private final CellDefinition cell;
     private final CellFormType formType;
 
-    public ActionArticle(CellValue cell) {
+    public ActionArticle(CellDefinition cell) {
         this.filePath = "";
         this.name = null;
         this.documentation = null;
@@ -22,7 +22,7 @@ public class ActionArticle {
         this.formType = null;
     }
 
-    public ActionArticle(String filePath, String name, String documentation, CellValue cell, CellFormType formType) {
+    public ActionArticle(String filePath, String name, String documentation, CellDefinition cell, CellFormType formType) {
         this.filePath = filePath;
         this.name = name;
         this.documentation = documentation;
@@ -42,7 +42,7 @@ public class ActionArticle {
         return Opt.ofNullable(this.documentation);
     }
 
-    public CellValue getCell() {
+    public CellDefinition getCell() {
         return this.cell;
     }
 

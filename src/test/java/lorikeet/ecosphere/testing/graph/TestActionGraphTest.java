@@ -5,7 +5,7 @@ import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
 import lorikeet.ecosphere.testing.TestAxon;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.StringValue;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class TestActionGraphTest {
         assertThat(user.welcomeMessageSentAt).isNotNull();
 
         CellGraphNode root = action.getCellGraph().getRootNode();
-        CellValue cell = root.getCell();
+        CellDefinition cell = root.getCell();
         assertThat(cell.getClassName()).isEqualTo("lorikeet.ecosphere.CreateUser");
         assertThat(cell.getArguments()).containsEntry("email", new StringValue("bob@gmail.com"));
         assertThat(cell.getArguments()).containsEntry("password", new StringValue("secret"));

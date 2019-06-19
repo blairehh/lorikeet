@@ -7,7 +7,7 @@ import lorikeet.ecosphere.testing.CellFormType;
 import lorikeet.ecosphere.testing.article.Article;
 import lorikeet.ecosphere.testing.article.ArticleReader;
 import lorikeet.ecosphere.testing.data.BoolValue;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.StringValue;
 import lorikeet.ecosphere.testing.reader.LineReader;
@@ -24,7 +24,7 @@ public class ActionArticleConstrueTest {
 
         ActionArticle actionArticle = construe.construe(article).orPanic();
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.IssueDebitCard",
             Dict.of("0", new StringValue("mastercard")),
             null,
@@ -41,7 +41,7 @@ public class ActionArticleConstrueTest {
 
         ActionArticle actionArticle = construe.construe(article).orPanic();
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.IssueDebitCard",
             Dict.of("0", new StringValue("mastercard")),
             null,
@@ -58,7 +58,7 @@ public class ActionArticleConstrueTest {
 
         ActionArticle actionArticle = construe.construe(article).orPanic();
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.CreateSavingsDeposit",
             Dict.of("0", new NumberValue(34.67)),
             "java.lang.RuntimeException",
@@ -75,7 +75,7 @@ public class ActionArticleConstrueTest {
 
         ActionArticle actionArticle = construe.construe(article).orPanic();
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.CreateSavingsDeposit",
             Dict.of("0", new NumberValue(34.67)),
             "java.lang.RuntimeException",
@@ -92,7 +92,7 @@ public class ActionArticleConstrueTest {
 
         ActionArticle actionArticle = construe.construe(article).orPanic();
 
-        CellValue cell = new CellValue(
+        CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.ChargePayment",
             Dict.of("0", new StringValue("AUD"), "1", new NumberValue(12.00)),
             null,

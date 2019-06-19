@@ -11,8 +11,7 @@ import lorikeet.ecosphere.Action3;
 import lorikeet.ecosphere.Action4;
 import lorikeet.ecosphere.Action5;
 import lorikeet.ecosphere.meta.ParameterMeta;
-import lorikeet.ecosphere.testing.Microscope;
-import lorikeet.ecosphere.testing.data.CellValue;
+import lorikeet.ecosphere.testing.data.CellDefinition;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.ecosphere.testing.data.interpreter.Interpreter;
 import lorikeet.ecosphere.testing.graph.CellGraph;
@@ -152,14 +151,14 @@ public class TestAxon implements Axon {
         }
         
         
-        CellValue cellValue = new CellValue(
+        CellDefinition cellDefinition = new CellDefinition(
             cell.getClass().getName(),
             buildArguments(cellForm.getParameters(), Arrays.asList(params)),
             null,
             null
         );
         CellGraphNode createdNode = new CellGraphNode(
-            cellValue,
+            cellDefinition,
             new ArrayList<>(),
             Instant.now()
         );
