@@ -1,5 +1,0 @@
-type:
-    cell
-
-case:
-    <lorikeet.ecosphere.IssueDebitCard  paymentCompany='mastercard' -return=true>

@@ -1,8 +1,0 @@
-type:
-    cell
-
-form:
-    action2
-
-case:
-    <lorikeet.ecosphere.ChargePayment currency='AUD' price=12.00 -return=true>
