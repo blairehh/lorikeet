@@ -7,8 +7,8 @@ import lorikeet.ecosphere.testing.data.IdentifierValue;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.error.CouldNotFindEnumConstantFromEnumIdentifierValue;
 import lorikeet.error.EnumIdentifierValueClassMismatch;
-import lorikeet.error.EnumIdentifierValueGeneratorMustBeSuppliedAnIdentifierValue;
-import lorikeet.error.ValueGeneratorDoesNotJavaType;
+import lorikeet.error.IdentifierValueRequiredToGenerateEnum;
+import lorikeet.error.ValueGeneratorDoesNotSupportJavaType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,12 +50,12 @@ public class EnumIdentifierValueGeneratorTest {
     @Test
     public void testValueMustIdentifierValue() {
         Err<BankAccountType> result = generator.generate(BankAccountType.class, new NumberValue(3));
-        assertThat(result.failedWith(EnumIdentifierValueGeneratorMustBeSuppliedAnIdentifierValue.class)).isTrue();
+        assertThat(result.failedWith(IdentifierValueRequiredToGenerateEnum.class)).isTrue();
     }
 
     @Test
     public void testDoesNotTryOnNonEnumClass() {
         Err<Account> result = generator.generate(Account.class, new IdentifierValue("SAVINGS"));
-        assertThat(result.failedWith(ValueGeneratorDoesNotJavaType.class)).isTrue();
+        assertThat(result.failedWith(ValueGeneratorDoesNotSupportJavaType.class)).isTrue();
     }
 }

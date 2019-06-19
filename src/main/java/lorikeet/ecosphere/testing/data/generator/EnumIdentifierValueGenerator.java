@@ -5,18 +5,18 @@ import lorikeet.ecosphere.testing.data.IdentifierValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.CouldNotFindEnumConstantFromEnumIdentifierValue;
 import lorikeet.error.EnumIdentifierValueClassMismatch;
-import lorikeet.error.EnumIdentifierValueGeneratorMustBeSuppliedAnIdentifierValue;
-import lorikeet.error.ValueGeneratorDoesNotJavaType;
+import lorikeet.error.IdentifierValueRequiredToGenerateEnum;
+import lorikeet.error.ValueGeneratorDoesNotSupportJavaType;
 
 public class EnumIdentifierValueGenerator implements ValueGenerator {
     @Override
     public <T> Err<T> generate(Class<T> classDef, Value value) {
         if (!classDef.isEnum()) {
-            return Err.failure(new ValueGeneratorDoesNotJavaType());
+            return Err.failure(new ValueGeneratorDoesNotSupportJavaType());
         }
 
         if (!(value instanceof IdentifierValue)) {
-            return Err.failure(new EnumIdentifierValueGeneratorMustBeSuppliedAnIdentifierValue());
+            return Err.failure(new IdentifierValueRequiredToGenerateEnum());
         }
 
         final String identifier = ((IdentifierValue)value).getIdentifier();
