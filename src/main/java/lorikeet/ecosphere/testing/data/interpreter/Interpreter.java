@@ -14,7 +14,8 @@ public class Interpreter {
         new NumberValueInterpreter(),
         new ListValueInterpreter(),
         new ObjectValueInterpreter(),
-        new MapValueInterpreter()
+        new MapValueInterpreter(),
+        new EnumIdentifierValueInterpreter()
     );
 
     public Value interpret(Object object) {

@@ -5,14 +5,14 @@ import lorikeet.ecosphere.testing.data.StringValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.StringValueMustBeOneCharacterToGenerateChar;
 import lorikeet.error.ValueGeneratorDoesNotSupportType;
-import lorikeet.error.ValueGeneratorDoesNotSupportValue;
+import lorikeet.error.ValueGeneratorDoesNotJavaType;
 
 public class StringValueGenerator implements ValueGenerator {
 
     @Override
     public <T> Err<T> generate(Class<T> classDef, Value value) {
         if (!(value instanceof StringValue)) {
-            return Err.failure(new ValueGeneratorDoesNotSupportValue());
+            return Err.failure(new ValueGeneratorDoesNotJavaType());
         }
         final StringValue stringValue = (StringValue)value;
 

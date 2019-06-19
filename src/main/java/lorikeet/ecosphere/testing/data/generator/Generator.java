@@ -10,7 +10,8 @@ public class Generator {
     private static final Seq<ValueGenerator> GENERATORS = Seq.of(
         new BoolValueGenerator(),
         new NumberValueGenerator(),
-        new StringValueGenerator()
+        new StringValueGenerator(),
+        new EnumIdentifierValueGenerator()
     );
 
     public <T> Err<T> generate(Class<T> classDef, Value value) {

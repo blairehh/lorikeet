@@ -4,7 +4,7 @@ import lorikeet.Err;
 import lorikeet.ecosphere.testing.data.NumberValue;
 import lorikeet.ecosphere.testing.data.Value;
 import lorikeet.error.ValueGeneratorDoesNotSupportType;
-import lorikeet.error.ValueGeneratorDoesNotSupportValue;
+import lorikeet.error.ValueGeneratorDoesNotJavaType;
 
 @SuppressWarnings("unchecked")
 public class NumberValueGenerator implements ValueGenerator {
@@ -12,7 +12,7 @@ public class NumberValueGenerator implements ValueGenerator {
     @Override
     public <T> Err<T> generate(Class<T> classDef, Value value) {
         if (!(value instanceof NumberValue)) {
-            return Err.failure(new ValueGeneratorDoesNotSupportValue());
+            return Err.failure(new ValueGeneratorDoesNotJavaType());
         }
 
         final NumberValue numberValue = (NumberValue)value;
