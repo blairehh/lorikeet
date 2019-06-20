@@ -92,7 +92,7 @@ public final class Opt<T> implements May<T> {
      * {@code Opt}.
      *
      * @apiNote
-     * Though it may be tempting to do so, avoid testing if an object is empty
+     * Though it may be tempting to do so, avoid articletesting if an object is empty
      * by comparing with {@code ==} against instances returned by
      * {@code Opt.empty()}.  There is no guarantee that it is a singleton.
      * Instead, use {@link #isPresent()}.

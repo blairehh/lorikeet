@@ -1,6 +1,6 @@
 package lorikeet.ecosphere;
 
-import lorikeet.ecosphere.meta.Dbg;
+import lorikeet.ecosphere.articletesting.meta.Dbg;
 
 public class OpenAccount implements Action1<Boolean, String> {
 
