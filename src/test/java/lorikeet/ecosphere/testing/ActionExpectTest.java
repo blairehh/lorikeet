@@ -6,17 +6,17 @@ import lorikeet.ecosphere.IssueDebitCard;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
-import static lorikeet.ecosphere.testing.ActionAssert.verify;
+import static lorikeet.ecosphere.testing.ActionExpect.expect;
 import static lorikeet.ecosphere.testing.TestCase.test;
 
-public class ActionAssertTest {
+public class ActionExpectTest {
 
     @Test
     public void testActionYields() {
         TestCase<Boolean> test = test(new IssueDebitCard(), "masterCard");
 
-        verify(test)
-            .yields(true)
+        expect(test)
+            .toReturn(true)
             .isCorrect();
     }
 
@@ -24,8 +24,8 @@ public class ActionAssertTest {
     public void testYieldsWrongValue() {
         TestCase<Boolean> test = test(new IssueDebitCard(), "masterCard");
 
-        verify(test)
-            .yields(false)
+        expect(test)
+            .toReturn(false)
             .isCorrect();
     }
 
@@ -33,8 +33,8 @@ public class ActionAssertTest {
     public void testActionThrows() {
         TestCase<Boolean> test = test(new CreateSavingsDeposit(), 1.0);
 
-        verify(test)
-            .raises(RuntimeException.class)
+        expect(test)
+            .toThrow(RuntimeException.class)
             .isCorrect();
     }
 
@@ -42,8 +42,8 @@ public class ActionAssertTest {
     public void testActionThrowsWrongException() {
         TestCase<Boolean> test = test(new CreateSavingsDeposit(), 1.0);
 
-        verify(test)
-            .raises(NullPointerException.class)
+        expect(test)
+            .toThrow(NullPointerException.class)
             .isCorrect();
     }
 }

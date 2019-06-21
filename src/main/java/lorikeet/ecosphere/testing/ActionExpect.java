@@ -4,7 +4,7 @@ import org.junit.ComparisonFailure;
 
 import java.util.Objects;
 
-public class ActionAssert<T> {
+public class ActionExpect<T> {
 
     private final TestCase<T> testCase;
     private boolean checkReturn;
@@ -12,7 +12,7 @@ public class ActionAssert<T> {
     private boolean checkException;
     private Class<? extends Exception> expectedException;
 
-    public ActionAssert(TestCase<T> testCase) {
+    public ActionExpect(TestCase<T> testCase) {
         this.testCase = testCase;
         this.checkReturn = false;
         this.expectedReturn = null;
@@ -20,17 +20,17 @@ public class ActionAssert<T> {
         this.expectedException = null;
     }
 
-    public static <T> ActionAssert<T> verify(TestCase<T> testCase) {
-        return new ActionAssert<>(testCase);
+    public static <T> ActionExpect<T> expect(TestCase<T> testCase) {
+        return new ActionExpect<>(testCase);
     }
 
-    public ActionAssert yields(T value) {
+    public ActionExpect toReturn(T value) {
         this.checkReturn = true;
         this.expectedReturn = value;
         return this;
     }
 
-    public ActionAssert raises(Class<? extends Exception> e) {
+    public ActionExpect toThrow(Class<? extends Exception> e) {
         this.checkException = true;
         this.expectedException = e;
         return this;
