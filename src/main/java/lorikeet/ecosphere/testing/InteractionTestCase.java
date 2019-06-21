@@ -7,7 +7,12 @@ public class InteractionTestCase<TestCaseReturn, ActionReturn> extends TestCase<
     }
 
     public TestCase<TestCaseReturn> thenReturn(ActionReturn value) {
-        super.axon.addStub(interaction.withReturnValue(value));
+        super.axon.addStub(super.interaction.withReturnValue(value));
+        return new TestCase<>(this);
+    }
+
+    public TestCase<TestCaseReturn> thenThrow(RuntimeException exception) {
+        super.axon.addStub(super.interaction.withExceptionToThrow(exception));
         return new TestCase<>(this);
     }
 }

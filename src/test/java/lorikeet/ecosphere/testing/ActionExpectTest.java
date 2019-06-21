@@ -146,4 +146,15 @@ public class ActionExpectTest {
             .toReturn(true)
             .isCorrect();
     }
+
+    @Test
+    public void testStubbingWithException() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com")
+            .when(new CreateSavingsDeposit(), 0.0).thenThrow(new IllegalArgumentException());
+
+        expect(test)
+            .toYield(new CreateSavingsDeposit(), 0.0)
+                .andThrow(IllegalArgumentException.class)
+            .isCorrect();
+    }
 }

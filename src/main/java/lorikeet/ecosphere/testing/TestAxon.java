@@ -45,6 +45,11 @@ public class TestAxon implements Axon {
         if (stubbed == null) {
             return Opt.empty();
         }
+
+        if (stubbed.getExceptionToThrow().isPresent()) {
+            throw stubbed.getExceptionToThrow().orPanic();
+        }
+
         return (Opt<A>)stubbed.getReturnValue();
     }
 

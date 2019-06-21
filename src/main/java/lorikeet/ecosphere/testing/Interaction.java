@@ -12,19 +12,22 @@ public class Interaction {
     private final Seq<Object> arguments;
     private final Object returnValue;
     private final Class<? extends Exception> exceptionThrown;
+    private final RuntimeException exceptionToThrow;
 
     public Interaction(Cell cell, Seq<Object> arguments) {
         this.cell = cell;
         this.arguments = arguments;
         this.returnValue = null;
         this.exceptionThrown = null;
+        this.exceptionToThrow = null;
     }
 
-    public Interaction(Cell cell, Seq<Object> arguments, Object returnValue, Class<? extends Exception> exception) {
+    public Interaction(Cell cell, Seq<Object> arguments, Object returnValue, Class<? extends Exception> exception, RuntimeException exceptionToThrow) {
         this.cell = cell;
         this.arguments = arguments;
         this.returnValue = returnValue;
         this.exceptionThrown = exception;
+        this.exceptionToThrow = exceptionToThrow;
     }
 
     public static Interaction of(Cell cell, Object... arguments) {
@@ -47,12 +50,20 @@ public class Interaction {
         return Opt.ofNullable(this.exceptionThrown);
     }
 
+    public Opt<RuntimeException> getExceptionToThrow() {
+        return Opt.ofNullable(this.exceptionToThrow);
+    }
+
     public Interaction withReturnValue(Object value) {
-        return new Interaction(this.cell, this.arguments, value, this.exceptionThrown);
+        return new Interaction(this.cell, this.arguments, value, this.exceptionThrown, this.exceptionToThrow);
     }
 
     public Interaction withExceptionThrown(Class<? extends Exception> exception) {
-        return new Interaction(this.cell, this.arguments, this.returnValue, exception);
+        return new Interaction(this.cell, this.arguments, this.returnValue, exception, this.exceptionToThrow);
+    }
+
+    public Interaction withExceptionToThrow(RuntimeException exception) {
+        return new Interaction(this.cell, this.arguments, this.returnValue, this.exceptionThrown, exception);
     }
 
     public boolean invokeEquals(Interaction interaction) {
