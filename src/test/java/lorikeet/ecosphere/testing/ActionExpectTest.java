@@ -112,7 +112,7 @@ public class ActionExpectTest {
         expect(test)
             .toYield(new CreateSavingsDeposit(), 0.0)
                 .andThrow(IllegalStateException.class)
-            .toReturn(true)
+            .toReturn(false)
             .isCorrect();
     }
 
@@ -123,7 +123,7 @@ public class ActionExpectTest {
         expect(test)
             .toYield(new CreateSavingsDeposit(), 0.0)
                 .andThrow(IllegalStateException.class)
-            .toReturn(false)
+            .toReturn(true)
             .isCorrect();
     }
 
@@ -134,6 +134,16 @@ public class ActionExpectTest {
         expect(test)
             .toYield(new CreateSavingsDeposit(), 0.0)
                 .andThrow(NullPointerException.class)
+            .isCorrect();
+    }
+
+    @Test
+    public void testStubbing() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com")
+            .when(new CreateSavingsDeposit(), 0.0).thenReturn(true);
+
+        expect(test)
+            .toReturn(true)
             .isCorrect();
     }
 }

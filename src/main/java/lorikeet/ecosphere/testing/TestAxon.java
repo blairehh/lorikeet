@@ -1,5 +1,6 @@
 package lorikeet.ecosphere.testing;
 
+import lorikeet.Opt;
 import lorikeet.Seq;
 import lorikeet.ecosphere.Action1;
 import lorikeet.ecosphere.Action2;
@@ -12,11 +13,13 @@ import java.util.UUID;
 
 public class TestAxon implements Axon {
     private final String cid;
+    private Seq<Interaction> stubs;
     private Seq<Interaction> interactions;
 
     public TestAxon() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
         this.interactions = Seq.empty();
+        this.stubs = Seq.empty();
     }
 
     public Seq<Interaction> getInteractions() {
@@ -28,15 +31,33 @@ public class TestAxon implements Axon {
         return this.cid;
     }
 
+    public void addStub(Interaction interaction) {
+        this.stubs = this.stubs.push(interaction);
+    }
+
+    private <A> Opt<A> stubbedValue(Interaction interaction) {
+        final Interaction stubbed = this.stubs.stream()
+            .filter(stub -> stub.invokeEquals(interaction))
+            .collect(Seq.collector())
+            .first()
+            .orNull();
+
+        if (stubbed == null) {
+            return Opt.empty();
+        }
+        return (Opt<A>)stubbed.getReturnValue();
+    }
+
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
         action.inject(this);
+        final Interaction interaction = Interaction.of(action, parameter);
         try {
-            final ReturnType returnValue = action.invoke(parameter);
-            this.interactions = this.interactions.push(Interaction.of(action, parameter).withReturnValue(returnValue));
+            final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction).orElseGet(() -> action.invoke(parameter));
+            this.interactions = this.interactions.push(interaction.withReturnValue(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            this.interactions = this.interactions.push(Interaction.of(action, parameter).withExceptionThrown(e.getClass()));
+            this.interactions = this.interactions.push(interaction.withExceptionThrown(e.getClass()));
             throw e;
         }
     }

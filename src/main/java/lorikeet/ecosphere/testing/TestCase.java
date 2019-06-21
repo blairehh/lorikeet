@@ -9,11 +9,19 @@ import lorikeet.ecosphere.Axon;
 public class TestCase<T> {
 
     private final ActionPotential<T> action;
-    private final TestAxon axon;
+    protected final TestAxon axon;
+    protected Interaction interaction;
 
     public TestCase(ActionPotential<T> action) {
         this.action = action;
         this.axon = new TestAxon();
+        this.interaction = null;
+    }
+
+    public TestCase(TestCase<T> testCase) {
+        this.action = testCase.action;
+        this.axon = testCase.axon;
+        this.interaction = testCase.interaction;
     }
 
     public static <R, P1> TestCase<R> test(Action1<R, P1> action, P1 parameter) {
@@ -29,6 +37,11 @@ public class TestCase<T> {
             }
         };
         return new TestCase<>(potential);
+    }
+
+    public <R, P1> InteractionTestCase<T, R> when(Action1<R, P1> action, P1 parameter) {
+        this.interaction = Interaction.of(action, parameter);
+        return new InteractionTestCase<>(this);
     }
 
     public T evaluate() {
