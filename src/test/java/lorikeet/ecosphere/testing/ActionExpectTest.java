@@ -1,8 +1,11 @@
 package lorikeet.ecosphere.testing;
 
-
+import lorikeet.ecosphere.BankAccountType;
+import lorikeet.ecosphere.ChardRegistrationFee;
+import lorikeet.ecosphere.ChargePayment;
 import lorikeet.ecosphere.CreateSavingsDeposit;
 import lorikeet.ecosphere.IssueDebitCard;
+import lorikeet.ecosphere.SendWelcomeMessage;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
@@ -44,6 +47,30 @@ public class ActionExpectTest {
 
         expect(test)
             .toThrow(NullPointerException.class)
+            .isCorrect();
+    }
+
+    @Test
+    public void testInteraction() {
+        TestCase<Double> test = test(new ChardRegistrationFee(), BankAccountType.CHEQUE);
+        expect(test)
+            .toYield(new ChargePayment(), "USD", 2.0)
+            .isCorrect();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testInteractionNotSatisfiedDueToCellNotInvoked() {
+        TestCase<Double> test = test(new ChardRegistrationFee(), BankAccountType.CHEQUE);
+        expect(test)
+            .toYield(new SendWelcomeMessage(), "", "")
+            .isCorrect();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testInteractionNotSatisfiedDueToDifferentArgument() {
+        TestCase<Double> test = test(new ChardRegistrationFee(), BankAccountType.CHEQUE);
+        expect(test)
+            .toYield(new ChargePayment(), "USD", 3.0)
             .isCorrect();
     }
 }
