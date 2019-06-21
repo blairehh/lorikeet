@@ -74,16 +74,14 @@ public class TestAxon implements Axon {
         ParameterType2 parameter2
     ) {
         action.inject(this);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2);
         try {
-            final ReturnType returnValue = action.invoke(parameter1, parameter2);
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2)
-                .withReturnValue(returnValue);
-            this.interactions = this.interactions.push(interaction);
+            final ReturnType returnValue =(ReturnType)this.stubbedValue(interaction)
+                .orElseGet(() -> action.invoke(parameter1, parameter2));
+            this.interactions = this.interactions.push(interaction.withReturnValue(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2)
-                .withExceptionThrown(e.getClass());
-            this.interactions = this.interactions.push(interaction);
+            this.interactions = this.interactions.push(interaction.withExceptionThrown(e.getClass()));
             throw e;
         }
     }
@@ -96,16 +94,14 @@ public class TestAxon implements Axon {
         ParameterType3 parameter3
     ) {
         action.inject(this);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3);
         try {
-            final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3);
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3)
-                .withReturnValue(returnValue);
-            this.interactions = this.interactions.push(interaction);
+            final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)
+                .orElseGet(() -> action.invoke(parameter1, parameter2, parameter3));
+            this.interactions = this.interactions.push(interaction.withReturnValue(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3)
-                .withExceptionThrown(e.getClass());
-            this.interactions = this.interactions.push(interaction);
+            this.interactions = this.interactions.push(interaction.withExceptionThrown(e.getClass()));
             throw e;
         }
     }
@@ -119,16 +115,14 @@ public class TestAxon implements Axon {
         ParameterType4 parameter4
     ) {
         action.inject(this);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4);
         try {
-            final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4);
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4)
-                .withReturnValue(returnValue);
-            this.interactions = this.interactions.push(interaction);
+            final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)
+                .orElseGet(() -> action.invoke(parameter1, parameter2, parameter3, parameter4));
+            this.interactions = this.interactions.push(interaction.withReturnValue(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4)
-                .withExceptionThrown(e.getClass());
-            this.interactions = this.interactions.push(interaction);
+            this.interactions = this.interactions.push(interaction.withExceptionThrown(e.getClass()));
             throw e;
         }
     }
@@ -143,16 +137,14 @@ public class TestAxon implements Axon {
         ParameterType5 parameter5
     ) {
         action.inject(this);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5);
         try {
-            final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5)
-                .withReturnValue(returnValue);
-            this.interactions = this.interactions.push(interaction);
+            final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)
+                .orElseGet(() -> action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5));
+            this.interactions = this.interactions.push(interaction .withReturnValue(returnValue));
             return returnValue;
         } catch (RuntimeException e) {
-            final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5)
-                .withExceptionThrown(e.getClass());
-            this.interactions = this.interactions.push(interaction);
+            this.interactions = this.interactions.push(interaction.withExceptionThrown(e.getClass()));
             throw e;
         }
 
