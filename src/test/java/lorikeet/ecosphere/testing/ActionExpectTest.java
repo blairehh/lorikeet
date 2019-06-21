@@ -5,6 +5,7 @@ import lorikeet.ecosphere.ChardRegistrationFee;
 import lorikeet.ecosphere.ChargePayment;
 import lorikeet.ecosphere.CreateSavingsDeposit;
 import lorikeet.ecosphere.IssueDebitCard;
+import lorikeet.ecosphere.OpenAccount;
 import lorikeet.ecosphere.SendWelcomeMessage;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class ActionExpectTest {
         TestCase<Boolean> test = test(new CreateSavingsDeposit(), 1.0);
 
         expect(test)
-            .toThrow(RuntimeException.class)
+            .toThrow(IllegalStateException.class)
             .isCorrect();
     }
 
@@ -91,6 +92,48 @@ public class ActionExpectTest {
         expect(test)
             .toYield(new ChargePayment(), "USD", 2.0)
                 .andReturn(false)
+            .isCorrect();
+    }
+
+    @Test
+    public void testInteractionThrows() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com");
+
+        expect(test)
+            .toYield(new CreateSavingsDeposit(), 0.0)
+                .andThrow(IllegalStateException.class)
+            .isCorrect();
+    }
+
+    @Test
+    public void testInteractionThrowsAndReturnValue() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com");
+
+        expect(test)
+            .toYield(new CreateSavingsDeposit(), 0.0)
+                .andThrow(IllegalStateException.class)
+            .toReturn(true)
+            .isCorrect();
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testInteractionThrowsButWrongReturnValue() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com");
+
+        expect(test)
+            .toYield(new CreateSavingsDeposit(), 0.0)
+                .andThrow(IllegalStateException.class)
+            .toReturn(false)
+            .isCorrect();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testInteractionThrowsNotSame() {
+        TestCase<Boolean> test = test(new OpenAccount(), "foo@mail.com");
+
+        expect(test)
+            .toYield(new CreateSavingsDeposit(), 0.0)
+                .andThrow(NullPointerException.class)
             .isCorrect();
     }
 }

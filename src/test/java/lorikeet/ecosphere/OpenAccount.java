@@ -11,6 +11,7 @@ public class OpenAccount implements Action1<Boolean, String> {
         try {
             axon.yield(new CreateSavingsDeposit(), 0.0);
         } catch (RuntimeException e) {
+
         }
         return true;
     }

@@ -7,6 +7,7 @@ import org.junit.ComparisonFailure;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ActionExpect<T> {
@@ -136,12 +137,8 @@ public class ActionExpect<T> {
             return true;
         }
 
-        Function<Object, Boolean> returnMismatch = returnValue -> matchedInteractions.stream()
-            .anyMatch(interaction -> interaction.getReturnValue().map(value -> !Objects.equals(value, returnValue)).orElse(false));
-
-        return expected.getReturnValue()
-            .map(returnMismatch)
-            .orElse(false);
+        return matchedInteractions.stream()
+            .anyMatch(actual -> !actual.outcomeIsApplicableTo(expected));
 
     }
 

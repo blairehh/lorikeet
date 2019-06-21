@@ -7,7 +7,7 @@ public class CreateSavingsDeposit implements Action1<Boolean, Double> {
     private Axon axon;
 
     private boolean createSavingsAccount(double balance) {
-        throw new RuntimeException();
+        throw new IllegalStateException();
     }
 
     @Override

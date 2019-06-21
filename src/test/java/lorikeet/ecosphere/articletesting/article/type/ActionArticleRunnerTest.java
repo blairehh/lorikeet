@@ -74,7 +74,7 @@ public class ActionArticleRunnerTest {
         CellDefinition cell = new CellDefinition(
             "lorikeet.ecosphere.CreateSavingsDeposit",
             Dict.of("0", new NumberValue(34.67)),
-            "java.lang.RuntimeException",
+            "java.lang.IllegalStateException",
             null
         );
 

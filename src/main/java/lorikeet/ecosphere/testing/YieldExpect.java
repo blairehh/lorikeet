@@ -11,4 +11,9 @@ public class YieldExpect<ActionReturn, YieldReturn> extends ActionExpect<ActionR
         return new ActionExpect<>(this);
     }
 
+    public ActionExpect<ActionReturn> andThrow(Class<? extends Exception> expectedException) {
+        super.interaction = super.interaction.withExceptionThrown(expectedException);
+        return new ActionExpect<>(this);
+    }
+
 }
