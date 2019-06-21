@@ -73,4 +73,24 @@ public class ActionExpectTest {
             .toYield(new ChargePayment(), "USD", 3.0)
             .isCorrect();
     }
+
+    @Test
+    public void testInteractionAndReturn() {
+        TestCase<Double> test = test(new ChardRegistrationFee(), BankAccountType.CHEQUE);
+
+        expect(test)
+            .toYield(new ChargePayment(), "USD", 2.0)
+                .andReturn(true)
+            .isCorrect();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testInteractionAndReturnButReturnIsDifferent() {
+        TestCase<Double> test = test(new ChardRegistrationFee(), BankAccountType.CHEQUE);
+
+        expect(test)
+            .toYield(new ChargePayment(), "USD", 2.0)
+                .andReturn(false)
+            .isCorrect();
+    }
 }

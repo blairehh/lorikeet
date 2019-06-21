@@ -6,6 +6,7 @@ import lorikeet.ecosphere.Action2;
 import org.junit.ComparisonFailure;
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ActionExpect<T> {
@@ -15,7 +16,8 @@ public class ActionExpect<T> {
     private T expectedReturn;
     private boolean checkException;
     private Class<? extends Exception> expectedException;
-    private Seq<Interaction> expectInteractions;
+    protected Interaction interaction;
+    protected Seq<Interaction> expectInteractions;
 
     public ActionExpect(TestCase<T> testCase) {
         this.testCase = testCase;
@@ -23,7 +25,18 @@ public class ActionExpect<T> {
         this.expectedReturn = null;
         this.checkException = false;
         this.expectedException = null;
+        this.interaction = null;
         this.expectInteractions = Seq.empty();
+    }
+
+    public ActionExpect(ActionExpect<T> expect) {
+        this.testCase = expect.testCase;
+        this.checkReturn = expect.checkReturn;
+        this.expectedReturn = expect.expectedReturn;
+        this.checkException = expect.checkException;
+        this.expectedException = expect.expectedException;
+        this.interaction = expect.interaction;
+        this.expectInteractions = expect.expectInteractions;
     }
 
     public static <T> ActionExpect<T> expect(TestCase<T> testCase) {
@@ -31,32 +44,37 @@ public class ActionExpect<T> {
     }
 
     public ActionExpect<T> toReturn(T value) {
+        this.syncInteractions();
         this.checkReturn = true;
         this.expectedReturn = value;
         return this;
     }
 
     public ActionExpect<T> toThrow(Class<? extends Exception> e) {
+        this.syncInteractions();
         this.checkException = true;
         this.expectedException = e;
         return this;
     }
 
-    public <YieldReturn, YieldParameter1> ActionExpect<T> toYield(Action1<YieldReturn, YieldParameter1> yield, YieldParameter1 parameter1) {
-        this.expectInteractions = this.expectInteractions.push(new Interaction(yield, Seq.of(parameter1)));
-        return this;
+    public <YieldReturn, YieldParameter1> YieldExpect<T, YieldReturn> toYield(Action1<YieldReturn, YieldParameter1> yield, YieldParameter1 parameter1) {
+        this.syncInteractions();
+        this.interaction = new Interaction(yield, Seq.of(parameter1));
+        return new YieldExpect<>(this);
     }
 
-    public <YieldReturn, YieldParameter1, YieldParameter2> ActionExpect<T> toYield(
+    public <YieldReturn, YieldParameter1, YieldParameter2> YieldExpect<T, YieldReturn> toYield(
         Action2<YieldReturn, YieldParameter1, YieldParameter2> yield,
         YieldParameter1 parameter1,
         YieldParameter2 parameter2
     ) {
-        this.expectInteractions = this.expectInteractions.push(new Interaction(yield, Seq.of(parameter1, parameter2)));
-        return this;
+        this.syncInteractions();
+        this.interaction = new Interaction(yield, Seq.of(parameter1, parameter2));
+        return new YieldExpect<>(this);
     }
 
     public void isCorrect() {
+        this.syncInteractions();
         T actualReturn = null;
         Exception actualException = null;
 
@@ -83,25 +101,48 @@ public class ActionExpect<T> {
 
     }
 
+    private void syncInteractions() {
+        if (this.interaction != null) {
+            this.expectInteractions = this.expectInteractions.push(interaction);
+            this.interaction = null;
+        }
+    }
+
     private void assertInteractions(Seq<Interaction> actualInteractions) {
-      //  System.out.println(actualInteractions);
         final Seq<Interaction> failedInteractions = this.expectInteractions.stream()
-            .filter(interaction -> !actualInteractions.contains(interaction))
+            .filter(interaction -> didInteractionFail(interaction, actualInteractions))
             .collect(Seq.collector());
 
         if (failedInteractions.isEmpty()) {
             return;
         }
-       // System.out.println(failedInteractions);
-        final String interactoinsString = failedInteractions.stream()
+        final String interactionsString = failedInteractions.stream()
             .map(Object::toString)
             .collect(Collectors.joining(","));
 
         final StringBuilder message = new StringBuilder();
         message.append("the following interactions were not satisfied\n");
-        message.append(interactoinsString);
+        message.append(interactionsString);
 
         throw new AssertionError(message);
+    }
+
+    private boolean didInteractionFail(Interaction expected, Seq<Interaction> actualInteractions) {
+        final Seq<Interaction> matchedInteractions = actualInteractions.stream()
+            .filter(actual -> actual.invokeEquals(expected))
+            .collect(Seq.collector());
+
+        if (matchedInteractions.isEmpty()) {
+            return true;
+        }
+
+        Function<Object, Boolean> returnMismatch = returnValue -> matchedInteractions.stream()
+            .anyMatch(interaction -> interaction.getReturnValue().map(value -> !Objects.equals(value, returnValue)).orElse(false));
+
+        return expected.getReturnValue()
+            .map(returnMismatch)
+            .orElse(false);
+
     }
 
     private void assertEquals(String message, Object expected, Object actual) {

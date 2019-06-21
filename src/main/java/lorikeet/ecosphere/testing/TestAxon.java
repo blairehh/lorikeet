@@ -31,8 +31,10 @@ public class TestAxon implements Axon {
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
         action.inject(this);
-        this.interactions = this.interactions.push(Interaction.of(action, parameter));
-        return action.invoke(parameter);
+        final ReturnType returnValue = action.invoke(parameter);
+        this.interactions = this.interactions.push(Interaction.of(action, parameter).withReturnValue(returnValue));
+        return returnValue;
+
     }
 
     @Override
@@ -42,8 +44,9 @@ public class TestAxon implements Axon {
         ParameterType2 parameter2
     ) {
         action.inject(this);
-        this.interactions = this.interactions.push(Interaction.of(action, parameter1, parameter2));
-        return action.invoke(parameter1, parameter2);
+        final ReturnType returnValue = action.invoke(parameter1, parameter2);
+        this.interactions = this.interactions.push(Interaction.of(action, parameter1, parameter2).withReturnValue(returnValue));
+        return returnValue;
     }
 
     @Override
@@ -54,8 +57,11 @@ public class TestAxon implements Axon {
         ParameterType3 parameter3
     ) {
         action.inject(this);
-        this.interactions = this.interactions.push(Interaction.of(action, parameter1, parameter2, parameter3));
-        return action.invoke(parameter1, parameter2, parameter3);
+        final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3)
+            .withReturnValue(returnValue);
+        this.interactions = this.interactions.push(interaction);
+        return returnValue;
     }
 
     @Override
@@ -67,8 +73,11 @@ public class TestAxon implements Axon {
         ParameterType4 parameter4
     ) {
         action.inject(this);
-        this.interactions = this.interactions.push(Interaction.of(action, parameter1, parameter2, parameter3, parameter4));
-        return action.invoke(parameter1, parameter2, parameter3, parameter4);
+        final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4)
+            .withReturnValue(returnValue);
+        this.interactions = this.interactions.push(interaction);
+        return returnValue;
     }
 
     @Override
@@ -81,8 +90,11 @@ public class TestAxon implements Axon {
         ParameterType5 parameter5
     ) {
         action.inject(this);
-        this.interactions = this.interactions.push(Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5));
-        return action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+        final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+        final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5)
+            .withReturnValue(returnValue);
+        this.interactions = this.interactions.push(interaction);
+        return returnValue;
     }
 
 }
