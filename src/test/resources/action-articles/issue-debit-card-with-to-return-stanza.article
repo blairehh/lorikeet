@@ -2,7 +2,7 @@ type:
     action
 
 expect:
-    lorikeet.ecosphere.IssueDebitCard('mastercard')
+    lorikeet.lobe.IssueDebitCard('mastercard')
 
 to-return:
     true

@@ -2,7 +2,7 @@ type:
     action
 
 expect:
-    lorikeet.ecosphere.CreateSavingsDeposit(34.67)
+    lorikeet.lobe.CreateSavingsDeposit(34.67)
 
 to-throw:
     java.lang.RuntimeException

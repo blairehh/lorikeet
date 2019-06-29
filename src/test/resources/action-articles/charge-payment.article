@@ -7,4 +7,4 @@ type:
     action2
 
 expect:
-    lorikeet.ecosphere.ChargePayment('AUD', 12.00) returns true
+    lorikeet.lobe.ChargePayment('AUD', 12.00) returns true
