@@ -8,23 +8,23 @@ import lorikeet.ecosphere.Action3;
 import lorikeet.ecosphere.Action4;
 import lorikeet.ecosphere.Action5;
 import lorikeet.ecosphere.ActionPotential;
-import lorikeet.ecosphere.Axon;
+import lorikeet.ecosphere.Tract;
 
 public class TestCase<T> {
 
     private final ActionPotential<T> action;
-    protected final TestAxon axon;
+    protected final TestTract tract;
     protected Interaction interaction;
 
     public TestCase(ActionPotential<T> action) {
         this.action = action;
-        this.axon = new TestAxon();
+        this.tract = new TestTract();
         this.interaction = null;
     }
 
     public TestCase(TestCase<T> testCase) {
         this.action = testCase.action;
-        this.axon = testCase.axon;
+        this.tract = testCase.tract;
         this.interaction = testCase.interaction;
     }
 
@@ -36,8 +36,8 @@ public class TestCase<T> {
             }
 
             @Override
-            public void connect(Axon axon) {
-                action.inject(axon);
+            public void connect(Tract tract) {
+                action.connect(tract);
             }
         };
         return new TestCase<>(potential);
@@ -51,8 +51,8 @@ public class TestCase<T> {
             }
 
             @Override
-            public void connect(Axon axon) {
-                action.inject(axon);
+            public void connect(Tract tract) {
+                action.connect(tract);
             }
         };
         return new TestCase<>(potential);
@@ -71,8 +71,8 @@ public class TestCase<T> {
             }
 
             @Override
-            public void connect(Axon axon) {
-                action.inject(axon);
+            public void connect(Tract tract) {
+                action.connect(tract);
             }
         };
         return new TestCase<>(potential);
@@ -92,8 +92,8 @@ public class TestCase<T> {
             }
 
             @Override
-            public void connect(Axon axon) {
-                action.inject(axon);
+            public void connect(Tract tract) {
+                action.connect(tract);
             }
         };
         return new TestCase<>(potential);
@@ -114,8 +114,8 @@ public class TestCase<T> {
             }
 
             @Override
-            public void connect(Axon axon) {
-                action.inject(axon);
+            public void connect(Tract tract) {
+                action.connect(tract);
             }
         };
         return new TestCase<>(potential);
@@ -167,12 +167,12 @@ public class TestCase<T> {
 
 
     public T evaluate() {
-        this.action.connect(this.axon);
+        this.action.connect(this.tract);
         return this.action.invoke();
     }
 
     public Seq<Interaction> getInteractions() {
-        return this.axon.getInteractions();
+        return this.tract.getInteractions();
     }
 
 

@@ -9,7 +9,7 @@ public class ChargePayment implements Action2<Boolean, String, Double> {
     }
 
     @Override
-    public void inject(Axon axon) {
+    public void connect(Tract tract) {
 
     }
 

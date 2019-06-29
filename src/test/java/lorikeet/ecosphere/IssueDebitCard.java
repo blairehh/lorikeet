@@ -4,7 +4,7 @@ import lorikeet.ecosphere.articletesting.meta.Dbg;
 
 public class IssueDebitCard implements Action1<Boolean, String> {
 
-    private Axon axon;
+    private Tract tract;
 
     private boolean issueDebitCard(String paymentCompany) {
         return true;
@@ -16,7 +16,7 @@ public class IssueDebitCard implements Action1<Boolean, String> {
     }
 
     @Override
-    public void inject(Axon axon) {
-        this.axon = axon;
+    public void connect(Tract tract) {
+        this.tract = tract;
     }
 }

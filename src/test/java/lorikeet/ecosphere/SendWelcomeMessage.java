@@ -16,7 +16,7 @@ public class SendWelcomeMessage implements Action2<Instant, String, String> {
     }
 
     @Override
-    public void inject(Axon axon) {
+    public void connect(Tract tract) {
         
     }
 }

@@ -4,12 +4,12 @@ import lorikeet.ecosphere.articletesting.meta.Dbg;
 
 public class OpenAccount implements Action1<Boolean, String> {
 
-    private Axon axon;
+    private Tract tract;
 
     private boolean openAccount(String email) {
-        axon.yield(new IssueDebitCard(), "mastercard");
+        tract.yield(new IssueDebitCard(), "mastercard");
         try {
-            axon.yield(new CreateSavingsDeposit(), 0.0);
+            tract.yield(new CreateSavingsDeposit(), 0.0);
         } catch (RuntimeException e) {
             return false;
         }
@@ -22,8 +22,8 @@ public class OpenAccount implements Action1<Boolean, String> {
     }
 
     @Override
-    public void inject(Axon axon) {
-        this.axon = axon;
+    public void connect(Tract tract) {
+        this.tract = tract;
     }
 
 }

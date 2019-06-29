@@ -6,16 +6,16 @@ import lorikeet.ecosphere.articletesting.meta.Dbg;
 
 public class CreateUser implements Action3<User, String, String, Seq<Integer>> {
 
-    private Axon axon;
+    private Tract tract;
 
     public User createUser(String email, String password, Seq<Integer> codes) {
         User user = new User();
         user.email = email;
         user.password = password;
-        user.welcomeMessageSentAt = axon.yield(new SendWelcomeMessage(), email, "Hello");
+        user.welcomeMessageSentAt = tract.yield(new SendWelcomeMessage(), email, "Hello");
 
-        axon.yield(new ChargePayment(), "USD", 45.0);
-        axon.yield(new OpenAccount(), email);
+        tract.yield(new ChargePayment(), "USD", 45.0);
+        tract.yield(new OpenAccount(), email);
 
         return user;
     }
@@ -27,8 +27,8 @@ public class CreateUser implements Action3<User, String, String, Seq<Integer>> {
     }
 
     @Override
-    public void inject(Axon action) {
-        this.axon = action;
+    public void connect(Tract action) {
+        this.tract = action;
     }
 
 }

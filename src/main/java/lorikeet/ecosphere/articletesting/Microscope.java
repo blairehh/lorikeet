@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class Microscope {
 
     private static final String METHOD_NAME_INVOKE      = "invoke";
-    private static final String METHOD_NAME_CONNECT     = "inject";
+    private static final String METHOD_NAME_CONNECT     = "connect";
 
     public CellStructure inspect(Class<? extends Cell> cellClass) {
         final Seq<ParameterizedType> cellTypes = filterCellTypes(cellClass);

@@ -8,5 +8,5 @@ public interface Action5<ReturnType, ParameterType1, ParameterType2, ParameterTy
         ParameterType4 parameter4,
         ParameterType5 parameter5
     );
-    void inject(Axon action);
+    void connect(Tract action);
 }

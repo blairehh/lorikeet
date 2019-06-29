@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultAxonTest {
+public class DefaultTractTest {
 
     @Test
     public void test() {
-        Axon action = new DefaultAxon();
+        Tract action = new DefaultTract();
         User user = action.yield(new CreateUser(), "bob@gmail.com", "secret", Seq.of(1, 2));
         assertThat(user.email).isEqualTo("bob@gmail.com");
         assertThat(user.password).isEqualTo("secret");

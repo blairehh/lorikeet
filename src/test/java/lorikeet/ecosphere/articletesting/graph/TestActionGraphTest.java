@@ -4,7 +4,7 @@ import lorikeet.Dict;
 import lorikeet.Seq;
 import lorikeet.ecosphere.CreateUser;
 import lorikeet.ecosphere.User;
-import lorikeet.ecosphere.articletesting.TestAxon;
+import lorikeet.ecosphere.articletesting.TestTract;
 import lorikeet.ecosphere.articletesting.data.CellDefinition;
 import lorikeet.ecosphere.articletesting.data.NumberValue;
 import lorikeet.ecosphere.articletesting.data.StringValue;
@@ -18,7 +18,7 @@ public class TestActionGraphTest {
 
     @Test
     public void test() {
-        TestAxon action = new TestAxon();
+        TestTract action = new TestTract();
         User user = action.yield(new CreateUser(), "bob@gmail.com", "secret", Seq.of(1, 2));
         assertThat(user.email).isEqualTo("bob@gmail.com");
         assertThat(user.password).isEqualTo("secret");

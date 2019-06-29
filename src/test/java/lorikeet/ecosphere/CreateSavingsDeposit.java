@@ -4,7 +4,7 @@ import lorikeet.ecosphere.articletesting.meta.Dbg;
 
 public class CreateSavingsDeposit implements Action1<Boolean, Double> {
 
-    private Axon axon;
+    private Tract tract;
 
     private boolean createSavingsAccount(double balance) {
         throw new IllegalStateException();
@@ -16,7 +16,7 @@ public class CreateSavingsDeposit implements Action1<Boolean, Double> {
     }
 
     @Override
-    public void inject(Axon axon) {
-        this.axon = axon;
+    public void connect(Tract tract) {
+        this.tract = tract;
     }
 }

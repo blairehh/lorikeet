@@ -1,7 +1,7 @@
 package lorikeet.ecosphere;
 
 
-public interface Axon {
+public interface Tract {
 
     String getCid();
 

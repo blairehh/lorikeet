@@ -7,16 +7,16 @@ import lorikeet.ecosphere.Action2;
 import lorikeet.ecosphere.Action3;
 import lorikeet.ecosphere.Action4;
 import lorikeet.ecosphere.Action5;
-import lorikeet.ecosphere.Axon;
+import lorikeet.ecosphere.Tract;
 
 import java.util.UUID;
 
-public class TestAxon implements Axon {
+public class TestTract implements Tract {
     private final String cid;
     private Seq<Interaction> stubs;
     private Seq<Interaction> interactions;
 
-    public TestAxon() {
+    public TestTract() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
         this.interactions = Seq.empty();
         this.stubs = Seq.empty();
@@ -55,7 +55,7 @@ public class TestAxon implements Axon {
 
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
-        action.inject(this);
+        action.connect(this);
         final Interaction interaction = Interaction.of(action, parameter);
         try {
             final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction).orElseGet(() -> action.invoke(parameter));
@@ -73,7 +73,7 @@ public class TestAxon implements Axon {
         ParameterType1 parameter1,
         ParameterType2 parameter2
     ) {
-        action.inject(this);
+        action.connect(this);
         final Interaction interaction = Interaction.of(action, parameter1, parameter2);
         try {
             final ReturnType returnValue =(ReturnType)this.stubbedValue(interaction)
@@ -93,7 +93,7 @@ public class TestAxon implements Axon {
         ParameterType2 parameter2,
         ParameterType3 parameter3
     ) {
-        action.inject(this);
+        action.connect(this);
         final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3);
         try {
             final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)
@@ -114,7 +114,7 @@ public class TestAxon implements Axon {
         ParameterType3 parameter3,
         ParameterType4 parameter4
     ) {
-        action.inject(this);
+        action.connect(this);
         final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4);
         try {
             final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)
@@ -136,7 +136,7 @@ public class TestAxon implements Axon {
         ParameterType4 parameter4,
         ParameterType5 parameter5
     ) {
-        action.inject(this);
+        action.connect(this);
         final Interaction interaction = Interaction.of(action, parameter1, parameter2, parameter3, parameter4, parameter5);
         try {
             final ReturnType returnValue = (ReturnType)this.stubbedValue(interaction)

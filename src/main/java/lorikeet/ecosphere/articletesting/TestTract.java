@@ -3,7 +3,7 @@ package lorikeet.ecosphere.articletesting;
 
 import lorikeet.Dict;
 import lorikeet.Seq;
-import lorikeet.ecosphere.Axon;
+import lorikeet.ecosphere.Tract;
 import lorikeet.ecosphere.Cell;
 import lorikeet.ecosphere.Action1;
 import lorikeet.ecosphere.Action2;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class TestAxon implements Axon {
+public class TestTract implements Tract {
 
     private final Interpreter interpreter = new Interpreter();
     private final Microscope microscope = new Microscope();
@@ -32,11 +32,11 @@ public class TestAxon implements Axon {
     private final String cid;
     private CellGraphNode rootCellNode;
 
-    public TestAxon() {
+    public TestTract() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
     }
 
-    private TestAxon(CellGraphNode root) {
+    private TestTract(CellGraphNode root) {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
         this.rootCellNode = root;
     }
@@ -50,7 +50,7 @@ public class TestAxon implements Axon {
     public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
         final CellGraphNode child = this.prepareCellNode(CellFormType.ACTION_1, action, parameter);
         try {
-            action.inject(new TestAxon(child));
+            action.connect(new TestTract(child));
             final ReturnType returnValue = action.invoke(parameter);
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
@@ -68,7 +68,7 @@ public class TestAxon implements Axon {
     ) {
         final CellGraphNode child = this.prepareCellNode(CellFormType.ACTION_2, action, parameter1, parameter2);
         try {
-            action.inject(new TestAxon(child));
+            action.connect(new TestTract(child));
             final ReturnType returnValue = action.invoke(parameter1, parameter2);
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
@@ -87,7 +87,7 @@ public class TestAxon implements Axon {
     ) {
         final CellGraphNode child = this.prepareCellNode(CellFormType.ACTION_3, action, parameter1, parameter2, parameter3);
         try {
-            action.inject(new TestAxon(child));
+            action.connect(new TestTract(child));
             final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3);
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
@@ -107,7 +107,7 @@ public class TestAxon implements Axon {
     ) {
         final CellGraphNode child = this.prepareCellNode(CellFormType.ACTION_4, action, parameter1, parameter2, parameter3, parameter4);
         try {
-            action.inject(new TestAxon(child));
+            action.connect(new TestTract(child));
             final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4);
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;
@@ -128,7 +128,7 @@ public class TestAxon implements Axon {
     ) {
         final CellGraphNode child = this.prepareCellNode(CellFormType.ACTION_5, action, parameter1, parameter2, parameter3, parameter4, parameter5);
         try {
-            action.inject(new TestAxon(child));
+            action.connect(new TestTract(child));
             final ReturnType returnValue = action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
             child.setReturnValue(this.interpreter.interpret(returnValue));
             return returnValue;

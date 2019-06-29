@@ -2,11 +2,11 @@ package lorikeet.ecosphere;
 
 import java.util.UUID;
 
-public class DefaultAxon implements Axon {
+public class DefaultTract implements Tract {
 
     private final String cid;
 
-    public DefaultAxon() {
+    public DefaultTract() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
     }
 
@@ -17,7 +17,7 @@ public class DefaultAxon implements Axon {
 
     @Override
     public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
-        action.inject(this);
+        action.connect(this);
         return action.invoke(parameter);
     }
 
@@ -27,7 +27,7 @@ public class DefaultAxon implements Axon {
         ParameterType1 parameter1,
         ParameterType2 parameter2
     ) {
-        action.inject(this);
+        action.connect(this);
         return action.invoke(parameter1, parameter2);
     }
 
@@ -38,7 +38,7 @@ public class DefaultAxon implements Axon {
         ParameterType2 parameter2,
         ParameterType3 parameter3
     ) {
-        action.inject(this);
+        action.connect(this);
         return action.invoke(parameter1, parameter2, parameter3);
     }
 
@@ -50,7 +50,7 @@ public class DefaultAxon implements Axon {
         ParameterType3 parameter3,
         ParameterType4 parameter4
     ) {
-        action.inject(this);
+        action.connect(this);
         return action.invoke(parameter1, parameter2, parameter3, parameter4);
     }
 
@@ -63,7 +63,7 @@ public class DefaultAxon implements Axon {
         ParameterType4 parameter4,
         ParameterType5 parameter5
     ) {
-        action.inject(this);
+        action.connect(this);
         return action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
     }
 
