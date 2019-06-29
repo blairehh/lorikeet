@@ -3,11 +3,12 @@ package lorikeet.ecosphere.testing;
 import lorikeet.Seq;
 import lorikeet.ecosphere.Action1;
 import lorikeet.ecosphere.Action2;
+import lorikeet.ecosphere.Action3;
+import lorikeet.ecosphere.Action4;
+import lorikeet.ecosphere.Action5;
 import org.junit.ComparisonFailure;
 
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ActionExpect<T> {
@@ -58,7 +59,10 @@ public class ActionExpect<T> {
         return this;
     }
 
-    public <YieldReturn, YieldParameter1> YieldExpect<T, YieldReturn> toYield(Action1<YieldReturn, YieldParameter1> yield, YieldParameter1 parameter1) {
+    public <YieldReturn, YieldParameter1> YieldExpect<T, YieldReturn> toYield(
+        Action1<YieldReturn, YieldParameter1> yield,
+        YieldParameter1 parameter1
+    ) {
         this.syncInteractions();
         this.interaction = new Interaction(yield, Seq.of(parameter1));
         return new YieldExpect<>(this);
@@ -73,6 +77,43 @@ public class ActionExpect<T> {
         this.interaction = new Interaction(yield, Seq.of(parameter1, parameter2));
         return new YieldExpect<>(this);
     }
+
+    public <YR, YP1, YP2, YP3> YieldExpect<T, YR> toYield(
+        Action3<YR, YP1, YP2, YP3> yield,
+        YP1 parameter1,
+        YP2 parameter2,
+        YP3 parameter3
+    ) {
+        this.syncInteractions();
+        this.interaction = new Interaction(yield, Seq.of(parameter1, parameter2, parameter3));
+        return new YieldExpect<>(this);
+    }
+
+    public <YR, YP1, YP2, YP3, YP4> YieldExpect<T, YR> toYield(
+        Action4<YR, YP1, YP2, YP3, YP4> yield,
+        YP1 parameter1,
+        YP2 parameter2,
+        YP3 parameter3,
+        YP4 parameter4
+    ) {
+        this.syncInteractions();
+        this.interaction = new Interaction(yield, Seq.of(parameter1, parameter2, parameter3, parameter4));
+        return new YieldExpect<>(this);
+    }
+
+    public <YR, YP1, YP2, YP3, YP4, YP5> YieldExpect<T, YR> toYield(
+        Action5<YR, YP1, YP2, YP3, YP4, YP5> yield,
+        YP1 parameter1,
+        YP2 parameter2,
+        YP3 parameter3,
+        YP4 parameter4,
+        YP5 parameter5
+    ) {
+        this.syncInteractions();
+        this.interaction = new Interaction(yield, Seq.of(parameter1, parameter2, parameter3, parameter4, parameter5));
+        return new YieldExpect<>(this);
+    }
+
 
     public void isCorrect() {
         this.syncInteractions();
