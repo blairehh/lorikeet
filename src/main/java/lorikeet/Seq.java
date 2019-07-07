@@ -22,13 +22,26 @@ import java.util.stream.Collectors;
 public final class Seq<T> implements List<T>, May<T> {
 
     private final TreePVector<T> vector;
+    private final Exception error;
 
     public Seq() {
         this.vector = TreePVector.empty();
+        this.error = null;
     }
 
     public Seq(TreePVector<T> source) {
         this.vector = source;
+        this.error = null;
+    }
+
+    public Seq(Collection<T> collection) {
+        this.vector = TreePVector.from(collection);
+        this.error = null;
+    }
+
+    public Seq(Exception err) {
+        this.vector = TreePVector.empty();
+        this.error = err;
     }
 
     public static <X> Seq<X> empty() {
@@ -62,7 +75,6 @@ public final class Seq<T> implements List<T>, May<T> {
         return seq;
     }
 
-
     public static <X> Collector<X, List<X>, Seq<X>> collector() {
         return Collector.of(
             ArrayList::new,
@@ -73,10 +85,14 @@ public final class Seq<T> implements List<T>, May<T> {
         );
     }
 
-
-
-    public Seq(Collection<T> collection) {
-        this.vector = TreePVector.from(collection);
+    public Err<T> asErr() {
+        if (this.error != null) {
+            return Err.failure(this.error);
+        }
+        if (this.isEmpty()) {
+            return Err.failure();
+        }
+        return Err.of(this.vector.get(0));
     }
 
     public Seq<T> filter(Predicate<? super T> predicate) {

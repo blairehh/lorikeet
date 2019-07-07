@@ -1,13 +1,20 @@
 package lorikeet.lobe;
 
+import lorikeet.Seq;
+import lorikeet.db.DataOrigin;
+import lorikeet.db.QueryPlan;
+
 import java.util.UUID;
 
+// @TODO make a constructor accepting a seq of database engines
 public class DefaultTract implements Tract {
 
     private final String cid;
+    private final Seq<DataOrigin> dataOrigins;
 
     public DefaultTract() {
         this.cid = UUID.randomUUID().toString().substring(0, 8);
+        this.dataOrigins = Seq.empty();
     }
 
     @Override
@@ -65,6 +72,15 @@ public class DefaultTract implements Tract {
     ) {
         action.connect(this);
         return action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
+    }
+
+    public final <ProductType, VariableType> Seq<ProductType> query(
+        Query1<ProductType, VariableType> query,
+        VariableType variable
+    ) {
+        final QueryPlan<ProductType> plan = query.getQuery(variable);
+       // plan.execute(this.dataOrigins);
+        return null;
     }
 
 }
