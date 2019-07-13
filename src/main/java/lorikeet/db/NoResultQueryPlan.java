@@ -2,17 +2,13 @@ package lorikeet.db;
 
 import lorikeet.Err;
 import lorikeet.Seq;
-import lorikeet.db.impl.DummyDataOrigin;
+import lorikeet.db.impl.DummyDataConnection;
 
 public class NoResultQueryPlan<ProductType> implements QueryPlan<ProductType> {
 
-    @Override
-    public Err<DataOrigin> selectOrigin(Seq<DataOrigin> dataOrigins) {
-        return Err.of(new DummyDataOrigin());
+
+    public Err<DataConnection> selectOrigin(Seq<DataConnection> dataConnections) {
+        return Err.of(new DummyDataConnection());
     }
 
-    @Override
-    public Seq<ProductType> execute(DataOrigin origin) {
-        return Seq.empty();
-    }
 }

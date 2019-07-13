@@ -3,7 +3,7 @@ package lorikeet.db.impl;
 import lorikeet.Err;
 import lorikeet.Fun;
 import lorikeet.Seq;
-import lorikeet.db.DataOrigin;
+import lorikeet.db.DataConnection;
 import lorikeet.db.DatabaseType;
 import lorikeet.db.Intermediate;
 import org.apache.commons.dbutils.QueryRunner;
@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ApacheDBConnection implements DataOrigin {
+public class DefaultSQLConnection implements DataConnection {
     private final QueryRunner queryRunner;
     private final boolean isReadOnly;
 
-    public ApacheDBConnection(DataSource dataSource, boolean isReadOnly) {
+    public DefaultSQLConnection(DataSource dataSource, boolean isReadOnly) {
         this.queryRunner = new QueryRunner(dataSource);
         this.isReadOnly = isReadOnly;
     }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -97,6 +98,14 @@ public final class Seq<T> implements List<T>, May<T> {
 
     public Seq<T> filter(Predicate<? super T> predicate) {
         return this.vector.stream().filter(predicate).collect(Seq.collector());
+    }
+
+    public Opt<T> random() {
+        if (this.isEmpty()) {
+            return Opt.empty();
+        }
+        final int index = ThreadLocalRandom.current().nextInt(0, this.size());
+        return Opt.of(this.get(index));
     }
 
     public Opt<T> first() {

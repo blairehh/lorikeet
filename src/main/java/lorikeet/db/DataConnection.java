@@ -1,6 +1,6 @@
 package lorikeet.db;
 
-public interface DataOrigin {
+public interface DataConnection {
     boolean isReadOnly();
     DatabaseType getType();
 }
