@@ -79,7 +79,7 @@ public class ActionArticleConstrue {
         final String name = nameStanza.map(stanza -> stanza.getContent().trim()).orNull();
         final String doc = nameStanza.map(Stanza::getDocumentation).orNull();
 
-        return Err.of(Err.of(new ActionArticle(article.getFilePath(), name, doc, cell, cellFormType.orNull())));
+        return Err.of(new ActionArticle(article.getFilePath(), name, doc, cell, cellFormType.orNull()));
     }
 
     private boolean isApplicableType(String type) {
