@@ -1,7 +1,8 @@
 package lorikeet.db.impl;
 
 
-import lorikeet.Fun;
+import lorikeet.Err;
+import lorikeet.Fun1;
 import lorikeet.IO;
 import lorikeet.Seq;
 import lorikeet.db.Intermediate;
@@ -38,7 +39,7 @@ public class DefaultSQLQueryPlanExecutorTest {
     public void testQuery() {
         conn.insert("INSERT INTO customers(name, telephone, email, address) VALUES ('Joe Doe', '12345678', 'bob@doe.com', '1 Maple Street')");
 
-        Fun<Intermediate, Customer> mapper = (
+        Fun1<Intermediate, Customer> mapper = (
             resultSet -> new Customer(
                 resultSet.integer("id").orPanic(),
                 resultSet.string("name").orPanic(),
@@ -54,14 +55,15 @@ public class DefaultSQLQueryPlanExecutorTest {
             null
         );
 
-        Seq<Customer> results = executor.run(conn, plan);
+        Err<Seq<Customer>> err = executor.run(conn, plan);
+        Seq<Customer> customers = err.orPanic();
 
-        assertThat(results).hasSize(1);
-        assertThat(results.get(0).getId()).isEqualTo(1);
-        assertThat(results.get(0).getName()).isEqualTo("Joe Doe");
-        assertThat(results.get(0).getTelephone()).isEqualTo("12345678");
-        assertThat(results.get(0).getEmail()).isEqualTo("bob@doe.com");
-        assertThat(results.get(0).getAddress()).isEqualTo("1 Maple Street");
+        assertThat(customers).hasSize(1);
+        assertThat(customers.get(0).getId()).isEqualTo(1);
+        assertThat(customers.get(0).getName()).isEqualTo("Joe Doe");
+        assertThat(customers.get(0).getTelephone()).isEqualTo("12345678");
+        assertThat(customers.get(0).getEmail()).isEqualTo("bob@doe.com");
+        assertThat(customers.get(0).getAddress()).isEqualTo("1 Maple Street");
     }
 
 }

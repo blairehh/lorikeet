@@ -38,6 +38,7 @@
 package lorikeet;
 
 import lorikeet.error.LorikeetException;
+import lorikeet.error.UnspecifiedError;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -162,8 +163,8 @@ public final class Err<T> implements May<T> {
         return new Err<>(optional.orElse(null));
     }
 
-    public static <T> Err<T> of(Err<T> optional) {
-        return optional.map(Err::of).orElse(Err.failure());
+    public static <T,X> Err<T> of(Err<X> err) {
+        return Err.failure(err.getException().orElse(new UnspecifiedError()));
     }
 
     public static <X,T> Err<T> from(Err<X> err) {
@@ -225,6 +226,10 @@ public final class Err<T> implements May<T> {
         return failedWith.equals(this.exception);
     }
 
+    public boolean failed() {
+        return this.value == null;
+    }
+
     /**
      * If a value is present, returns {@code true}, otherwise {@code false}.
      *
@@ -269,7 +274,7 @@ public final class Err<T> implements May<T> {
         return this;
     }
 
-    public <X> Err<X> pipe(Fun<T, Err<X>> functor) {
+    public <X> Err<X> pipe(Fun1<T, Err<X>> functor) {
         if (!this.isPresent()) {
             return Err.failure(this.exception);
         }

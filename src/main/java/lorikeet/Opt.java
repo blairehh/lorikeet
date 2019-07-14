@@ -197,7 +197,7 @@ public final class Opt<T> implements May<T> {
         return this;
     }
 
-    public <X> Opt<X> pipe(Fun<T, Opt<X>> fun) {
+    public <X> Opt<X> pipe(Fun1<T, Opt<X>> fun) {
         if (!this.isPresent()) {
             return Opt.empty();
         }

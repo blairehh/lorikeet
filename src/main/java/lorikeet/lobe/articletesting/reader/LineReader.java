@@ -1,6 +1,6 @@
 package lorikeet.lobe.articletesting.reader;
 
-import lorikeet.Fun;
+import lorikeet.Fun1;
 
 public class LineReader {
     private final String[] lines;
@@ -11,7 +11,7 @@ public class LineReader {
         this.currentLine = 0;
     }
 
-    public boolean seek(Fun<String, Boolean> reader) {
+    public boolean seek(Fun1<String, Boolean> reader) {
         for (int i = this.currentLine; i < this.lines.length; i++ ) {
             if (reader.apply(this.lines[i])) {
                 this.currentLine = i;
@@ -21,7 +21,7 @@ public class LineReader {
         return false;
     }
 
-    public String collect(Fun<String, Boolean> reader) {
+    public String collect(Fun1<String, Boolean> reader) {
         StringBuilder text = new StringBuilder();
         for (int i = this.currentLine; i < this.lines.length; i++ ) {
             if (this.lines[i].length() == 0) {

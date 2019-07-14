@@ -1,8 +1,6 @@
 package lorikeet;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-@FunctionalInterface
-public interface Fun<Input, Output> extends Function<Input, Output> {
-
+public interface Fun<Type> extends Supplier<Type> {
 }

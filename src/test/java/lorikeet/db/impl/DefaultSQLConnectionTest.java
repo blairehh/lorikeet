@@ -39,7 +39,7 @@ public class DefaultSQLConnectionTest {
         String street = this.conn.query(
             "SELECT * FROM customers WHERE name = 'Joe Doe'",
             (intermediate -> intermediate.string("address").orPanic())
-        ).orPanic();
+        ).orPanic().get(0);
 
         assertThat(s).isEqualTo(1);
         assertThat(street).isEqualTo("1 Maple Street");
@@ -55,7 +55,7 @@ public class DefaultSQLConnectionTest {
             "SELECT * FROM customers WHERE id = ?",
             (intermediate -> intermediate.string("address").orPanic()),
             200
-        ).orPanic();
+        ).orPanic().get(0);
 
         assertThat(s).isEqualTo(200);
         assertThat(street).isEqualTo("1 Maple Street");
@@ -85,7 +85,7 @@ public class DefaultSQLConnectionTest {
             "SELECT * FROM customers WHERE id = ?",
             (intermediate -> intermediate.string("telephone").orPanic()),
             customerId
-        ).orPanic();
+        ).orPanic().get(0);
 
         assertThat(telephone).isEqualTo("87654321");
     }

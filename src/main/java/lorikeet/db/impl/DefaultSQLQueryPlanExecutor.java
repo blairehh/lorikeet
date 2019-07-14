@@ -1,5 +1,6 @@
 package lorikeet.db.impl;
 
+import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.Seq;
 import lorikeet.db.QueryPlanExecutor;
@@ -16,7 +17,7 @@ public class DefaultSQLQueryPlanExecutor implements QueryPlanExecutor<SqlQueryPl
     }
 
     @Override
-    public <ProductType> Seq<ProductType> run(DefaultSQLConnection conn, SqlQueryPlan plan) {
+    public <ProductType> Err<Seq<ProductType>> run(DefaultSQLConnection conn, SqlQueryPlan plan) {
         return conn.query(plan.getSql(), plan.getMapper(), plan.getParameters());
     }
 

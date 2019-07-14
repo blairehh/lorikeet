@@ -1,19 +1,23 @@
 package lorikeet.db;
 
+import lorikeet.Dict;
+import lorikeet.Err;
+import lorikeet.Expr;
 import lorikeet.Seq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Predicate;
-
+/*
+@TODO should throw on critical here in this class
+ */
 public class QueryDriver {
 
     private static final Logger log = LoggerFactory.getLogger(QueryDriver.class);
 
-    private final Object connConfigurations;
-    private final Seq<QueryPlanExecutor<?, ?, ?>> executors;
+    private final Seq<Object> connConfigurations;
+    private final Dict<Class<? extends QueryPlan>, ? extends QueryPlanExecutor<?, ?, ?>> executors;
 
-    public QueryDriver(Object connConfigurations, Seq<QueryPlanExecutor<?, ?, ?>> executors) {
+    public QueryDriver(Seq<Object> connConfigurations, Dict<Class<? extends QueryPlan>, ? extends QueryPlanExecutor<?, ?, ?>> executors) {
         this.connConfigurations = connConfigurations;
         this.executors = executors;
     }
@@ -21,28 +25,26 @@ public class QueryDriver {
     public final <ProductType, QueryPlanType extends QueryPlan<ProductType>, DataConnectionType, ConnectionConfigurationType> Seq<ProductType> query(
         QueryPlanType plan
     ) {
-        final Predicate<QueryPlanExecutor<?,?,?>> isApplicableExecutor = (executor ->
-            executor.getQueryPlanType().equals(plan.getClass())
-                && executor.getConnectionConfigurationType().equals(this.connConfigurations.getClass())
+
+        final Err<Seq<ProductType>> result =  Expr.weave(
+            this.findExecutor(plan),
+            (executor -> this.findConfiguration(executor.getConnectionConfigurationType())),
+            (executor, config) -> executor.findConnection(config).asErr(),
+            (executor, config, conn) -> executor.run(conn, plan)
         );
 
-        final Seq<QueryPlanExecutor<?, ?, ?>> applicableExecutors = this.executors
-            .filter(isApplicableExecutor);
-
-        if (applicableExecutors.isEmpty()) {
-            log.error("could not find executor for QueryPlan {}, returning empty Seq", plan.getClass());
-            return Seq.empty(); // @TODO supply error here
-        }
-
-        if (applicableExecutors.size() != 1) {
-            log.warn("found more than one executor for QueryPlan {}, will use first executor", plan.getClass());
-        }
-
-        final QueryPlanExecutor<QueryPlanType, DataConnectionType, ConnectionConfigurationType> executor = (QueryPlanExecutor<QueryPlanType, DataConnectionType, ConnectionConfigurationType>)applicableExecutors.first().orPanic();
-
-        final ConnectionConfigurationType config = executor.getConnectionConfigurationType().cast(this.connConfigurations);
-        final DataConnectionType conn = executor.findConnection(config).orPanic();
-
-        return executor.run(conn, plan);
+        return result.orElse(Seq.empty());
     }
+
+    private <QueryPlanType, DataConnectionType, ConnectionConfigurationType> Err<QueryPlanExecutor<QueryPlanType, DataConnectionType, ConnectionConfigurationType>> findExecutor(QueryPlan<?> plan) {
+           return (Err<QueryPlanExecutor<QueryPlanType, DataConnectionType, ConnectionConfigurationType>>)this.executors.find(plan.getClass()).asErr();
+    }
+
+    private <ConnectionConfigurationType> Err<ConnectionConfigurationType> findConfiguration(Class<ConnectionConfigurationType> klass) {
+        return (Err<ConnectionConfigurationType>)this.connConfigurations
+            .filter(config -> config.getClass().equals(klass))
+            .first()
+            .asErr();
+    }
+
 }

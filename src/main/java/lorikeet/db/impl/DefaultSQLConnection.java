@@ -1,7 +1,7 @@
 package lorikeet.db.impl;
 
 import lorikeet.Err;
-import lorikeet.Fun;
+import lorikeet.Fun1;
 import lorikeet.Seq;
 import lorikeet.db.DataConnection;
 import lorikeet.db.DatabaseType;
@@ -35,7 +35,7 @@ public class DefaultSQLConnection implements DataConnection {
         return new StandardRelationalDatabaseType();
     }
 
-    public <T> Err<Number> insertWithAutoID(String statement, Object... params) {
+    public Err<Number> insertWithAutoID(String statement, Object... params) {
         try {
             return Err.of(this.queryRunner.insert(statement, new ScalarHandler<Number>(), params));
         } catch (SQLException e) {
@@ -60,15 +60,15 @@ public class DefaultSQLConnection implements DataConnection {
         }
     }
 
-    public <T> Seq<T> query(String query, Fun<Intermediate, T> map, Object... params) {
+    public <T> Err<Seq<T>> query(String query, Fun1<Intermediate, T> map, Object... params) {
         final ResultSetHandler<T> handler = resultSet -> {
             resultSet.next();
             return map.apply(new ResultSetIntermediate(resultSet));
         };
         try {
-            return Seq.of(this.queryRunner.execute(query, handler, params));
+            return Err.of(Seq.of(this.queryRunner.execute(query, handler, params)));
         } catch (SQLException e) {
-            return new Seq<>(e);
+            return Err.failure(e);
         }
     }
 

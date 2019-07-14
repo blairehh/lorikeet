@@ -1,6 +1,7 @@
 package lorikeet.db;
 
-import lorikeet.Fun;
+import lorikeet.Dict;
+import lorikeet.Fun1;
 import lorikeet.IO;
 import lorikeet.Seq;
 import lorikeet.db.impl.Customer;
@@ -34,16 +35,16 @@ public class QueryDriverTest {
         }
         this.conn.execute(SQL_SCHEMA, true).orPanic();
 
-        DefaultConnectionConfiguration repo = new DefaultConnectionConfiguration(conn, Seq.of(conn));
+        DefaultConnectionConfiguration connConfig = new DefaultConnectionConfiguration(conn, Seq.of(conn));
 
-        this.queryDriver = new QueryDriver(repo, Seq.of(new DefaultSQLQueryPlanExecutor()));
+        this.queryDriver = new QueryDriver(Seq.of(connConfig), Dict.of(SqlQueryPlan.class, new DefaultSQLQueryPlanExecutor()));
     }
 
     @Test
     public void testQuery() {
         conn.insert("INSERT INTO customers(name, telephone, email, address) VALUES ('Joe Doe', '12345678', 'bob@doe.com', '1 Maple Street')");
 
-        Fun<Intermediate, Customer> mapper = (
+        Fun1<Intermediate, Customer> mapper = (
             resultSet -> new Customer(
                 resultSet.integer("id").orPanic(),
                 resultSet.string("name").orPanic(),
