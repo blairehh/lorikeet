@@ -3,8 +3,6 @@ package lorikeet.db.impl;
 import lorikeet.Err;
 import lorikeet.Fun1;
 import lorikeet.Seq;
-import lorikeet.db.DataConnection;
-import lorikeet.db.DatabaseType;
 import lorikeet.db.Intermediate;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -16,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DefaultSQLConnection implements DataConnection {
+public class DefaultSQLConnection {
     private final QueryRunner queryRunner;
     private final boolean isReadOnly;
 
@@ -25,14 +23,8 @@ public class DefaultSQLConnection implements DataConnection {
         this.isReadOnly = isReadOnly;
     }
 
-    @Override
     public boolean isReadOnly() {
         return this.isReadOnly;
-    }
-
-    @Override
-    public DatabaseType getType() {
-        return new StandardRelationalDatabaseType();
     }
 
     public Err<Number> insertWithAutoID(String statement, Object... params) {

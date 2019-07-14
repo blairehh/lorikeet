@@ -5,9 +5,11 @@ import lorikeet.Fun1;
 import lorikeet.IO;
 import lorikeet.Seq;
 import lorikeet.db.impl.Customer;
-import lorikeet.db.impl.DefaultConnectionConfiguration;
+import lorikeet.db.impl.DefaultSQLConnectionConfiguration;
 import lorikeet.db.impl.DefaultSQLConnection;
 import lorikeet.db.impl.DefaultSQLQueryPlanExecutor;
+import lorikeet.db.impl.DummyDataConnectionConfiguration;
+import lorikeet.db.impl.NoResultQueryPlanExecutor;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +37,12 @@ public class QueryDriverTest {
         }
         this.conn.execute(SQL_SCHEMA, true).orPanic();
 
-        DefaultConnectionConfiguration connConfig = new DefaultConnectionConfiguration(conn, Seq.of(conn));
+        DefaultSQLConnectionConfiguration connConfig = new DefaultSQLConnectionConfiguration(conn, Seq.of(conn));
+        Dict<Class<? extends QueryPlan>, QueryPlanExecutor<?, ?, ?>> executors = Dict.empty();
+        executors = executors.push(SQLQueryPlan.class, new DefaultSQLQueryPlanExecutor());
+        executors = executors.push(NoResultQueryPlan.class, new NoResultQueryPlanExecutor());
 
-        this.queryDriver = new QueryDriver(Seq.of(connConfig), Dict.of(SqlQueryPlan.class, new DefaultSQLQueryPlanExecutor()));
+        this.queryDriver = new QueryDriver(Seq.of(connConfig, new DummyDataConnectionConfiguration()), executors);
     }
 
     @Test
@@ -54,7 +59,7 @@ public class QueryDriverTest {
             )
         );
 
-        SqlQueryPlan<Customer> plan = new SqlQueryPlan<>(
+        SQLQueryPlan<Customer> plan = new SQLQueryPlan<>(
             "SELECT * FROM customers",
             mapper,
             null
@@ -68,6 +73,12 @@ public class QueryDriverTest {
         assertThat(results.get(0).getTelephone()).isEqualTo("12345678");
         assertThat(results.get(0).getEmail()).isEqualTo("bob@doe.com");
         assertThat(results.get(0).getAddress()).isEqualTo("1 Maple Street");
+    }
+
+    @Test
+    public void testNoResult() {
+        Seq<Customer> results = queryDriver.query(new NoResultQueryPlan<>());
+        assertThat(results).isEmpty();
     }
 
 }

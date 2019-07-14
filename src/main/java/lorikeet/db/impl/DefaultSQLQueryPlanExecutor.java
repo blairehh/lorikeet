@@ -4,12 +4,12 @@ import lorikeet.Err;
 import lorikeet.Opt;
 import lorikeet.Seq;
 import lorikeet.db.QueryPlanExecutor;
-import lorikeet.db.SqlQueryPlan;
+import lorikeet.db.SQLQueryPlan;
 
-public class DefaultSQLQueryPlanExecutor implements QueryPlanExecutor<SqlQueryPlan, DefaultSQLConnection, DefaultConnectionConfiguration> {
+public class DefaultSQLQueryPlanExecutor implements QueryPlanExecutor<SQLQueryPlan, DefaultSQLConnection, DefaultSQLConnectionConfiguration> {
 
     @Override
-    public Opt<DefaultSQLConnection> findConnection(DefaultConnectionConfiguration repository) {
+    public Opt<DefaultSQLConnection> findConnection(DefaultSQLConnectionConfiguration repository) {
         if (repository.getReadonlyOnlySqlConnections().isEmpty()) {
             return Opt.of(repository.getWriteSqlConnection());
         }
@@ -17,12 +17,13 @@ public class DefaultSQLQueryPlanExecutor implements QueryPlanExecutor<SqlQueryPl
     }
 
     @Override
-    public <ProductType> Err<Seq<ProductType>> run(DefaultSQLConnection conn, SqlQueryPlan plan) {
+    @SuppressWarnings("unchecked")
+    public <ProductType> Err<Seq<ProductType>> run(DefaultSQLConnection conn, SQLQueryPlan plan) {
         return conn.query(plan.getSql(), plan.getMapper(), plan.getParameters());
     }
 
     @Override
-    public Class<DefaultConnectionConfiguration> getConnectionConfigurationType() {
-        return DefaultConnectionConfiguration.class;
+    public Class<DefaultSQLConnectionConfiguration> getConnectionConfigurationType() {
+        return DefaultSQLConnectionConfiguration.class;
     }
 }

@@ -2,7 +2,6 @@ package lorikeet.lobe;
 
 import lorikeet.Seq;
 import lorikeet.db.QueryDriver;
-import lorikeet.db.QueryPlan;
 import java.util.UUID;
 
 

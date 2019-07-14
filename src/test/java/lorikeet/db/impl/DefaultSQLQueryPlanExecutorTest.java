@@ -6,7 +6,7 @@ import lorikeet.Fun1;
 import lorikeet.IO;
 import lorikeet.Seq;
 import lorikeet.db.Intermediate;
-import lorikeet.db.SqlQueryPlan;
+import lorikeet.db.SQLQueryPlan;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class DefaultSQLQueryPlanExecutorTest {
             )
         );
 
-        SqlQueryPlan<Customer> plan = new SqlQueryPlan<>(
+        SQLQueryPlan<Customer> plan = new SQLQueryPlan<>(
             "SELECT * FROM customers",
             mapper,
             null
