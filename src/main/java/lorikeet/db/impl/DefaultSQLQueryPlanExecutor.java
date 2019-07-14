@@ -22,11 +22,6 @@ public class DefaultSQLQueryPlanExecutor implements QueryPlanExecutor<SqlQueryPl
     }
 
     @Override
-    public Class<SqlQueryPlan> getQueryPlanType() {
-        return SqlQueryPlan.class;
-    }
-
-    @Override
     public Class<DefaultConnectionConfiguration> getConnectionConfigurationType() {
         return DefaultConnectionConfiguration.class;
     }

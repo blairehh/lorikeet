@@ -22,7 +22,7 @@ public class QueryDriver {
         this.executors = executors;
     }
 
-    public final <ProductType, QueryPlanType extends QueryPlan<ProductType>, DataConnectionType, ConnectionConfigurationType> Seq<ProductType> query(
+    public final <ProductType, QueryPlanType extends QueryPlan<ProductType>> Seq<ProductType> query(
         QueryPlanType plan
     ) {
 
