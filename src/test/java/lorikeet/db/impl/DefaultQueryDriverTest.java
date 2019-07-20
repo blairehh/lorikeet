@@ -1,15 +1,14 @@
-package lorikeet.db;
+package lorikeet.db.impl;
 
 import lorikeet.Dict;
 import lorikeet.Fun1;
 import lorikeet.IO;
 import lorikeet.Seq;
-import lorikeet.db.impl.Customer;
-import lorikeet.db.impl.DefaultSQLConnectionConfiguration;
-import lorikeet.db.impl.DefaultSQLConnection;
-import lorikeet.db.impl.DefaultSQLQueryPlanExecutor;
-import lorikeet.db.impl.DummyDataConnectionConfiguration;
-import lorikeet.db.impl.NoResultQueryPlanExecutor;
+import lorikeet.db.Intermediate;
+import lorikeet.db.NoResultQueryPlan;
+import lorikeet.db.QueryPlan;
+import lorikeet.db.QueryPlanExecutor;
+import lorikeet.db.SQLQueryPlan;
 import lorikeet.error.CouldNotFindQueryPlanExecutorForQueryPlan;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
@@ -17,13 +16,13 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class QueryDriverTest {
+public class DefaultQueryDriverTest {
 
     private static final String SQL_SCHEMA = IO.readResource("sql/test_db_schema.sql").orPanic();
 
     private BasicDataSource dataSource;
     private DefaultSQLConnection conn;
-    private QueryDriver queryDriver;
+    private DefaultQueryDriver queryDriver;
 
     @Before
     public void setUp() {
@@ -43,7 +42,7 @@ public class QueryDriverTest {
         executors = executors.push(SQLQueryPlan.class, new DefaultSQLQueryPlanExecutor());
         executors = executors.push(NoResultQueryPlan.class, new NoResultQueryPlanExecutor());
 
-        this.queryDriver = new QueryDriver(Seq.of(connConfig, new DummyDataConnectionConfiguration()), executors);
+        this.queryDriver = new DefaultQueryDriver(Seq.of(connConfig, new DummyDataConnectionConfiguration()), executors);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class QueryDriverTest {
 
     @Test(expected = CouldNotFindQueryPlanExecutorForQueryPlan.class)
     public void testConnectionNotFound() {
-        this.queryDriver = new QueryDriver(Seq.of(new DefaultSQLConnectionConfiguration(conn, Seq.of(conn))), Dict.empty());
+        this.queryDriver = new DefaultQueryDriver(Seq.of(new DefaultSQLConnectionConfiguration(conn, Seq.of(conn))), Dict.empty());
         SQLQueryPlan<Customer> plan = new SQLQueryPlan<>(
             "SELECT * FROM customers",
             null,
