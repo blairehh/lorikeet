@@ -10,6 +10,7 @@ import lorikeet.db.impl.DefaultSQLConnection;
 import lorikeet.db.impl.DefaultSQLQueryPlanExecutor;
 import lorikeet.db.impl.DummyDataConnectionConfiguration;
 import lorikeet.db.impl.NoResultQueryPlanExecutor;
+import lorikeet.error.CouldNotFindQueryPlanExecutorForQueryPlan;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +80,18 @@ public class QueryDriverTest {
     public void testNoResult() {
         Seq<Customer> results = queryDriver.query(new NoResultQueryPlan<>());
         assertThat(results).isEmpty();
+    }
+
+    @Test(expected = CouldNotFindQueryPlanExecutorForQueryPlan.class)
+    public void testConnectionNotFound() {
+        this.queryDriver = new QueryDriver(Seq.of(new DefaultSQLConnectionConfiguration(conn, Seq.of(conn))), Dict.empty());
+        SQLQueryPlan<Customer> plan = new SQLQueryPlan<>(
+            "SELECT * FROM customers",
+            null,
+            null
+        );
+
+        queryDriver.query(plan);
     }
 
 }

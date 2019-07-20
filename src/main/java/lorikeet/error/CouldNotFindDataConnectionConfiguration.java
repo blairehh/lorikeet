@@ -8,4 +8,9 @@ public class CouldNotFindDataConnectionConfiguration extends LorikeetException {
         super(CouldNotFindDataConnectionConfiguration.class);
         this.configurationClass = configurationClass;
     }
+
+    @Override
+    public boolean isFatal() {
+        return true;
+    }
 }

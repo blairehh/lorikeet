@@ -6,4 +6,9 @@ public class CouldNotFindQueryPlanExecutorForQueryPlan extends LorikeetException
         super(CouldNotFindQueryPlanExecutorForQueryPlan.class);
         this.queryPlan = queryPlan;
     }
+
+    @Override
+    public boolean isFatal() {
+        return true;
+    }
 }

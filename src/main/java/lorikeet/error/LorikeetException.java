@@ -24,6 +24,10 @@ public class LorikeetException extends RuntimeException {
         }
     }
 
+    public boolean isFatal() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {

@@ -9,9 +9,6 @@ import lorikeet.error.CouldNotFindQueryPlanExecutorForQueryPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
-@TODO should throw on critical here in this class
- */
 public class QueryDriver {
 
     private static final Logger log = LoggerFactory.getLogger(QueryDriver.class);
@@ -27,14 +24,13 @@ public class QueryDriver {
     public final <ProductType, QueryPlanType extends QueryPlan<ProductType>> Seq<ProductType> query(
         QueryPlanType plan
     ) {
-
         final Err<Seq<ProductType>> result = Expr.weave(
             this.findExecutor(plan),
             (executor -> this.findConfiguration(executor.getConnectionConfigurationType())),
             (executor, config) -> executor.findConnection(config).asErr(),
             (executor, config, conn) -> executor.run(conn, plan)
         );
-        return result.orElse(Seq.empty());
+        return result.orFatalPanic(Seq.empty());
     }
 
     @SuppressWarnings("unchecked")

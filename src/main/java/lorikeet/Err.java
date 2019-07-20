@@ -230,6 +230,30 @@ public final class Err<T> implements May<T> {
         return this.value == null;
     }
 
+    public boolean success() {
+        return this.value != null;
+    }
+
+    public boolean isFatal() {
+        if (this.value != null) {
+            return false;
+        }
+        if (!(this.exception instanceof LorikeetException)) {
+            return false;
+        }
+        return ((LorikeetException)this.exception).isFatal();
+    }
+
+    public T orFatalPanic(T value) {
+        if (this.success()) {
+            return this.value;
+        }
+        if (this.isFatal()) {
+            return this.orPanic();
+        }
+        return value;
+    }
+
     /**
      * If a value is present, returns {@code true}, otherwise {@code false}.
      *
