@@ -1,8 +1,0 @@
-type:
-    action
-
-expect:
-    lorikeet.lobe.IssueDebitCard('mastercard')
-
-to-return:
-    true
