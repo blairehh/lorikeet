@@ -1,4 +1,4 @@
-﻿namespace lorikeet
+﻿namespace Lorikeet
 
 module Core =
     [<AbstractClass>]

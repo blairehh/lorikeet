@@ -1,6 +1,6 @@
-module lorikeet.Base
+module Lorikeet.Base
 
-open lorikeet.Core
+open Lorikeet.Core
 
 type DefaultTract() as this =
     inherit Tract()
