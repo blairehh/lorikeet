@@ -2,10 +2,10 @@ module Lorikeet.Base
 
 open Lorikeet.Core
 
-type DefaultTract() as this =
+type DefaultTract() as tract =
     inherit Tract()
-    let invokeEdict edict = match edict with
-        Fun func -> func this
+    let invokeProcedure procedure = match procedure with
+        Fun func -> func tract
     override this.invoke(cell: Cell<'A>): 'A = match cell with
-        Edict edict -> invokeEdict edict
+        Procedure procedure -> invokeProcedure procedure
       
