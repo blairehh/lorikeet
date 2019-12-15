@@ -3,9 +3,9 @@
 module Core =
     [<AbstractClass>]
     type Tract() =
-       abstract member invoke: Cell<'a> -> 'a
-       static member (<!) (tract: Tract, cell: Cell<'a>): 'a = tract.invoke(cell)
-    and Cell<'a> =
-        Edict of Edict<'a>
-    and Edict<'a> =
-        Fun of (Tract -> 'a)
+       abstract member invoke: Cell<'A> -> 'A
+       static member (<!) (tract: Tract, cell: Cell<'A>): 'A = tract.invoke(cell)
+    and Cell<'A> =
+        Edict of Edict<'A>
+    and Edict<'A> =
+        Fun of (Tract -> 'A)
