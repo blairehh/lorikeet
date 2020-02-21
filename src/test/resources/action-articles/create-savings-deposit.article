@@ -1,5 +1,0 @@
-type:
-    action
-
-expect:
-    lorikeet.lobe.CreateSavingsDeposit(34.67) throws java.lang.RuntimeException

@@ -1,83 +1,20 @@
 package lorikeet.lobe;
 
-import lorikeet.Seq;
-import lorikeet.db.QueryDriver;
+public class DefaultTract<R extends UsesLogging> implements Tract<R> {
 
-import java.util.UUID;
+    private final R resources;
 
-
-public class DefaultTract implements Tract {
-
-    private final String cid;
-    private final QueryDriver queryDriver;
-
-    public DefaultTract() {
-        this.cid = UUID.randomUUID().toString().substring(0, 8);
-        this.queryDriver = null;
+    public DefaultTract(R resources) {
+        this.resources = resources;
     }
 
     @Override
-    public String getCid() {
-        return this.cid;
+    public <O> O write(LorikeetWrite<R, O> write) {
+        return write.junction(this.resources);
     }
 
     @Override
-    public final <ReturnType, ParameterType> ReturnType yield(Action1<ReturnType, ParameterType> action, ParameterType parameter) {
-        action.connect(this);
-        return action.invoke(parameter);
+    public void log(String fmt, Object...vars) {
+        this.resources.useLogging().log(LogGrade.INFO, fmt, vars);
     }
-
-    @Override
-    public final <ReturnType, ParameterType1, ParameterType2> ReturnType yield(
-        Action2<ReturnType, ParameterType1, ParameterType2> action,
-        ParameterType1 parameter1,
-        ParameterType2 parameter2
-    ) {
-        action.connect(this);
-        return action.invoke(parameter1, parameter2);
-    }
-
-    @Override
-    public final <ReturnType, ParameterType1, ParameterType2, ParameterType3> ReturnType yield(
-        Action3<ReturnType, ParameterType1, ParameterType2, ParameterType3> action,
-        ParameterType1 parameter1,
-        ParameterType2 parameter2,
-        ParameterType3 parameter3
-    ) {
-        action.connect(this);
-        return action.invoke(parameter1, parameter2, parameter3);
-    }
-
-    @Override
-    public final <ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4> ReturnType yield(
-        Action4<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4> action,
-        ParameterType1 parameter1,
-        ParameterType2 parameter2,
-        ParameterType3 parameter3,
-        ParameterType4 parameter4
-    ) {
-        action.connect(this);
-        return action.invoke(parameter1, parameter2, parameter3, parameter4);
-    }
-
-    @Override
-    public final <ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> ReturnType yield(
-        Action5<ReturnType, ParameterType1, ParameterType2, ParameterType3, ParameterType4, ParameterType5> action,
-        ParameterType1 parameter1,
-        ParameterType2 parameter2,
-        ParameterType3 parameter3,
-        ParameterType4 parameter4,
-        ParameterType5 parameter5
-    ) {
-        action.connect(this);
-        return action.invoke(parameter1, parameter2, parameter3, parameter4, parameter5);
-    }
-
-    public final <ProductType, VariableType> Seq<ProductType> query(
-        Query1<ProductType, VariableType> query,
-        VariableType variable
-    ) {
-        return this.queryDriver.query(query.getQuery(variable));
-    }
-
 }
