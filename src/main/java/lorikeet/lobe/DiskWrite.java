@@ -1,10 +1,10 @@
 package lorikeet.lobe;
 
-import java.net.URI;
+import lorikeet.api.FileId;
 
 public interface DiskWrite<R extends UsesDisk> extends LorikeetWrite<R, DiskWriteResult<?>> {
     
-    URI uri();
+    FileId fileId();
     String content();
 
     default DiskWriteResult<?> junction(R resources) {

@@ -9,6 +9,8 @@ public interface Fallible<T, Self extends Fallible<T, Self>> {
     T orGive(T value);
     T orPanic();
 
+
+
     Self onSuccess(Consumer<T> consumer);
     Self onFailure(Consumer<Exception> consumer);
 }
