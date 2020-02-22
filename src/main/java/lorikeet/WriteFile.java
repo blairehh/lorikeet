@@ -2,14 +2,20 @@
 package lorikeet;
 
 import lorikeet.api.FileRef;
+import lorikeet.api.FileUri;
 import lorikeet.lobe.DiskWrite;
 
+import java.net.URI;
 import java.util.Objects;
 
 public class WriteFile implements DiskWrite<Tutorial> {
 
     private final FileRef fileId;
     private final String content;
+
+    public WriteFile(URI uri, String content) {
+        this(new FileUri(uri), content);
+    }
 
     public WriteFile(FileRef fileId, String content) {
         this.fileId = fileId;;
