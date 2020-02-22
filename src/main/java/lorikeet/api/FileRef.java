@@ -4,6 +4,7 @@ import lorikeet.core.Fallible;
 
 import java.io.File;
 
-public interface FileId {
-    Fallible<File> generateFile();
+public interface FileRef {
+    Fallible<File> asFile();
+    String asString();
 }

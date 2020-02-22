@@ -1,23 +1,23 @@
 
 package lorikeet;
 
-import lorikeet.api.FileId;
+import lorikeet.api.FileRef;
 import lorikeet.lobe.DiskWrite;
 
 import java.util.Objects;
 
 public class WriteFile implements DiskWrite<Tutorial> {
 
-    private final FileId fileId;
+    private final FileRef fileId;
     private final String content;
 
-    public WriteFile(FileId fileId, String content) {
+    public WriteFile(FileRef fileId, String content) {
         this.fileId = fileId;;
         this.content = content;
     }
 
     @Override
-    public FileId fileId() {
+    public FileRef fileRef() {
         return this.fileId;
     }
 
@@ -38,12 +38,12 @@ public class WriteFile implements DiskWrite<Tutorial> {
 
         WriteFile writeFile = (WriteFile) o;
 
-        return Objects.equals(this.fileId(), writeFile.fileId())
+        return Objects.equals(this.fileRef(), writeFile.fileRef())
             && Objects.equals(this.content(), writeFile.content());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.fileId(), this.content());
+        return Objects.hash(this.fileRef(), this.content());
     }
 }

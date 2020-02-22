@@ -7,7 +7,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
-public class FileUri implements FileId {
+public class FileUri implements FileRef {
     private final URI uri;
 
     public FileUri(URI uri) {
@@ -19,8 +19,13 @@ public class FileUri implements FileId {
     }
 
     @Override
-    public Fallible<File> generateFile() {
+    public Fallible<File> asFile() {
         return new Ok<>(new File(this.uri));
+    }
+
+    @Override
+    public String asString() {
+        return this.uri.toASCIIString();
     }
 
     @Override

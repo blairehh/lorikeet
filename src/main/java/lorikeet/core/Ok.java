@@ -12,7 +12,7 @@ public class Ok<T> implements AnOk<T> {
 
     @Override
     public T value() {
-        return null;
+        return this.value;
     }
 
     @Override

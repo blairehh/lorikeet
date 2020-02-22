@@ -1,5 +1,6 @@
 package lorikeet.lobe;
 
+import lorikeet.api.FileRef;
 import lorikeet.core.AnErr;
 
 import java.net.URI;
@@ -7,11 +8,11 @@ import java.util.Objects;
 
 public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
     
-    private final URI uri;
+    private final FileRef fileRef;
     private final Exception exception;
 
-    public DiskWriteErr(URI uri, Exception exception) {
-        this.uri = uri;
+    public DiskWriteErr(FileRef fileRef, Exception exception) {
+        this.fileRef = fileRef;
         this.exception = exception;
     }
 
@@ -21,8 +22,8 @@ public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
     }
 
     @Override
-    public URI uri() {
-        return this.uri;
+    public FileRef fileRef() {
+        return this.fileRef;
     }
 
     @Override
@@ -42,12 +43,12 @@ public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
 
         DiskWriteErr that = (DiskWriteErr) o;
 
-        return Objects.equals(this.uri(), that.uri())
+        return Objects.equals(this.fileRef(), that.fileRef())
             && Objects.equals(this.exception(), that.exception());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.uri(), this.exception());
+        return Objects.hash(this.fileRef(), this.exception());
     }
 }

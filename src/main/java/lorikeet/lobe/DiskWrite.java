@@ -1,10 +1,10 @@
 package lorikeet.lobe;
 
-import lorikeet.api.FileId;
+import lorikeet.api.FileRef;
 
 public interface DiskWrite<R extends UsesDisk> extends LorikeetWrite<R, DiskWriteResult> {
     
-    FileId fileId();
+    FileRef fileRef();
     String content();
 
     default DiskWriteResult junction(R resources) {

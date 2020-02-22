@@ -1,15 +1,19 @@
 package lorikeet.core;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface Fallible<T> {
+
     boolean success();
     boolean failure();
 
     T orGive(T value);
+    T orGive(Function<Exception, T> giver);
     T orPanic();
 
-
+    <X> Fallible<X> map(Function<T, X> then);
+    <X> Fallible<X> then(Function<T, Fallible<X>> then);
 
     Fallible<T> onSuccess(Consumer<T> consumer);
     Fallible<T> onFailure(Consumer<Exception> consumer);

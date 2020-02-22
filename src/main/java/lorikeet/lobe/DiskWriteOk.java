@@ -1,5 +1,6 @@
 package lorikeet.lobe;
 
+import lorikeet.api.FileRef;
 import lorikeet.core.AnOk;
 
 import java.net.URI;
@@ -7,11 +8,11 @@ import java.util.Objects;
 
 public class DiskWriteOk implements AnOk<Boolean>, DiskWriteResult {
 
-    private final URI uri;
+    private final FileRef fileRef;
     private final long bytesWritten;
 
-    public DiskWriteOk(URI uri, long bytesWritten) {
-        this.uri = uri;
+    public DiskWriteOk(FileRef fileRef, long bytesWritten) {
+        this.fileRef = fileRef;
         this.bytesWritten = bytesWritten;
     }
 
@@ -21,8 +22,8 @@ public class DiskWriteOk implements AnOk<Boolean>, DiskWriteResult {
     }
 
     @Override
-    public URI uri() {
-        return this.uri;
+    public FileRef fileRef() {
+        return this.fileRef;
     }
 
     @Override
@@ -43,11 +44,11 @@ public class DiskWriteOk implements AnOk<Boolean>, DiskWriteResult {
         DiskWriteOk that = (DiskWriteOk) o;
 
         return Objects.equals(this.bytesWritten(), that.bytesWritten())
-            && Objects.equals(this.uri(), that.uri());
+            && Objects.equals(this.fileRef(), that.fileRef());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.uri(), this.bytesWritten());
+        return Objects.hash(this.fileRef(), this.bytesWritten());
     }
 }
