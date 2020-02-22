@@ -15,7 +15,7 @@ public class OkTest {
         new Ok<>(23)
             .onSuccess((number) -> System.out.println(number));
 
-        Fallible<Integer, ?> f = new Ok<>(78);
+        Fallible<Integer> f = new Ok<>(78);
         f.onSuccess(i -> System.out.println(i))
             .onFailure(i -> System.out.println(i));
     }

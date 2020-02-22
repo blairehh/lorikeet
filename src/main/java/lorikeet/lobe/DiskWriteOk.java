@@ -5,7 +5,7 @@ import lorikeet.core.AnOk;
 import java.net.URI;
 import java.util.Objects;
 
-public class DiskWriteOk implements AnOk<Boolean, DiskWriteOk>, DiskWriteResult<DiskWriteOk> {
+public class DiskWriteOk implements AnOk<Boolean>, DiskWriteResult {
 
     private final URI uri;
     private final long bytesWritten;
@@ -13,11 +13,6 @@ public class DiskWriteOk implements AnOk<Boolean, DiskWriteOk>, DiskWriteResult<
     public DiskWriteOk(URI uri, long bytesWritten) {
         this.uri = uri;
         this.bytesWritten = bytesWritten;
-    }
-
-    @Override
-    public DiskWriteOk self() {
-        return this;
     }
 
     @Override

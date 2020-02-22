@@ -2,7 +2,7 @@ package lorikeet.core;
 
 import java.util.function.Consumer;
 
-public interface Fallible<T, Self extends Fallible<T, Self>> {
+public interface Fallible<T> {
     boolean success();
     boolean failure();
 
@@ -11,6 +11,6 @@ public interface Fallible<T, Self extends Fallible<T, Self>> {
 
 
 
-    Self onSuccess(Consumer<T> consumer);
-    Self onFailure(Consumer<Exception> consumer);
+    Fallible<T> onSuccess(Consumer<T> consumer);
+    Fallible<T> onFailure(Consumer<Exception> consumer);
 }

@@ -2,17 +2,12 @@ package lorikeet.core;
 
 import java.util.Objects;
 
-public class Err<T> implements AnErr<T, Err<T>> {
+public class Err<T> implements AnErr<T> {
 
     private final Exception exception;
 
     public Err(Exception exception) {
         this.exception = exception;
-    }
-
-    @Override
-    public Err<T> self() {
-        return this;
     }
 
     @Override
@@ -32,12 +27,12 @@ public class Err<T> implements AnErr<T, Err<T>> {
 
         final Err<?> err = (Err<?>)o;
 
-        return Objects.equals(this.exception, err.exception);
+        return Objects.equals(this.exception(), err.exception());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.exception);
+        return Objects.hash(this.exception());
     }
 
 }

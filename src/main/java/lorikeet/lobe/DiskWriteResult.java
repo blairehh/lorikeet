@@ -4,7 +4,7 @@ import java.net.URI;
 
 import lorikeet.core.Fallible;
 
-public interface DiskWriteResult<S extends DiskWriteResult<S>> extends Fallible<Boolean, S> {
+public interface DiskWriteResult extends Fallible<Boolean> {
     URI uri();
     long bytesWritten();
 }

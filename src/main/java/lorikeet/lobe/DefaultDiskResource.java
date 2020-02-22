@@ -10,11 +10,11 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;;
 
 public class DefaultDiskResource implements DiskResource {
-    public <R extends UsesDisk> DiskWriteResult<?> write(DiskWrite<R> write) {
+    public <R extends UsesDisk> DiskWriteResult write(DiskWrite<R> write) {
         return null;
     }
 
-    private <R extends UsesDisk> DiskWriteResult<?> write(File file, DiskWrite<R> write) {
+    private <R extends UsesDisk> DiskWriteResult write(File file, DiskWrite<R> write) {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);

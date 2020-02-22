@@ -2,7 +2,7 @@ package lorikeet.core;
 
 import java.util.Objects;
 
-public class Ok<T> implements AnOk<T, Ok<T>> {
+public class Ok<T> implements AnOk<T> {
 
     private final T value;
 
@@ -11,13 +11,8 @@ public class Ok<T> implements AnOk<T, Ok<T>> {
     }
 
     @Override
-    public Ok<T> self() {
-        return this;
-    }
-
-    @Override
     public T value() {
-        return this.value;
+        return null;
     }
 
     @Override
@@ -30,13 +25,13 @@ public class Ok<T> implements AnOk<T, Ok<T>> {
             return false;
         }
 
-        final Ok<?> err = (Ok<?>)o;
+        final Ok<?> that = (Ok<?>)o;
 
-        return Objects.equals(this.value, err.value);
+        return Objects.equals(this.value(), that.value());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.value);
+        return Objects.hash(this.value());
     }
 }

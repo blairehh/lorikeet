@@ -5,7 +5,7 @@ import lorikeet.core.AnErr;
 import java.net.URI;
 import java.util.Objects;
 
-public class DiskWriteErr implements AnErr<Boolean, DiskWriteErr>, DiskWriteResult<DiskWriteErr> {
+public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
     
     private final URI uri;
     private final Exception exception;
@@ -13,11 +13,6 @@ public class DiskWriteErr implements AnErr<Boolean, DiskWriteErr>, DiskWriteResu
     public DiskWriteErr(URI uri, Exception exception) {
         this.uri = uri;
         this.exception = exception;
-    }
-
-    @Override
-    public DiskWriteErr self() {
-        return this;
     }
 
     @Override

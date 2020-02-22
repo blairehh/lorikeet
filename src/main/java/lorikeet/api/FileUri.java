@@ -19,7 +19,7 @@ public class FileUri implements FileId {
     }
 
     @Override
-    public Fallible<File, ?> generateFile() {
+    public Fallible<File> generateFile() {
         return new Ok<>(new File(this.uri));
     }
 

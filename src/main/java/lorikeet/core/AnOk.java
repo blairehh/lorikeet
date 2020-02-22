@@ -2,34 +2,38 @@ package lorikeet.core;
 
 import java.util.function.Consumer;
 
-public interface AnOk<T, S extends Fallible<T, S>> extends Fallible<T, S> {
+public interface AnOk<T> extends Fallible<T> {
 
-
-    S self();
     T value();
 
-    default public boolean success() {
+    @Override
+    default boolean success() {
         return true;
     }
 
-    default public boolean failure() {
+    @Override
+    default boolean failure() {
         return false;
     }
 
-    default public T orPanic() {
+    @Override
+    default T orPanic() {
         return this.value();
     }
 
-    default public T orGive(T value) {
+    @Override
+    default T orGive(T value) {
         return this.value();
     }
 
-    default public S onSuccess(Consumer<T> consumer) {
+    @Override
+    default AnOk<T> onSuccess(Consumer<T> consumer) {
         consumer.accept(this.value());
-        return this.self();
+        return this;
     }
 
-    default public S onFailure(Consumer<Exception> consumer) {
-        return this.self();
+    @Override
+    default AnOk<T> onFailure(Consumer<Exception> consumer) {
+        return this;
     }
 }
