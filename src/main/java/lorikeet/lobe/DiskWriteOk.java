@@ -3,6 +3,7 @@ package lorikeet.lobe;
 import lorikeet.core.AnOk;
 
 import java.net.URI;
+import java.util.Objects;
 
 public class DiskWriteOk implements AnOk<Boolean, DiskWriteOk>, DiskWriteResult<DiskWriteOk> {
 
@@ -32,5 +33,26 @@ public class DiskWriteOk implements AnOk<Boolean, DiskWriteOk>, DiskWriteResult<
     @Override
     public long bytesWritten() {
         return this.bytesWritten;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        DiskWriteOk that = (DiskWriteOk) o;
+
+        return Objects.equals(this.bytesWritten(), that.bytesWritten())
+            && Objects.equals(this.uri(), that.uri());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.uri(), this.bytesWritten());
     }
 }
