@@ -11,10 +11,10 @@ import lorikeet.resource.UsesUndertow;
 
 public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow {
 
-    private final UndertowResource undertowResource;
+    private final UndertowResource<Tutorial, TutorialTract> undertowResource;
 
     public Tutorial(TutorialConfiguration config) {
-        this.undertowResource = new UndertowResource(config);
+        this.undertowResource = new UndertowResource<>(config);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow {
         return this.undertowResource;
     }
 
-    void start() {
-        this.undertowResource.start();
+    void start(TutorialTract tract) {
+        this.undertowResource.start(tract);
     }
 }
