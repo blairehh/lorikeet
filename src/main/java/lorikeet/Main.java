@@ -5,8 +5,11 @@ import lorikeet.lobe.DefaultTract;
 
 public class Main {
     public static void main(String[] args)  {
-        Tract<Tutorial> tract = new DefaultTract<>(new Tutorial(new TutorialConfiguration()));
+        final Tutorial tutorial = new Tutorial(new TutorialConfiguration());
+        Tract<Tutorial> tract = new DefaultTract<>(tutorial);
 
-        tract.invoke(new RunProgram());
+//        tract.invoke(new RunProgram());
+
+        tutorial.start();
     }
 }
