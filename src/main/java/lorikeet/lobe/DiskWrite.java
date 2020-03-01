@@ -6,7 +6,7 @@ import lorikeet.api.FileUri;
 import java.net.URI;
 import java.util.Objects;
 
-public class DiskWrite<R extends UsesDisk> implements LorikeetWrite<R, DiskWriteResult> {
+public class DiskWrite<R extends UsesDisk> implements WriteAgent<R, DiskWriteResult> {
 
     private final FileRef fileRef;
     private final String content;
@@ -28,6 +28,7 @@ public class DiskWrite<R extends UsesDisk> implements LorikeetWrite<R, DiskWrite
         return this.content;
     }
 
+    @Override
     public DiskWriteResult junction(R resources) {
         return resources.useDisk().write(this);
     }

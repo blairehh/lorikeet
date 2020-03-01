@@ -9,8 +9,13 @@ public class DefaultTract<R extends UsesLogging> implements Tract<R> {
     }
 
     @Override
-    public <O> O write(LorikeetWrite<R, O> write) {
+    public <O> O write(WriteAgent<R, O> write) {
         return write.junction(this.resources);
+    }
+
+    @Override
+    public <O> O invoke(LorikeetAction<R, O> action) {
+        return action.junction(this);
     }
 
     @Override

@@ -2,6 +2,7 @@ package lorikeet.core;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface AnOk<T> extends Fallible<T> {
 
@@ -29,6 +30,11 @@ public interface AnOk<T> extends Fallible<T> {
 
     @Override
     default T orGive(Function<Exception, T> giver) {
+        return this.value();
+    }
+
+    @Override
+    default T orGive(Supplier<T> supplier) {
         return this.value();
     }
 
