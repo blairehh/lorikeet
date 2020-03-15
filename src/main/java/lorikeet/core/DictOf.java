@@ -5,6 +5,7 @@ import org.pcollections.HashTreePMap;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class DictOf<K, V> implements Dict<K, V> {
     private final HashPMap<K, V> map;
@@ -24,6 +25,14 @@ public class DictOf<K, V> implements Dict<K, V> {
     @Override
     public Dict<K, V> push(K key, V value) {
         return new DictOf<>(this.map.plus(key, value));
+    }
+
+    @Override
+    public Dict<K, V> push(K key, V valueIfNotFound, Function<V, V> valueModifier) {
+        if (!this.map.containsKey(key)) {
+            return this.push(key, valueIfNotFound);
+        }
+        return this.push(key, valueModifier.apply(this.map.get(key)));
     }
 
     @Override

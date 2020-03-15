@@ -33,6 +33,6 @@ public class TutorialTract implements Tract<Tutorial>, ProvidesHttpReceptors<Tut
 
     @Override
     public Seq<HttpReceptor<Tutorial>> provideHttpReceptors() {
-        return new SeqOf<>(new RunProgramEndpoint());
+        return new SeqOf<>(new RunProgramReceptor());
     }
 }

@@ -11,7 +11,7 @@ import lorikeet.resource.UsesUndertow;
 
 public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow {
 
-    private final UndertowResource<Tutorial, TutorialTract> undertowResource;
+    private final UndertowResource<TutorialTract> undertowResource;
 
     public Tutorial(TutorialConfiguration config) {
         this.undertowResource = new UndertowResource<>(config);
