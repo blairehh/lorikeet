@@ -28,5 +28,7 @@ public interface Seq<T> extends List<T> {
     Seq<T> modify(Function<T, T> modifier);
     Seq<T> modify(Predicate<T> modifyPredicate, Function<T, T> modifier);
 
+    Optional<T> first();
+
     List<T> forkMutable();
 }

@@ -149,6 +149,15 @@ public class SeqOf<T> implements Seq<T> {
     }
 
     @Override
+    public Optional<T> first() {
+        try {
+            return Optional.ofNullable(this.vector.get(0));
+        } catch (IndexOutOfBoundsException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public final List<T> forkMutable() {
         final List<T> list = new ArrayList<>((int)this.count());
         list.addAll(this.vector);

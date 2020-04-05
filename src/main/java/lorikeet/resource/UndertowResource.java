@@ -6,7 +6,7 @@ import io.undertow.util.Headers;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.lobe.HttpReceptor;
-import lorikeet.lobe.HttpSignal;
+import lorikeet.lobe.IncomingHttpMsg;
 import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.Tract;
 import lorikeet.lobe.UsesLogging;
@@ -22,7 +22,7 @@ public class UndertowResource<T extends Tract<? extends UsesLogging> & ProvidesH
         Undertow server = Undertow.builder()
             .addHttpListener(config.port(), config.host())
             .setHandler((final HttpServerExchange exchange) -> {
-                final HttpSignal signal = new UndertowHttpSignal();
+                final IncomingHttpMsg msg = new UndertowIncomingMsg(exchange);
                 final Seq<HttpReceptor<? extends UsesLogging>> receptors = new SeqOf<>();
                 /*tract.provideHttpReceptors()
                     .pick(receptor -> receptor.filter().matches(signal));*/
