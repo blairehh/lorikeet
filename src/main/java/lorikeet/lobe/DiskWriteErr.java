@@ -2,6 +2,8 @@ package lorikeet.lobe;
 
 import lorikeet.api.FileRef;
 import lorikeet.core.AnErr;
+import lorikeet.core.Seq;
+import lorikeet.core.SeqOf;
 
 import java.net.URI;
 import java.util.Objects;
@@ -9,16 +11,21 @@ import java.util.Objects;
 public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
     
     private final FileRef fileRef;
-    private final Exception exception;
+    private final Seq<? extends Exception> exceptions;
 
     public DiskWriteErr(FileRef fileRef, Exception exception) {
         this.fileRef = fileRef;
-        this.exception = exception;
+        this.exceptions = new SeqOf<>(exception);
     }
 
     @Override
     public Exception exception() {
-        return this.exception;
+        return this.exceptions.first().orElseThrow();
+    }
+
+    @Override
+    public Seq<? extends Exception> errors() {
+        return this.exceptions;
     }
 
     @Override

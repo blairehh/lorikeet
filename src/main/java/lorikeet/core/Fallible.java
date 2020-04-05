@@ -8,6 +8,7 @@ public interface Fallible<T> {
 
     boolean success();
     boolean failure();
+    Seq<? extends Exception> errors();
 
     T orGive(T value);
     T orGive(Function<Exception, T> giver);
