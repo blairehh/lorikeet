@@ -1,5 +1,6 @@
 package lorikeet.core;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -23,6 +24,14 @@ public class OptOf<T> implements Fallible<T> {
     @Override
     public boolean failure() {
         return this.optional.isEmpty();
+    }
+
+    @Override
+    public Seq<? extends Exception> errors() {
+        if (this.optional.isEmpty()) {
+            return new SeqOf<>(new NoSuchElementException());
+        }
+        return new SeqOf<>();
     }
 
     @Override

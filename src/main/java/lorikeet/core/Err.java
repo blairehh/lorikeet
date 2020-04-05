@@ -4,15 +4,24 @@ import java.util.Objects;
 
 public class Err<T> implements AnErr<T> {
 
-    private final Exception exception;
+    private final Seq<? extends Exception> exceptions;
 
     public Err(Exception exception) {
-        this.exception = exception;
+        this.exceptions = new SeqOf<>(exception);
+    }
+
+    public Err(Err<?> err) {
+        this.exceptions = err.exceptions;
     }
 
     @Override
     public Exception exception() {
-        return this.exception;
+        return this.exceptions.first().orElseThrow();
+    }
+
+    @Override
+    public Seq<? extends Exception> errors() {
+        return this.exceptions;
     }
 
     @Override

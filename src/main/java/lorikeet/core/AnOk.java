@@ -19,6 +19,11 @@ public interface AnOk<T> extends Fallible<T> {
     }
 
     @Override
+    default Seq<? extends Exception> errors() {
+        return new SeqOf<>();
+    }
+
+    @Override
     default T orPanic() {
         return this.value();
     }
