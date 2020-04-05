@@ -2,12 +2,12 @@ package lorikeet.http.error;
 
 import java.util.Objects;
 
-public class HeaderNotFound extends RuntimeException {
+public class BadHeaderName extends RuntimeException {
     private final String headerName;
 
-    public HeaderNotFound(String headerName) {
-        super(String.format("Header '%s' was not found", headerName));
-        this.headerName = headerName;
+    public BadHeaderName(String name) {
+        super(String.format("Bad header name '%s'", name));
+        this.headerName = name;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class HeaderNotFound extends RuntimeException {
             return false;
         }
 
-        HeaderNotFound that = (HeaderNotFound) o;
+        BadHeaderName that = (BadHeaderName) o;
 
         return Objects.equals(this.headerName, that.headerName);
     }

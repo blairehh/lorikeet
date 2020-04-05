@@ -5,6 +5,7 @@ import lorikeet.core.Fallible;
 import lorikeet.core.IncludableFallible;
 import lorikeet.core.Ok;
 import lorikeet.core.Seq;
+import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.BadHeaderValue;
 import lorikeet.http.error.HeaderNotFound;
 import lorikeet.lobe.IncomingHttpMsg;
@@ -31,6 +32,10 @@ public class BoolHeader implements IncludableFallible<Boolean> {
 
     @Override
     public Fallible<Boolean> include() {
+        if (this.headerName.isBlank()) {
+            return new Err<>(new BadHeaderName(this.headerName));
+        }
+
         final Optional<String> opt = this.msg.headers()
             .pick(this.headerName)
             .flatMap(Seq::first);
