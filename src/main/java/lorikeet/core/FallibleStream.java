@@ -10,6 +10,10 @@ public class FallibleStream {
     interface F1<T> extends Supplier<Fallible<T>> {}
     interface O1<T> extends Supplier<Optional<T>> {}
 
+    public <T> FS1<T> include(T value) {
+        return new FS1<>(new Ok<>(value));
+    }
+
     public <T> FS1<T> include(Fallible<T> value) {
         return new FS1<>(value);
     }
@@ -20,6 +24,14 @@ public class FallibleStream {
 
     public <T> FS1<T> include(Supplier<T> supplier) {
         return new FS1<>(new Ok<>(supplier.get()));
+    }
+
+    public <T> FS1<T> include(Includable<T> includable) {
+        return this.include(includable.include());
+    }
+
+    public <T> FS1<T> include(IncludableFallible<T> includable) {
+        return this.include(includable.include());
     }
 
     public <T> FS1<T> include(F1<T> supplier) {
@@ -47,6 +59,14 @@ public class FallibleStream {
 
         public <B> Fallible<B> coalesceo(Function<A, Optional<B>> coalesce) {
             return this.a.then((aValue) -> new OptOf<>(coalesce.apply(aValue)));
+        }
+
+        public <B> FS2<A, B> include(Includable<B> includable) {
+            return this.include(new Ok<>(includable.include()));
+        }
+
+        public <B> FS2<A, B> include(IncludableFallible<B> includable) {
+            return this.include(includable.include());
         }
 
         public <B> FS2<A, B> include(Fallible<B> value) {
@@ -116,6 +136,14 @@ public class FallibleStream {
             return this.a.then((aValue) ->
                 this.b.then((bValue) -> new OptOf<>(coalesce.apply(aValue, bValue)))
             );
+        }
+
+        public <C> FS3<A, B, C> include(Includable<C> includable) {
+            return this.include(new Ok<>(includable.include()));
+        }
+
+        public <C> FS3<A, B, C> include(IncludableFallible<C> includable) {
+            return this.include(includable.include());
         }
 
         public <C> FS3<A, B, C> include(Fallible<C> value) {
@@ -200,6 +228,14 @@ public class FallibleStream {
                     this.c.then((cValue) -> new OptOf<>(coalesce.apply(aValue, bValue, cValue)))
                 )
             );
+        }
+
+        public <D> FS4<A, B, C, D> include(Includable<D> includable) {
+            return this.include(new Ok<>(includable.include()));
+        }
+
+        public <D> FS4<A, B, C, D> include(IncludableFallible<D> includable) {
+            return this.include(includable.include());
         }
 
         public <D> FS4<A, B, C, D> include(Fallible<D> value) {
@@ -295,6 +331,14 @@ public class FallibleStream {
                     )
                 )
             );
+        }
+
+        public <E> FS5<A, B, C, D, E> include(Includable<E> includable) {
+            return this.include(new Ok<>(includable.include()));
+        }
+
+        public <E> FS5<A, B, C, D, E> include(IncludableFallible<E> includable) {
+            return this.include(includable.include());
         }
 
         public <E> FS5<A, B, C, D, E> include(Fallible<E> value) {
