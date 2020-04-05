@@ -9,6 +9,7 @@ import lorikeet.core.SeqCollector;
 import lorikeet.lobe.IncomingHttpMsg;
 
 import java.net.URI;
+import java.util.Objects;
 
 public class UndertowIncomingMsg implements IncomingHttpMsg {
     private final HttpMethod method;
@@ -45,5 +46,27 @@ public class UndertowIncomingMsg implements IncomingHttpMsg {
     @Override
     public URI uri() {
         return this.uri;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        UndertowIncomingMsg that = (UndertowIncomingMsg) o;
+
+        return Objects.equals(this.method, that.method)
+            && Objects.equals(this.uri, that.uri)
+            && Objects.equals(this.headers, that.headers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.method, this.uri, this.headers);
     }
 }

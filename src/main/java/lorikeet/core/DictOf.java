@@ -5,7 +5,9 @@ import org.pcollections.HashTreePMap;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DictOf<K, V> implements Dict<K, V> {
     private final HashPMap<K, V> map;
@@ -38,6 +40,24 @@ public class DictOf<K, V> implements Dict<K, V> {
     @Override
     public Dict<K, V> pop(Object key) {
         return new DictOf<>(this.map.minus(key));
+    }
+
+    @Override
+    public Optional<V> pick(Object key) {
+        final V value = this.map.get(key);
+        if (value == null) {
+            return Optional.empty();
+        }
+        return Optional.of(value);
+    }
+
+    @Override
+    public <T> Dict<K, T> modifyValues(Function<V, T> modifier) {
+        final Map<K, T> map = this.map.entrySet()
+            .stream()
+            .map((keyValue) -> Map.entry(keyValue.getKey(), modifier.apply(keyValue.getValue())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return new DictOf<>(map);
     }
 
     @Override
