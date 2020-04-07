@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntHeaderTest {
     private final IncomingHttpMsg msg = new MockIncomingHttpMsg(
-        new DictOf<String, String>().push("good", "1").push("bad", "a")
+        "/test", new DictOf<String, String>().push("good", "1").push("bad", "a")
     );
 
     @Test

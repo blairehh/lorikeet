@@ -7,12 +7,14 @@ import lorikeet.lobe.IncomingHttpMsg;
 import org.junit.Test;
 
 import javax.ws.rs.HeaderParam;
+import java.net.URI;
 import java.util.Random;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SingleHeader {
-    String name;
+    final String name;
 
     @MsgCtor
     public SingleHeader(@HeaderParam("name") String name) {
@@ -21,7 +23,7 @@ class SingleHeader {
 }
 
 class UnsupportedHeaderType {
-    Random name;
+    final Random name;
 
     @MsgCtor
     public UnsupportedHeaderType(@HeaderParam("name") Random name) {
@@ -30,7 +32,7 @@ class UnsupportedHeaderType {
 }
 
 class SingleHeaderNoCtor {
-    String name;
+    final String name;
 
     public SingleHeaderNoCtor(@HeaderParam("name") String name) {
         this.name = name;
@@ -39,10 +41,10 @@ class SingleHeaderNoCtor {
 
 
 class MultiHeader {
-    String name;
-    Integer limit;
-    Boolean active;
-    Double score;
+    final String name;
+    final Integer limit;
+    final Boolean active;
+    final Double score;
 
     @MsgCtor
     public MultiHeader(
@@ -59,7 +61,7 @@ class MultiHeader {
 }
 
 class BadHeaderValue {
-    Integer number;
+    final Integer number;
 
     @MsgCtor
     public BadHeaderValue(@HeaderParam("bad-num") int number) {
@@ -67,9 +69,38 @@ class BadHeaderValue {
     }
 }
 
+class PathField {
+    final URI uri;
+
+    @MsgCtor
+    public PathField(@Path("/user/{id}") URI uri) {
+        this.uri = uri;
+    }
+}
+
+class PathFieldAsString {
+    final String uri;
+
+    @MsgCtor
+    public PathFieldAsString(@Path("/user/{id}") String uri) {
+        this.uri = uri;
+    }
+}
+
+class PathFieldInvalidType {
+    final UUID uri;
+
+    @MsgCtor
+    public PathFieldInvalidType(@Path("/user/{id}") UUID uri) {
+        this.uri = uri;
+    }
+}
+
+
 public class HttpMsgOfTest {
 
     private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
+        "/user/786",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
             .push("limit", "10")
@@ -129,4 +160,32 @@ public class HttpMsgOfTest {
 
         assertThat(failed).isTrue();
     }
+
+    @Test
+    public void testUriPath() {
+        PathField msg = new HttpMsgOf<>(incoming, PathField.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.uri.toASCIIString()).isEqualTo("/user/786");
+    }
+
+    @Test
+    public void testUriPathAsString() {
+        PathFieldAsString msg = new HttpMsgOf<>(incoming, PathFieldAsString.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.uri).isEqualTo("/user/786");
+    }
+
+    @Test
+    public void testUriPathInvalidType() {
+        boolean failed = new HttpMsgOf<>(incoming, PathFieldInvalidType.class)
+            .include()
+            .failure();
+
+        assertThat(failed).isTrue();
+    }
+
 }

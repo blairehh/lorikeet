@@ -8,12 +8,14 @@ import lorikeet.core.Ok;
 import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
+import lorikeet.http.error.UnsupportedPathValueType;
 import lorikeet.lobe.IncomingHttpMsg;
 
 import javax.ws.rs.HeaderParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,6 +48,16 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
                     return (Fallible<T>) result;
                 }
                 parameterValues[i] = result.orPanic();
+                continue;
+            }
+            final Path path = parameter.getAnnotation(Path.class);
+            if (path != null) {
+                final Fallible<?> result = this.handlePath(parameter, path);
+                if (result.failure()) {
+                    return (Fallible<T>) result;
+                }
+                parameterValues[i] = result.orPanic();
+                continue;
             }
         }
         try {
@@ -72,6 +84,21 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             return new StringHeader(this.msg, header.value()).include();
         }
         return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
+    }
+
+    private Fallible<?> handlePath(Parameter parameter, Path path) {
+        final Fallible<URI> result = new UriPath(this.msg, path.value())
+            .include();
+
+        return result.then((uri) -> {
+            if (parameter.getType().equals(URI.class)) {
+                return new Ok<>(uri);
+            }
+            if (parameter.getType().equals(String.class)) {
+                return new Ok<>(uri.toASCIIString());
+            }
+            return new Err<>(new UnsupportedPathValueType(parameter.getType()));
+        });
     }
 
     @SuppressWarnings("unchecked")

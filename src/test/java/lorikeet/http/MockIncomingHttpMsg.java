@@ -18,9 +18,9 @@ public class MockIncomingHttpMsg implements IncomingHttpMsg {
         this.headers = new DictOf<>();
     }
 
-    public MockIncomingHttpMsg(Dict<String, String> headers) {
+    public MockIncomingHttpMsg(String uri, Dict<String, String> headers) {
         this.headers = headers.modifyValues(SeqOf::new);
-        this.uri = URI.create("/test");
+        this.uri = URI.create(uri);
     }
 
     @Override

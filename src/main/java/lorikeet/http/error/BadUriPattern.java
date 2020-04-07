@@ -5,6 +5,11 @@ import java.util.Objects;
 public class BadUriPattern extends RuntimeException {
     private final String uriPattern;
 
+    public BadUriPattern(String uriPattern) {
+        super(String.format("URI pattern '%s' is not valid", uriPattern));
+        this.uriPattern = uriPattern;
+    }
+
     public BadUriPattern(String uriPattern, Throwable cause) {
         super(String.format("URI pattern '%s' is not valid", uriPattern), cause);
         this.uriPattern = uriPattern;

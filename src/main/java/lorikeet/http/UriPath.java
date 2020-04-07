@@ -25,6 +25,9 @@ public class UriPath implements IncludableFallible<URI> {
 
     @Override
     public Fallible<URI> include() {
+        if (this.uriPattern == null || this.uriPattern.isBlank()) {
+            return new Err<>(new BadUriPattern(this.uriPattern));
+        }
         try {
             final UrlPattern pattern = new UrlPattern(this.uriPattern);
             final UrlMatch match = pattern.match(this.msg.uri().toString());
