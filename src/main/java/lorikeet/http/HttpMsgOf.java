@@ -16,6 +16,7 @@ import lorikeet.lobe.IncomingHttpMsg;
 
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -42,7 +43,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
 
     @SuppressWarnings("unchecked")
     private Fallible<T> include(Constructor<T> ctor) {
-        final Path path = ctor.getAnnotation(Path.class);
+        final Path path = this.msgClass.getAnnotation(Path.class);
         if (path == null) {
             return new Err<>(new HttpMsgMustHavePath(this.msgClass));
         }
@@ -59,6 +60,15 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             final HeaderAnnotation header = this.retrieveHeaderAnnotation(parameter);
             if (header != null) {
                 final Fallible<?> result = this.handleHeader(parameter, header);
+                if (result.failure()) {
+                    return (Fallible<T>) result;
+                }
+                parameterValues[i] = result.orPanic();
+                continue;
+            }
+            final PathParam pathParam = parameter.getAnnotation(PathParam.class);
+            if (pathParam != null) {
+                final Fallible<?> result = this.handlePathVar(parameter, msgPath, pathParam);
                 if (result.failure()) {
                     return (Fallible<T>) result;
                 }
@@ -103,6 +113,25 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             return new StringHeader(this.msg, header.headerName()).include();
         }
         return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
+    }
+
+    private Fallible<?> handlePathVar(Parameter parameter, HttpMsgPath path, PathParam param) {
+        if (parameter.getType().equals(Integer.class) || parameter.getType().equals(int.class)) {
+            return new IntPathVar(path, param.value()).include();
+        }
+        if (parameter.getType().equals(Double.class) || parameter.getType().equals(double.class)) {
+            return new DoublePathVar(path, param.value()).include();
+        }
+        if (parameter.getType().equals(Long.class) || parameter.getType().equals(long.class)) {
+            return new LongPathVar(path, param.value()).include();
+        }
+        if (parameter.getType().equals(Boolean.class) || parameter.getType().equals(boolean.class)) {
+            return new BoolPathVar(path, param.value()).include();
+        }
+        if (parameter.getType().equals(String.class)) {
+            return new StringPathVar(path, param.value()).include();
+        }
+        return new Bug<>(new UnsupportedPathValueType(parameter.getType()));
     }
 
     @SuppressWarnings("unchecked")

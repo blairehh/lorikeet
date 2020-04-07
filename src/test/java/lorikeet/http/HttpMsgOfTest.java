@@ -9,12 +9,12 @@ import org.junit.Test;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
-import java.net.URI;
+import javax.ws.rs.PathParam;
 import java.util.Random;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Path("/user/{id}")
 class SingleHeader {
     final String name;
 
@@ -24,6 +24,7 @@ class SingleHeader {
     }
 }
 
+@Path("/user/{id}")
 class UnsupportedHeaderType {
     final Random name;
 
@@ -33,6 +34,7 @@ class UnsupportedHeaderType {
     }
 }
 
+@Path("/user/{id}")
 class SingleHeaderNoCtor {
     final String name;
 
@@ -41,7 +43,7 @@ class SingleHeaderNoCtor {
     }
 }
 
-
+@Path("/user/{id}")
 class MultiHeader {
     final String name;
     final Integer limit;
@@ -62,7 +64,7 @@ class MultiHeader {
     }
 }
 
-
+@Path("/user/{id}")
 class MultiHeaderWithCustomAnnotationAndPrimitives {
     final String name;
     final int limit;
@@ -83,6 +85,7 @@ class MultiHeaderWithCustomAnnotationAndPrimitives {
     }
 }
 
+@Path("/user/{id}")
 class BadHeaderValue {
     final Integer number;
 
@@ -109,10 +112,33 @@ class MsgWithJustNonMatchingPath {
 }
 
 
+@Path("/orders/{id}/product-codes/{code}")
+class MsgWithPathVars {
+    final long id;
+    final String code;
+
+    @MsgCtor
+    public MsgWithPathVars(@PathParam("id") long id, @PathParam("code") String productCode) {
+        this.id = id;
+        this.code = productCode;
+    }
+}
+
+
 public class HttpMsgOfTest {
 
     private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
         "/user/786",
+        new DictOf<String, String>()
+            .push("name", "Bob Doe")
+            .push("limit", "10")
+            .push("active", "false")
+            .push("score", "34.64")
+            .push("bad-num", "1a")
+    );
+
+    private final IncomingHttpMsg incomingMultiPathVar = new MockIncomingHttpMsg(
+        "/orders/123/product-codes/ABC",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
             .push("limit", "10")
@@ -203,5 +229,15 @@ public class HttpMsgOfTest {
             .success();
 
         assertThat(succeeded).isFalse();
+    }
+
+    @Test
+    public void testPathVars() {
+        MsgWithPathVars msg = new HttpMsgOf<>(incomingMultiPathVar, MsgWithPathVars.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.id).isEqualTo(123);
+        assertThat(msg.code).isEqualTo("ABC");
     }
 }
