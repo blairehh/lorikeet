@@ -1,10 +1,20 @@
 package lorikeet.http;
 
+import lorikeet.core.Bug;
+import lorikeet.core.Err;
+import lorikeet.core.Fallible;
+import lorikeet.core.IncludableFallible;
+import lorikeet.core.Ok;
 import lorikeet.foreign.UrlMatch;
 import lorikeet.foreign.UrlPattern;
+import lorikeet.http.error.BadUriPattern;
+import lorikeet.http.error.UriPatternDoesNotMatchUri;
 import lorikeet.lobe.IncomingHttpMsg;
 
-public class UriPath {
+import java.net.URI;
+import java.util.regex.PatternSyntaxException;
+
+public class UriPath implements IncludableFallible<URI> {
     private final IncomingHttpMsg msg;
     private final String uriPattern;
 
@@ -13,13 +23,17 @@ public class UriPath {
         this.uriPattern = uriPattern;
     }
 
-    public void include() {
-        final UrlPattern pattern = new UrlPattern(this.uriPattern);
-        final UrlMatch match = pattern.match(this.msg.uri().toString());
-        if (match == null) {
-            System.out.println("match");
-        } else {
-            System.out.println("no match");
+    @Override
+    public Fallible<URI> include() {
+        try {
+            final UrlPattern pattern = new UrlPattern(this.uriPattern);
+            final UrlMatch match = pattern.match(this.msg.uri().toString());
+            if (match == null) {
+                return new Err<>(new UriPatternDoesNotMatchUri(this.uriPattern, this.msg.uri().toASCIIString()));
+            }
+            return new Ok<>(this.msg.uri());
+        } catch (PatternSyntaxException e) {
+            return new Bug<>(new BadUriPattern(this.uriPattern, e));
         }
     }
 
