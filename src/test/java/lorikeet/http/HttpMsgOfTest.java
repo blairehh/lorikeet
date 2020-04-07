@@ -117,7 +117,6 @@ class PathFieldInvalidType {
     }
 }
 
-
 public class HttpMsgOfTest {
 
     private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
