@@ -10,6 +10,7 @@ import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.lobe.IncomingHttpMsg;
 
+import javax.ws.rs.HeaderParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -38,7 +39,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
             final Parameter parameter = ctor.getParameters()[i];
-            final Header header = parameter.getAnnotation(Header.class);
+            final HeaderParam header = parameter.getAnnotation(HeaderParam.class);
             if (header != null) {
                 final Fallible<?> result = this.handleHeader(parameter, header);
                 if (result.failure()) {
@@ -54,7 +55,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         }
     }
 
-    private Fallible<?> handleHeader(Parameter parameter, Header header) {
+    private Fallible<?> handleHeader(Parameter parameter, HeaderParam header) {
         if (parameter.getType().equals(Integer.class)) {
             return new IntHeader(this.msg, header.value()).include();
         }
