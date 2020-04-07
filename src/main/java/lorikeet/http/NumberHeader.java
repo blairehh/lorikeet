@@ -1,5 +1,6 @@
 package lorikeet.http;
 
+import lorikeet.core.Bug;
 import lorikeet.core.Err;
 import lorikeet.core.Fallible;
 import lorikeet.core.IncludableFallible;
@@ -37,7 +38,7 @@ public abstract class NumberHeader<T extends Number> implements IncludableFallib
     @Override
     public Fallible<T> include() {
         if (this.headerName.isBlank()) {
-            return new Err<>(new BadHeaderName(this.headerName));
+            return new Bug<>(new BadHeaderName(this.headerName));
         }
 
         final Optional<String> opt = this.msg.headers()

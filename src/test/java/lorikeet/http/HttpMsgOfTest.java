@@ -57,6 +57,15 @@ class MultiHeader {
     }
 }
 
+class BadHeaderValue {
+    Integer number;
+
+    @MsgCtor
+    public BadHeaderValue(@Header("bad-num") int number) {
+        this.number = number;
+    }
+}
+
 public class HttpMsgOfTest {
 
     private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
@@ -65,6 +74,7 @@ public class HttpMsgOfTest {
             .push("limit", "10")
             .push("active", "false")
             .push("score", "34.64")
+            .push("bad-num", "1a")
     );
 
     @Test
@@ -108,5 +118,14 @@ public class HttpMsgOfTest {
         assertThat(msg.limit).isEqualTo(10);
         assertThat(msg.active).isFalse();
         assertThat(msg.score).isEqualTo(34.64);
+    }
+
+    @Test
+    public void testBestBadHeaderValue() {
+        boolean failed = new HttpMsgOf<>(incoming, BadHeaderValue.class)
+            .include()
+            .failure();
+
+        assertThat(failed).isTrue();
     }
 }

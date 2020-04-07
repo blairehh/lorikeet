@@ -1,9 +1,11 @@
 package lorikeet.http;
 
+import lorikeet.core.Bug;
 import lorikeet.core.Err;
 import lorikeet.core.Fallible;
 import lorikeet.core.IncludableFallible;
 import lorikeet.core.Ok;
+import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.lobe.IncomingHttpMsg;
@@ -28,9 +30,10 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
     public Fallible<T> include() {
         return this.findCtor()
             .map(this::include)
-            .orElse(new Err<>(new MsgTypeDidNotHaveAnnotatedCtor(this.msgClass)));
+            .orElse(new Bug<>(new MsgTypeDidNotHaveAnnotatedCtor(this.msgClass)));
     }
 
+    @SuppressWarnings("unchecked")
     private Fallible<T> include(Constructor<T> ctor) {
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
@@ -39,7 +42,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             if (header != null) {
                 final Fallible<?> result = this.handleHeader(parameter, header);
                 if (result.failure()) {
-                    return new Err<>((Err<?>)result);
+                    return (Fallible<T>) result;
                 }
                 parameterValues[i] = result.orPanic();
             }
@@ -47,7 +50,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         try {
             return new Ok<>(ctor.newInstance(parameterValues));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            return new Err<>(e);
+            return new Bug<>(new FailedToConstructHttpMsg(this.msgClass, e));
         }
     }
 
@@ -67,12 +70,12 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         if (parameter.getType().equals(String.class)) {
             return new StringHeader(this.msg, header.value()).include();
         }
-        return new Err<>(new UnsupportedHeaderValueType(parameter.getType()));
+        return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
     }
 
+    @SuppressWarnings("unchecked")
     private Optional<Constructor<T>> findCtor() {
-        return Arrays.asList(this.msgClass.getConstructors())
-            .stream()
+        return Arrays.stream(this.msgClass.getConstructors())
             .filter((ctor) -> ctor.getDeclaredAnnotations().length != 0)
             .map((ctor) -> (Constructor<T>)ctor)
             .findFirst();
