@@ -9,6 +9,7 @@ import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.http.error.UnsupportedPathValueType;
+import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.lobe.IncomingHttpMsg;
 
 import javax.ws.rs.HeaderParam;
@@ -41,7 +42,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
             final Parameter parameter = ctor.getParameters()[i];
-            final HeaderParam header = parameter.getAnnotation(HeaderParam.class);
+            final HeaderAnnotation header = this.retrieveHeaderAnnotation(parameter);
             if (header != null) {
                 final Fallible<?> result = this.handleHeader(parameter, header);
                 if (result.failure()) {
@@ -67,21 +68,34 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
         }
     }
 
-    private Fallible<?> handleHeader(Parameter parameter, HeaderParam header) {
-        if (parameter.getType().equals(Integer.class)) {
-            return new IntHeader(this.msg, header.value()).include();
+    private HeaderAnnotation retrieveHeaderAnnotation(Parameter parameter) {
+        final HeaderParam headerParam = parameter.getAnnotation(HeaderParam.class);
+        if (headerParam != null) {
+            return new HeaderAnnotation(headerParam.value());
         }
-        if (parameter.getType().equals(Double.class)) {
-            return new DoubleHeader(this.msg, header.value()).include();
+
+        final Header header = parameter.getAnnotation(Header.class);
+        if (header != null) {
+            return new HeaderAnnotation(header.value());
         }
-        if (parameter.getType().equals(Long.class)) {
-            return new LongHeader(this.msg, header.value()).include();
+        return null;
+    }
+
+    private Fallible<?> handleHeader(Parameter parameter, HeaderAnnotation header) {
+        if (parameter.getType().equals(Integer.class) || parameter.getType().equals(int.class)) {
+            return new IntHeader(this.msg, header.headerName()).include();
         }
-        if (parameter.getType().equals(Boolean.class)) {
-            return new BoolHeader(this.msg, header.value()).include();
+        if (parameter.getType().equals(Double.class) || parameter.getType().equals(double.class)) {
+            return new DoubleHeader(this.msg, header.headerName()).include();
+        }
+        if (parameter.getType().equals(Long.class) || parameter.getType().equals(long.class)) {
+            return new LongHeader(this.msg, header.headerName()).include();
+        }
+        if (parameter.getType().equals(Boolean.class) || parameter.getType().equals(boolean.class)) {
+            return new BoolHeader(this.msg, header.headerName()).include();
         }
         if (parameter.getType().equals(String.class)) {
-            return new StringHeader(this.msg, header.value()).include();
+            return new StringHeader(this.msg, header.headerName()).include();
         }
         return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
     }
