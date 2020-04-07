@@ -6,13 +6,16 @@ import lorikeet.core.Fallible;
 import lorikeet.core.IncludableFallible;
 import lorikeet.core.Ok;
 import lorikeet.http.error.FailedToConstructHttpMsg;
+import lorikeet.http.error.HttpMsgMustHavePath;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.http.error.UnsupportedPathValueType;
 import lorikeet.http.internal.HeaderAnnotation;
+import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.lobe.IncomingHttpMsg;
 
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -39,21 +42,23 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
 
     @SuppressWarnings("unchecked")
     private Fallible<T> include(Constructor<T> ctor) {
+        final Path path = ctor.getAnnotation(Path.class);
+        if (path == null) {
+            return new Err<>(new HttpMsgMustHavePath(this.msgClass));
+        }
+        final Fallible<HttpMsgPath> pathResult = new UriPath(this.msg, path.value())
+            .include();
+        if (pathResult.failure()) {
+            return (Fallible<T>)pathResult;
+        }
+        final HttpMsgPath msgPath = pathResult.orPanic();
+
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
             final Parameter parameter = ctor.getParameters()[i];
             final HeaderAnnotation header = this.retrieveHeaderAnnotation(parameter);
             if (header != null) {
                 final Fallible<?> result = this.handleHeader(parameter, header);
-                if (result.failure()) {
-                    return (Fallible<T>) result;
-                }
-                parameterValues[i] = result.orPanic();
-                continue;
-            }
-            final Path path = parameter.getAnnotation(Path.class);
-            if (path != null) {
-                final Fallible<?> result = this.handlePath(parameter, path);
                 if (result.failure()) {
                     return (Fallible<T>) result;
                 }
@@ -98,21 +103,6 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             return new StringHeader(this.msg, header.headerName()).include();
         }
         return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
-    }
-
-    private Fallible<?> handlePath(Parameter parameter, Path path) {
-        final Fallible<URI> result = new UriPath(this.msg, path.value())
-            .include();
-
-        return result.then((uri) -> {
-            if (parameter.getType().equals(URI.class)) {
-                return new Ok<>(uri);
-            }
-            if (parameter.getType().equals(String.class)) {
-                return new Ok<>(uri.toASCIIString());
-            }
-            return new Err<>(new UnsupportedPathValueType(parameter.getType()));
-        });
     }
 
     @SuppressWarnings("unchecked")

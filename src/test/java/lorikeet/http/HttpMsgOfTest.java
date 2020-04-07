@@ -6,7 +6,9 @@ import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.lobe.IncomingHttpMsg;
 import org.junit.Test;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import java.net.URI;
 import java.util.Random;
 import java.util.UUID;
@@ -90,32 +92,22 @@ class BadHeaderValue {
     }
 }
 
-class PathField {
-    final URI uri;
-
+@Path("/user/{id}")
+class MsgWithJustPath {
     @MsgCtor
-    public PathField(@Path("/user/{id}") URI uri) {
-        this.uri = uri;
+    public MsgWithJustPath() {
+
     }
 }
 
-class PathFieldAsString {
-    final String uri;
-
+@Path("/product/{id}")
+class MsgWithJustNonMatchingPath {
     @MsgCtor
-    public PathFieldAsString(@Path("/user/{id}") String uri) {
-        this.uri = uri;
+    public MsgWithJustNonMatchingPath() {
+
     }
 }
 
-class PathFieldInvalidType {
-    final UUID uri;
-
-    @MsgCtor
-    public PathFieldInvalidType(@Path("/user/{id}") UUID uri) {
-        this.uri = uri;
-    }
-}
 
 public class HttpMsgOfTest {
 
@@ -196,30 +188,20 @@ public class HttpMsgOfTest {
     }
 
     @Test
-    public void testUriPath() {
-        PathField msg = new HttpMsgOf<>(incoming, PathField.class)
+    public void testPath() {
+        boolean succeeded = new HttpMsgOf<>(incoming, MsgWithJustPath.class)
             .include()
-            .orPanic();
+            .success();
 
-        assertThat(msg.uri.toASCIIString()).isEqualTo("/user/786");
+        assertThat(succeeded).isTrue();
     }
 
     @Test
-    public void testUriPathAsString() {
-        PathFieldAsString msg = new HttpMsgOf<>(incoming, PathFieldAsString.class)
+    public void testPathNotMatching() {
+        boolean succeeded = new HttpMsgOf<>(incoming, MsgWithJustNonMatchingPath.class)
             .include()
-            .orPanic();
+            .success();
 
-        assertThat(msg.uri).isEqualTo("/user/786");
+        assertThat(succeeded).isFalse();
     }
-
-    @Test
-    public void testUriPathInvalidType() {
-        boolean failed = new HttpMsgOf<>(incoming, PathFieldInvalidType.class)
-            .include()
-            .failure();
-
-        assertThat(failed).isTrue();
-    }
-
 }
