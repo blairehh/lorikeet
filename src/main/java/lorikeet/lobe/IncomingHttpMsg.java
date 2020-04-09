@@ -10,4 +10,5 @@ public interface IncomingHttpMsg {
     HttpMethod method();
     Dict<String, Seq<String>> headers();
     URI uri();
+    Dict<String, Seq<String>> queryParameters();
 }

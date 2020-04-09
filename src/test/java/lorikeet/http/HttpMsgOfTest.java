@@ -6,10 +6,10 @@ import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.lobe.IncomingHttpMsg;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,6 +108,34 @@ class MsgWithJustNonMatchingPath {
     @MsgCtor
     public MsgWithJustNonMatchingPath() {
 
+    }
+}
+
+@Path("/user/{id}")
+class OneQueryParam {
+    final int max;
+
+    @MsgCtor
+    public OneQueryParam(@QueryParam("max") int max) {
+        this.max = max;
+    }
+}
+
+@Path("/user/{id}")
+class MultipleQueryParams {
+    final int max;
+    final boolean active;
+    final String zone;
+
+    @MsgCtor
+    public MultipleQueryParams(
+        @QueryParam("max") int max,
+        @QueryParam("active") boolean active,
+        @QueryParam("zone") String zone
+    ) {
+        this.max = max;
+        this.active = active;
+        this.zone = zone;
     }
 }
 
@@ -239,5 +267,37 @@ public class HttpMsgOfTest {
 
         assertThat(msg.id).isEqualTo(123);
         assertThat(msg.code).isEqualTo("ABC");
+    }
+
+    @Test
+    public void testOneQueryParam() {
+        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100");
+        OneQueryParam msg = new HttpMsgOf<>(request, OneQueryParam.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.max).isEqualTo(100);
+    }
+
+    @Test
+    public void testQueryParamNotFound() {
+        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?min=100");
+        boolean failed = new HttpMsgOf<>(request, OneQueryParam.class)
+            .include()
+            .failure();
+
+        assertThat(failed).isTrue();
+    }
+
+    @Test
+    public void testMultipleQueryParams() {
+        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100&zone=FOO&active=false");
+        MultipleQueryParams msg = new HttpMsgOf<>(request, MultipleQueryParams.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.max).isEqualTo(100);
+        assertThat(msg.zone).isEqualTo("FOO");
+        assertThat(msg.active).isFalse();
     }
 }

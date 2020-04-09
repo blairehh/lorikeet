@@ -10,6 +10,7 @@ import lorikeet.http.error.HttpMsgMustHavePath;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.http.error.UnsupportedPathValueType;
+import lorikeet.http.error.UnsupportedQueryParameterValueType;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.lobe.IncomingHttpMsg;
@@ -17,6 +18,7 @@ import lorikeet.lobe.IncomingHttpMsg;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -69,6 +71,15 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             final PathParam pathParam = parameter.getAnnotation(PathParam.class);
             if (pathParam != null) {
                 final Fallible<?> result = this.handlePathVar(parameter, msgPath, pathParam);
+                if (result.failure()) {
+                    return (Fallible<T>) result;
+                }
+                parameterValues[i] = result.orPanic();
+                continue;
+            }
+            final QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
+            if (queryParam != null) {
+                final Fallible<?> result = this.handleQueryParam(parameter, queryParam);
                 if (result.failure()) {
                     return (Fallible<T>) result;
                 }
@@ -132,6 +143,25 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             return new StringPathVar(path, param.value()).include();
         }
         return new Bug<>(new UnsupportedPathValueType(parameter.getType()));
+    }
+
+    private Fallible<?> handleQueryParam(Parameter parameter, QueryParam param) {
+        if (parameter.getType().equals(Integer.class) || parameter.getType().equals(int.class)) {
+            return new IntQueryParam(this.msg, param.value()).include();
+        }
+        if (parameter.getType().equals(Double.class) || parameter.getType().equals(double.class)) {
+            return new DoubleQueryParam(this.msg, param.value()).include();
+        }
+        if (parameter.getType().equals(Long.class) || parameter.getType().equals(long.class)) {
+            return new LongQueryParam(this.msg, param.value()).include();
+        }
+        if (parameter.getType().equals(Boolean.class) || parameter.getType().equals(boolean.class)) {
+            return new BoolQueryParam(this.msg, param.value()).include();
+        }
+        if (parameter.getType().equals(String.class)) {
+            return new StringQueryParam(this.msg, param.value()).include();
+        }
+        return new Err<>(new UnsupportedQueryParameterValueType(parameter.getType()));
     }
 
     @SuppressWarnings("unchecked")
