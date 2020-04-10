@@ -6,6 +6,8 @@ import lorikeet.core.Fallible;
 import lorikeet.core.IncludableFallible;
 import lorikeet.core.Ok;
 import lorikeet.http.error.FailedToConstructHttpMsg;
+import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
+import lorikeet.http.error.HttpMsgMustHaveMethod;
 import lorikeet.http.error.HttpMsgMustHavePath;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
@@ -13,9 +15,15 @@ import lorikeet.http.error.UnsupportedPathValueType;
 import lorikeet.http.error.UnsupportedQueryParameterValueType;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
+import lorikeet.http.internal.IdentifierAnnotation;
 import lorikeet.lobe.IncomingHttpMsg;
+import lorikeet.resource.HttpMethod;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -45,16 +53,45 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
 
     @SuppressWarnings("unchecked")
     private Fallible<T> include(Constructor<T> ctor) {
-        final Path path = this.msgClass.getAnnotation(Path.class);
-        if (path == null) {
+        final IdentifierAnnotation id = this.retrieveIdentifierAnnotation()
+            .orElse(null);
+        if (id == null) {
             return new Err<>(new HttpMsgMustHavePath(this.msgClass));
         }
-        final Fallible<HttpMsgPath> pathResult = new UriPath(this.msg, path.value())
+
+        if (this.msg.method() != id.method()) {
+            return new Err<>(new HttpMethodDoesNotMatchRequest());
+        }
+
+        final Fallible<HttpMsgPath> pathResult = new UriPath(this.msg, id.uriPattern())
             .include();
         if (pathResult.failure()) {
             return (Fallible<T>)pathResult;
         }
         final HttpMsgPath msgPath = pathResult.orPanic();
+
+//        final Path path = this.msgClass.getAnnotation(Path.class);
+//        if (path == null) {
+//            return new Err<>(new HttpMsgMustHavePath(this.msgClass));
+//        }
+//
+//        final Fallible<HttpMsgPath> pathResult = new UriPath(this.msg, path.value())
+//            .include();
+//        if (pathResult.failure()) {
+//            return (Fallible<T>)pathResult;
+//        }
+//        final HttpMsgPath msgPath = pathResult.orPanic();
+//
+//        final Optional<HttpMethod> httpMethod = this.findHttpMethod();
+//        if (httpMethod.isEmpty()) {
+//            return new Err<>(new HttpMsgMustHaveMethod(this.msgClass));
+//        }
+//        final boolean matchesMethod = httpMethod.map((method) -> this.msg.method() == method)
+//            .orElse(false);
+//        if (!matchesMethod) {
+//            return new Err<>(new HttpMethodDoesNotMatchRequest());
+//        }
+
 
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
@@ -170,6 +207,30 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             .filter((ctor) -> ctor.getDeclaredAnnotations().length != 0)
             .map((ctor) -> (Constructor<T>)ctor)
             .findFirst();
+    }
+
+    private Optional<IdentifierAnnotation> retrieveIdentifierAnnotation() {
+        final Get get = this.msgClass.getAnnotation(Get.class);
+        if (get != null) {
+            return Optional.of(new IdentifierAnnotation(HttpMethod.GET, get.value()));
+        }
+
+        final Put put = this.msgClass.getAnnotation(Put.class);
+        if (put != null) {
+            return Optional.of(new IdentifierAnnotation(HttpMethod.PUT, put.value()));
+        }
+
+        final Patch patch = this.msgClass.getAnnotation(Patch.class);
+        if (patch != null) {
+            return Optional.of(new IdentifierAnnotation(HttpMethod.PATCH, patch.value()));
+        }
+
+        final Delete delete = this.msgClass.getAnnotation(Delete.class);
+        if (delete != null) {
+            return Optional.of(new IdentifierAnnotation(HttpMethod.DELETE, delete.value()));
+        }
+
+        return Optional.empty();
     }
 
     @Override

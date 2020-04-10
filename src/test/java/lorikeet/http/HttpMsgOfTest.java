@@ -4,17 +4,17 @@ import lorikeet.core.DictOf;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.lobe.IncomingHttpMsg;
+import lorikeet.resource.HttpMethod;
 import org.junit.Test;
 
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class SingleHeader {
     final String name;
 
@@ -24,7 +24,7 @@ class SingleHeader {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class UnsupportedHeaderType {
     final Random name;
 
@@ -34,7 +34,7 @@ class UnsupportedHeaderType {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class SingleHeaderNoCtor {
     final String name;
 
@@ -43,7 +43,7 @@ class SingleHeaderNoCtor {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class MultiHeader {
     final String name;
     final Integer limit;
@@ -64,7 +64,7 @@ class MultiHeader {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class MultiHeaderWithCustomAnnotationAndPrimitives {
     final String name;
     final int limit;
@@ -85,7 +85,7 @@ class MultiHeaderWithCustomAnnotationAndPrimitives {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class BadHeaderValue {
     final Integer number;
 
@@ -95,7 +95,7 @@ class BadHeaderValue {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class MsgWithJustPath {
     @MsgCtor
     public MsgWithJustPath() {
@@ -103,7 +103,7 @@ class MsgWithJustPath {
     }
 }
 
-@Path("/product/{id}")
+@Get("/product/{id}")
 class MsgWithJustNonMatchingPath {
     @MsgCtor
     public MsgWithJustNonMatchingPath() {
@@ -111,7 +111,7 @@ class MsgWithJustNonMatchingPath {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class OneQueryParam {
     final int max;
 
@@ -121,7 +121,7 @@ class OneQueryParam {
     }
 }
 
-@Path("/user/{id}")
+@Get("/user/{id}")
 class MultipleQueryParams {
     final int max;
     final boolean active;
@@ -140,7 +140,7 @@ class MultipleQueryParams {
 }
 
 
-@Path("/orders/{id}/product-codes/{code}")
+@Get("/orders/{id}/product-codes/{code}")
 class MsgWithPathVars {
     final long id;
     final String code;
@@ -149,6 +149,38 @@ class MsgWithPathVars {
     public MsgWithPathVars(@PathParam("id") long id, @PathParam("code") String productCode) {
         this.id = id;
         this.code = productCode;
+    }
+}
+
+@Get("/user/{id}")
+class GetRequest {
+    @MsgCtor
+    public GetRequest() {
+
+    }
+}
+
+@Put("/user/{id}")
+class PutRequest {
+    @MsgCtor
+    public PutRequest() {
+
+    }
+}
+
+@Patch("/user/{id}")
+class PatchRequest {
+    @MsgCtor
+    public PatchRequest() {
+
+    }
+}
+
+@Delete("/user/{id}")
+class DeleteRequest {
+    @MsgCtor
+    public DeleteRequest() {
+
     }
 }
 
@@ -299,5 +331,33 @@ public class HttpMsgOfTest {
         assertThat(msg.max).isEqualTo(100);
         assertThat(msg.zone).isEqualTo("FOO");
         assertThat(msg.active).isFalse();
+    }
+
+    @Test
+    public void testHttpMethod() {
+        IncomingHttpMsg request = new MockIncomingHttpMsg(HttpMethod.DELETE, "/user/56");
+        boolean success = new HttpMsgOf<>(request, DeleteRequest.class)
+            .include()
+            .success();
+
+        assertThat(success).isTrue();
+
+        success = new HttpMsgOf<>(request, PutRequest.class)
+            .include()
+            .success();
+
+        assertThat(success).isFalse();
+
+        success = new HttpMsgOf<>(request, PatchRequest.class)
+            .include()
+            .success();
+
+        assertThat(success).isFalse();
+
+        success = new HttpMsgOf<>(request, GetRequest.class)
+            .include()
+            .success();
+
+        assertThat(success).isFalse();
     }
 }

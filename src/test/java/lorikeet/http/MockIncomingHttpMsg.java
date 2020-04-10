@@ -11,17 +11,27 @@ import lorikeet.resource.HttpMethod;
 import java.net.URI;
 
 public class MockIncomingHttpMsg implements IncomingHttpMsg {
+    private final HttpMethod method;
     private final URI uri;
     private final Dict<String, Seq<String>> headers;
     private final Dict<String, Seq<String>> queryParameters;
 
     public MockIncomingHttpMsg(String uri) {
+        this.method = HttpMethod.GET;
+        this.uri = URI.create(uri);
+        this.headers = new DictOf<>();
+        this.queryParameters = new UriHelper().parseQueryParameters(this.uri);
+    }
+
+    public MockIncomingHttpMsg(HttpMethod method, String uri) {
+        this.method = method;
         this.uri = URI.create(uri);
         this.headers = new DictOf<>();
         this.queryParameters = new UriHelper().parseQueryParameters(this.uri);
     }
 
     public MockIncomingHttpMsg(String uri, Dict<String, String> headers) {
+        this.method = HttpMethod.GET;
         this.headers = headers.modifyValues(SeqOf::new);
         this.uri = URI.create(uri);
         this.queryParameters = new UriHelper().parseQueryParameters(this.uri);
@@ -30,7 +40,7 @@ public class MockIncomingHttpMsg implements IncomingHttpMsg {
 
     @Override
     public HttpMethod method() {
-        return HttpMethod.GET;
+        return this.method;
     }
 
     @Override
