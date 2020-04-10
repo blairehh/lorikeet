@@ -7,7 +7,6 @@ import lorikeet.core.IncludableFallible;
 import lorikeet.core.Ok;
 import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
-import lorikeet.http.error.HttpMsgMustHaveMethod;
 import lorikeet.http.error.HttpMsgMustHavePath;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
@@ -19,27 +18,21 @@ import lorikeet.http.internal.IdentifierAnnotation;
 import lorikeet.lobe.IncomingHttpMsg;
 import lorikeet.resource.HttpMethod;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-public class HttpMsgOf<T> implements IncludableFallible<T> {
+public class HttpMsg<T> implements IncludableFallible<T> {
     private final IncomingHttpMsg msg;
     private final Class<T> msgClass;
 
-    public HttpMsgOf(IncomingHttpMsg msg, Class<T> msgClass) {
+    public HttpMsg(IncomingHttpMsg msg, Class<T> msgClass) {
         this.msg = msg;
         this.msgClass = msgClass;
     }
@@ -243,7 +236,7 @@ public class HttpMsgOf<T> implements IncludableFallible<T> {
             return false;
         }
 
-        HttpMsgOf<?> httpMsgOf = (HttpMsgOf<?>) o;
+        HttpMsg<?> httpMsgOf = (HttpMsg<?>) o;
 
         return Objects.equals(this.msg, httpMsgOf.msg)
             && Objects.equals(this.msgClass, httpMsgOf.msgClass);

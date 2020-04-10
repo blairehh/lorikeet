@@ -185,7 +185,7 @@ class DeleteRequest {
 }
 
 
-public class HttpMsgOfTest {
+public class HttpMsgTest {
 
     private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
         "/user/786",
@@ -209,7 +209,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testInitiateWithOneHeader() {
-        SingleHeader msg = new HttpMsgOf<>(incoming, SingleHeader.class)
+        SingleHeader msg = new HttpMsg<>(incoming, SingleHeader.class)
             .include()
             .orPanic();
 
@@ -218,7 +218,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testTypeMustHaveMsgCtor() {
-        Exception error = new HttpMsgOf<>(incoming, SingleHeaderNoCtor.class)
+        Exception error = new HttpMsg<>(incoming, SingleHeaderNoCtor.class)
             .include()
             .errors()
             .first()
@@ -229,7 +229,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testRejectsUnsupportedHeaderType() {
-        Exception error = new HttpMsgOf<>(incoming, UnsupportedHeaderType.class)
+        Exception error = new HttpMsg<>(incoming, UnsupportedHeaderType.class)
             .include()
             .errors()
             .first()
@@ -240,7 +240,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testWithMultipleHeaders() {
-        MultiHeader msg = new HttpMsgOf<>(incoming, MultiHeader.class)
+        MultiHeader msg = new HttpMsg<>(incoming, MultiHeader.class)
             .include()
             .orPanic();
 
@@ -252,7 +252,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testWithMultipleHeadersWithCustomAnnotationAndPrimitives() {
-        MultiHeaderWithCustomAnnotationAndPrimitives msg = new HttpMsgOf<>(
+        MultiHeaderWithCustomAnnotationAndPrimitives msg = new HttpMsg<>(
             incoming, MultiHeaderWithCustomAnnotationAndPrimitives.class
         )
             .include()
@@ -266,7 +266,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testBestBadHeaderValue() {
-        boolean failed = new HttpMsgOf<>(incoming, BadHeaderValue.class)
+        boolean failed = new HttpMsg<>(incoming, BadHeaderValue.class)
             .include()
             .failure();
 
@@ -275,7 +275,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testPath() {
-        boolean succeeded = new HttpMsgOf<>(incoming, MsgWithJustPath.class)
+        boolean succeeded = new HttpMsg<>(incoming, MsgWithJustPath.class)
             .include()
             .success();
 
@@ -284,7 +284,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testPathNotMatching() {
-        boolean succeeded = new HttpMsgOf<>(incoming, MsgWithJustNonMatchingPath.class)
+        boolean succeeded = new HttpMsg<>(incoming, MsgWithJustNonMatchingPath.class)
             .include()
             .success();
 
@@ -293,7 +293,7 @@ public class HttpMsgOfTest {
 
     @Test
     public void testPathVars() {
-        MsgWithPathVars msg = new HttpMsgOf<>(incomingMultiPathVar, MsgWithPathVars.class)
+        MsgWithPathVars msg = new HttpMsg<>(incomingMultiPathVar, MsgWithPathVars.class)
             .include()
             .orPanic();
 
@@ -304,7 +304,7 @@ public class HttpMsgOfTest {
     @Test
     public void testOneQueryParam() {
         IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100");
-        OneQueryParam msg = new HttpMsgOf<>(request, OneQueryParam.class)
+        OneQueryParam msg = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .orPanic();
 
@@ -314,7 +314,7 @@ public class HttpMsgOfTest {
     @Test
     public void testQueryParamNotFound() {
         IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?min=100");
-        boolean failed = new HttpMsgOf<>(request, OneQueryParam.class)
+        boolean failed = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .failure();
 
@@ -324,7 +324,7 @@ public class HttpMsgOfTest {
     @Test
     public void testMultipleQueryParams() {
         IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100&zone=FOO&active=false");
-        MultipleQueryParams msg = new HttpMsgOf<>(request, MultipleQueryParams.class)
+        MultipleQueryParams msg = new HttpMsg<>(request, MultipleQueryParams.class)
             .include()
             .orPanic();
 
@@ -336,25 +336,25 @@ public class HttpMsgOfTest {
     @Test
     public void testHttpMethod() {
         IncomingHttpMsg request = new MockIncomingHttpMsg(HttpMethod.DELETE, "/user/56");
-        boolean success = new HttpMsgOf<>(request, DeleteRequest.class)
+        boolean success = new HttpMsg<>(request, DeleteRequest.class)
             .include()
             .success();
 
         assertThat(success).isTrue();
 
-        success = new HttpMsgOf<>(request, PutRequest.class)
+        success = new HttpMsg<>(request, PutRequest.class)
             .include()
             .success();
 
         assertThat(success).isFalse();
 
-        success = new HttpMsgOf<>(request, PatchRequest.class)
+        success = new HttpMsg<>(request, PatchRequest.class)
             .include()
             .success();
 
         assertThat(success).isFalse();
 
-        success = new HttpMsgOf<>(request, GetRequest.class)
+        success = new HttpMsg<>(request, GetRequest.class)
             .include()
             .success();
 
