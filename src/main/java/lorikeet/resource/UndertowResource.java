@@ -23,18 +23,17 @@ public class UndertowResource<T extends Tract<? extends UsesLogging> & ProvidesH
             .addHttpListener(config.port(), config.host())
             .setHandler((final HttpServerExchange exchange) -> {
                 final IncomingHttpMsg msg = new UndertowIncomingMsg(exchange);
-                final Seq<HttpReceptor<? extends UsesLogging>> receptors = new SeqOf<>();
                 /*tract.provideHttpReceptors()
                     .pick(receptor -> receptor.filter().matches(signal));*/
-                if (receptors.isEmpty()) {
-                    exchange.setStatusCode(404);
-                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                    exchange.getResponseSender().send("not found");
-                } else {
-                    //receptors.pick(0).get().process(tract, signal);
-                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                    exchange.getResponseSender().send("found");
-                }
+//                if (receptors.isEmpty()) {
+//                    exchange.setStatusCode(404);
+//                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+//                    exchange.getResponseSender().send("not found");
+//                } else {
+//                    //receptors.pick(0).get().process(tract, signal);
+//                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+//                    exchange.getResponseSender().send("found");
+//                }
 //                receptors.pick(0).get().process(tract, signal);
 //                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
 //                exchange.getResponseSender().send("Hello World");
