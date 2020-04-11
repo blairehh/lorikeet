@@ -384,4 +384,11 @@ public class SeqOf<T> implements Seq<T> {
     public int hashCode() {
         return Objects.hash(this.vector);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        this.forEach((e) -> builder.append(e));
+        return String.format("SeqOf(%s)", builder.toString());
+    }
 }

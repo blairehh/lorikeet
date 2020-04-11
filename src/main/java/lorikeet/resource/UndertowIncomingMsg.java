@@ -6,15 +6,15 @@ import lorikeet.core.Dict;
 import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqCollector;
-import lorikeet.http.internal.UriHelper;
+import lorikeet.core.SeqOf;
 import lorikeet.lobe.IncomingHttpMsg;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UndertowIncomingMsg implements IncomingHttpMsg {
-    private final UriHelper uriHelper = new UriHelper();
-
     private final HttpMethod method;
     private final URI uri;
     private final Dict<String, Seq<String>> headers;
@@ -24,7 +24,7 @@ public class UndertowIncomingMsg implements IncomingHttpMsg {
         this.method = HttpMethod.fromString(exchange.getRequestMethod().toString()).orElseThrow();
         this.uri = URI.create(exchange.getRequestURI());
         this.headers = headers(exchange);
-        this.queryParameters = uriHelper.parseQueryParameters(this.uri);
+        this.queryParameters = queryParams(exchange);
     }
 
     private Dict<String, Seq<String>> headers(HttpServerExchange exchange) {
@@ -36,6 +36,16 @@ public class UndertowIncomingMsg implements IncomingHttpMsg {
             dict = dict.push(header.toString(), values);
         }
         return dict;
+    }
+
+    private Dict<String, Seq<String>> queryParams(HttpServerExchange exchange) {
+        final Map<String, Seq<String>> values = exchange.getQueryParameters()
+            .entrySet()
+            .stream()
+            .map((entry) -> Map.entry(entry.getKey(), new SeqOf<>(entry.getValue())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return new DictOf<>(values);
     }
 
     @Override

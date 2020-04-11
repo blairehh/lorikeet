@@ -1,5 +1,6 @@
 package lorikeet.http.internal;
 
+import lorikeet.core.Fallible;
 import lorikeet.http.HttpDirective;
 import lorikeet.http.HttpMsg;
 import lorikeet.http.HttpMsgReceptor;
@@ -21,9 +22,10 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpR
 
     @Override
     public HttpDirective junction(Tract<R> tract, IncomingHttpMsg request) {
-        return new HttpMsg<>(request, this.msgClass)
+        final Fallible<HttpDirective> d = new HttpMsg<>(request, this.msgClass)
             .include()
-            .map((msg) -> (HttpDirective)new HttpResolve(() -> this.msgReceptor.accept(tract, msg)))
-            .orGive(new HttpReject());
+            .map((msg) -> new HttpResolve(() -> this.msgReceptor.accept(tract, msg)));
+
+        return d.orGive(new HttpReject());
     }
 }

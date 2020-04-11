@@ -120,6 +120,7 @@ public class HttpMsg<T> implements IncludableFallible<T> {
         try {
             return new Ok<>(ctor.newInstance(parameterValues));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
             return new Bug<>(new FailedToConstructHttpMsg(this.msgClass, e));
         }
     }

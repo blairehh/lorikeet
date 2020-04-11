@@ -40,7 +40,7 @@ public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow, ProvidesHt
     @Override
     public ReceptorBundle<Tutorial> provideHttpReceptors() {
         return new ReceptorBundle<Tutorial>()
-            .add(new RunProgramReceptor());
+            .add(new RunProgramMsgReceptor(), RunProgramMsg.class);
     }
 
     @Override
