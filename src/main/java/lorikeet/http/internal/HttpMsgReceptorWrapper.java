@@ -18,7 +18,7 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpR
     }
 
     @Override
-    public Fallible<Runnable> ligand(Tract<R> tract, IncomingHttpMsg request) {
+    public Fallible<Runnable> junction(Tract<R> tract, IncomingHttpMsg request) {
         return new HttpMsg<>(request, this.msgClass)
             .include()
             .map((msg) -> () -> this.msgReceptor.accept(tract, msg));
