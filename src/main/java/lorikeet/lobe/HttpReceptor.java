@@ -1,7 +1,7 @@
 package lorikeet.lobe;
 
-import lorikeet.core.Fallible;
+import lorikeet.http.HttpDirective;
 
 public interface HttpReceptor<R extends UsesLogging> {
-    Fallible<Runnable> junction(Tract<R> tract, IncomingHttpMsg msg);
+    HttpDirective junction(Tract<R> tract, IncomingHttpMsg msg);
 }
