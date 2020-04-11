@@ -8,7 +8,7 @@ import lorikeet.lobe.Tract;
 
 public class RunProgramReceptor implements HttpReceptor<Tutorial> {
     @Override
-    public HttpLigand ligand() {
+    public HttpLigand ligand(Tract<Tutorial> tract, IncomingHttpMsg signal) {
         return null;
     }
 

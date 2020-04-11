@@ -2,6 +2,7 @@ package lorikeet;
 
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
+import lorikeet.http.ReceptorBundle;
 import lorikeet.lobe.DefaultTract;
 import lorikeet.lobe.HttpReceptor;
 import lorikeet.lobe.LorikeetAction;
@@ -32,7 +33,8 @@ public class TutorialTract implements Tract<Tutorial>, ProvidesHttpReceptors<Tut
     }
 
     @Override
-    public Seq<HttpReceptor<Tutorial>> provideHttpReceptors() {
-        return new SeqOf<>(new RunProgramReceptor());
+    public ReceptorBundle<Tutorial> provideHttpReceptors() {
+        return new ReceptorBundle<Tutorial>()
+            .add(new RunProgramReceptor());
     }
 }
