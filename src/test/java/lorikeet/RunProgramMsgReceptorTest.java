@@ -10,6 +10,5 @@ public class RunProgramMsgReceptorTest {
     @Test
     public void testRun() {
         IncomingHttpMsg request = new MockIncomingHttpMsg(HttpMethod.GET, "/foo?timeout=200");
-        new RunProgramMsgReceptor().receive(request);
     }
 }
