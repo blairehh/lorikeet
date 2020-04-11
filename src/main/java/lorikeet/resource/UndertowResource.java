@@ -42,8 +42,9 @@ public class UndertowResource<R extends UsesLogging, A extends ProvidesHttpRecep
     }
 
     private HttpDirective directiveForSignal(A application, IncomingHttpMsg signal) {
+        final Tract<R> tract = application.provideTract();
         final Function<HttpReceptor<R>, Optional<HttpDirective>> selector = (receptor) -> {
-            final HttpDirective directive = receptor.junction(application.provideTract(), signal);
+            final HttpDirective directive = receptor.junction(tract, signal);
             if (directive.reject()) {
                 return Optional.empty();
             }
