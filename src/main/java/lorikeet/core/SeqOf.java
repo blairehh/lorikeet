@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -86,6 +87,23 @@ public class SeqOf<T> implements Seq<T> {
         return this.vector.stream()
             .filter(pickPredicate)
             .collect(new SeqCollector<>());
+    }
+
+    @Override
+    public Optional<T> pickFirst(Predicate<? super T> pickPredicate) {
+        return this.vector.stream()
+            .filter(pickPredicate)
+            .findFirst();
+    }
+
+    @Override
+    public <X> Optional<X> select(Function<T, Optional<X>> selector) {
+        final BiFunction<Optional<X>, ? super T, Optional<X>> bifunc = (c, element) -> c.isEmpty()
+            ? selector.apply(element)
+            : c;
+        return this.vector
+            .stream()
+            .reduce(Optional.empty(), bifunc , (a, b) -> a);
     }
 
     @Override

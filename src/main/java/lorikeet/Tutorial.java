@@ -1,17 +1,22 @@
 package lorikeet;
 
+import lorikeet.http.ReceptorBundle;
 import lorikeet.lobe.DefaultDiskResource;
+import lorikeet.lobe.DefaultTract;
 import lorikeet.lobe.DiskResource;
 import lorikeet.lobe.LoggingResource;
+import lorikeet.lobe.ProvidesHttpReceptors;
+import lorikeet.lobe.ProvidesTract;
 import lorikeet.lobe.StdOutLoggingResource;
+import lorikeet.lobe.Tract;
 import lorikeet.lobe.UsesDisk;
 import lorikeet.lobe.UsesLogging;
 import lorikeet.resource.UndertowResource;
 import lorikeet.resource.UsesUndertow;
 
-public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow {
+public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow, ProvidesHttpReceptors<Tutorial>, ProvidesTract<Tutorial> {
 
-    private final UndertowResource<TutorialTract> undertowResource;
+    private final UndertowResource<Tutorial, Tutorial> undertowResource;
 
     public Tutorial(TutorialConfiguration config) {
         this.undertowResource = new UndertowResource<>(config);
@@ -28,11 +33,22 @@ public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow {
     }
 
     @Override
-    public UndertowResource useUndertow() {
+    public UndertowResource<Tutorial, Tutorial> useUndertow() {
         return this.undertowResource;
     }
 
-    void start(TutorialTract tract) {
-        this.undertowResource.start(tract);
+    @Override
+    public ReceptorBundle<Tutorial> provideHttpReceptors() {
+        return new ReceptorBundle<Tutorial>()
+            .add(new RunProgramReceptor());
+    }
+
+    @Override
+    public Tract<Tutorial> provideTract() {
+        return new DefaultTract<>(this);
+    }
+
+    void start() {
+        this.undertowResource.start(this);
     }
 }

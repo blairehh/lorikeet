@@ -137,4 +137,28 @@ public class SeqOfTest {
         list.add(4);
         assertThat(list).containsExactly(1, 2, 3, 4);
     }
+
+    @Test
+    public void testSelectFails() {
+        SeqOf<Integer> seq = new SeqOf<>(1, 3, 4, 6);
+        Optional<Integer> result = seq.select((num) -> num > 10 ? Optional.of(num) : Optional.empty());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void testSelectSucceeds() {
+        SeqOf<Integer> seq = new SeqOf<>(1, 30, 4, 6);
+        Optional<Integer> result = seq.select((num) -> num > 10 ? Optional.of(num) : Optional.empty());
+
+        assertThat(result).hasValue(30);
+    }
+
+    @Test
+    public void testSelectSucceedsOnMultipleSelectsFirst() {
+        SeqOf<Integer> seq = new SeqOf<>(1, 30, 4, 60);
+        Optional<Integer> result = seq.select((num) -> num > 10 ? Optional.of(num) : Optional.empty());
+
+        assertThat(result).hasValue(30);
+    }
 }

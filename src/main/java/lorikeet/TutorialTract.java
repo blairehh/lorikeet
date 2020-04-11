@@ -10,7 +10,7 @@ import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.Tract;
 import lorikeet.lobe.WriteAgent;
 
-public class TutorialTract implements Tract<Tutorial>, ProvidesHttpReceptors<Tutorial> {
+public class TutorialTract implements Tract<Tutorial> {
     private final Tract<Tutorial> tract;
 
     public TutorialTract(Tutorial tutorial) {
@@ -30,11 +30,5 @@ public class TutorialTract implements Tract<Tutorial>, ProvidesHttpReceptors<Tut
     @Override
     public void log(String format, Object... vars) {
         this.tract.log(format, vars);
-    }
-
-    @Override
-    public ReceptorBundle<Tutorial> provideHttpReceptors() {
-        return new ReceptorBundle<Tutorial>()
-            .add(new RunProgramReceptor());
     }
 }

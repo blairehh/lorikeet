@@ -15,6 +15,7 @@ public interface Seq<T> extends List<T> {
 
     Optional<T> pick(int index);
     Seq<T> pick(Predicate<? super T> pickPredicate);
+    Optional<T> pickFirst(Predicate<? super T> pickPredicate);
 
     Seq<T> drop(int index);
     Seq<T> drop(T element);
@@ -27,6 +28,8 @@ public interface Seq<T> extends List<T> {
     <X> Seq<X> remodel(Function<? super T, ? extends X> remodeller);
     Seq<T> modify(Function<T, T> modifier);
     Seq<T> modify(Predicate<T> modifyPredicate, Function<T, T> modifier);
+
+    <X> Optional<X> select(Function<T, Optional<X>> selector);
 
     Optional<T> first();
 
