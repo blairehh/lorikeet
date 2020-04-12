@@ -6,18 +6,15 @@ import lorikeet.lobe.ResourceInsignia;
 import lorikeet.lobe.UsesHttpServer;
 import lorikeet.lobe.WriteAgent;
 
-public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
+public class Http204<R extends UsesHttpServer> implements HttpWrite<R> {
     private final Object session;
-    private final String body;
 
-    public Http200(String body) {
+    public Http204() {
         this.session = null;
-        this.body = body;
     }
 
-    private Http200(Object session, String body) {
+    private Http204(Object session) {
         this.session = session;
-        this.body = body;
     }
 
     @Override
@@ -29,9 +26,8 @@ public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
             return new HttpWriteErr(new InvalidHttpSessionObject(Http200.class, this.session.getClass()), 200);
         }
         final OutgoingHttpSgnl outgoing = (OutgoingHttpSgnl)this.session;
-        outgoing.statusCode(200);
-        outgoing.writeBody(this.body);
-        return new HttpWriteOk(200);
+        outgoing.statusCode(204);
+        return new HttpWriteOk(204);
     }
 
     @Override
@@ -41,6 +37,6 @@ public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
 
     @Override
     public WriteAgent<R, HttpWriteResult> withSession(Object session) {
-        return new Http200<>(session, this.body);
+        return new Http204<>(session);
     }
 }

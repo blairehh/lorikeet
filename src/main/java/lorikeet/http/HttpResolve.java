@@ -1,12 +1,13 @@
 package lorikeet.http;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class HttpResolve implements HttpDirective {
-    private final Runnable runnable;
+    private final Supplier<HttpReply> action;
 
-    public HttpResolve(Runnable runnable) {
-        this.runnable = runnable;
+    public HttpResolve(Supplier<HttpReply> action) {
+        this.action = action;
     }
 
     @Override
@@ -15,8 +16,8 @@ public class HttpResolve implements HttpDirective {
     }
 
     @Override
-    public void perform() {
-        this.runnable.run();
+    public HttpReply perform() {
+        return this.action.get();
     }
 
     @Override
@@ -31,11 +32,11 @@ public class HttpResolve implements HttpDirective {
 
         HttpResolve that = (HttpResolve) o;
 
-        return Objects.equals(this.runnable, that.runnable);
+        return Objects.equals(this.action, that.action);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.runnable);
+        return Objects.hash(this.action);
     }
 }

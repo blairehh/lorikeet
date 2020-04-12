@@ -7,7 +7,7 @@ public class HttpNegate implements HttpDirective {
     }
 
     @Override
-    public void perform() {
-
+    public HttpReply perform() {
+        return new HttpNoOp();
     }
 }

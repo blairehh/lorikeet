@@ -7,7 +7,7 @@ public class HttpReject implements HttpDirective {
     }
 
     @Override
-    public void perform() {
-
+    public HttpReply perform() {
+        return new HttpNoOp();
     }
 }
