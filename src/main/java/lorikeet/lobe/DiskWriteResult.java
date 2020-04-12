@@ -1,7 +1,5 @@
 package lorikeet.lobe;
 
-import java.net.URI;
-
 import lorikeet.api.FileRef;
 import lorikeet.core.Fallible;
 

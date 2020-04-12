@@ -14,7 +14,13 @@ import lorikeet.lobe.UsesLogging;
 import lorikeet.resource.UndertowResource;
 import lorikeet.resource.UsesUndertow;
 
-public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow, ProvidesHttpReceptors<Tutorial>, ProvidesTract<Tutorial> {
+public class Tutorial implements
+    UsesLogging,
+    UsesDisk,
+    UsesUndertow<Tutorial, Tutorial>,
+    ProvidesHttpReceptors<Tutorial>,
+    ProvidesTract<Tutorial>
+{
 
     private final UndertowResource<Tutorial, Tutorial> undertowResource;
 
@@ -49,6 +55,6 @@ public class Tutorial implements UsesLogging, UsesDisk, UsesUndertow, ProvidesHt
     }
 
     void start() {
-        this.undertowResource.start(this);
+        this.undertowResource.start(this, this);
     }
 }

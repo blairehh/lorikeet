@@ -34,6 +34,11 @@ public class DiskWrite<R extends UsesDisk> implements WriteAgent<R, DiskWriteRes
     }
 
     @Override
+    public ResourceInsignia resourceInsignia() {
+        return new DiskInsignia();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
