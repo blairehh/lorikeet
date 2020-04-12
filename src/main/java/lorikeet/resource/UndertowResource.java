@@ -51,7 +51,7 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
             exchange.getResponseSender().send("not found");
         } else {
-            HttpReply reply = directive.perform();
+            final HttpReply reply = directive.perform();
             if (reply instanceof HttpWrite) {
                 // unchecked here
                 tract.write((HttpWrite<R>)reply);
