@@ -2,22 +2,16 @@ package lorikeet.resource;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.session.Session;
 import io.undertow.util.Headers;
-import lorikeet.core.Seq;
-import lorikeet.core.SeqOf;
 import lorikeet.http.HttpDirective;
 import lorikeet.http.HttpReject;
 import lorikeet.http.HttpResource;
 import lorikeet.http.HttpServerInsignia;
 import lorikeet.http.OutgoingHttpSgnl;
-import lorikeet.lobe.DefaultTract;
-import lorikeet.lobe.HttpReceptor;
-import lorikeet.lobe.IncomingHttpMsg;
-import lorikeet.lobe.LoggingResource;
+import lorikeet.http.HttpReceptor;
+import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.ProvidesTract;
-import lorikeet.lobe.ResourceInsignia;
 import lorikeet.lobe.Tract;
 import lorikeet.lobe.TractSession;
 import lorikeet.lobe.UsesHttpServer;
@@ -52,7 +46,7 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
 
     // @TODO remove and close this session
     private HttpDirective directiveForSignal(A application, HttpServerExchange exchange) {
-        final IncomingHttpMsg incoming = new UndertowIncomingMsg(exchange);
+        final IncomingHttpSgnl incoming = new UndertowIncomingMsg(exchange);
         final OutgoingHttpSgnl outgoing = new UndertowOutgoingSgnl(exchange);
 
         final Tract<R> tract = application.provideTract()

@@ -8,22 +8,21 @@ import lorikeet.core.Ok;
 import lorikeet.core.Seq;
 import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.HeaderNotFound;
-import lorikeet.lobe.IncomingHttpMsg;
 
 import java.util.Objects;
 
 public class StringHeader implements IncludableFallible<String> {
-    private final IncomingHttpMsg msg;
+    private final IncomingHttpSgnl msg;
     private final String headerName;
     private final String defaultValue;
 
-    public StringHeader(IncomingHttpMsg msg, String headerName, String defaultValue) {
+    public StringHeader(IncomingHttpSgnl msg, String headerName, String defaultValue) {
         this.msg = msg;
         this.headerName = headerName;
         this.defaultValue = defaultValue;
     }
 
-    public StringHeader(IncomingHttpMsg msg, String headerName) {
+    public StringHeader(IncomingHttpSgnl msg, String headerName) {
         this.msg = msg;
         this.headerName = headerName;
         this.defaultValue = null;

@@ -9,27 +9,26 @@ import lorikeet.core.Seq;
 import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.BadHeaderValue;
 import lorikeet.http.error.HeaderNotFound;
-import lorikeet.lobe.IncomingHttpMsg;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class NumberHeader<T extends Number> implements IncludableFallible<T> {
-    private final IncomingHttpMsg msg;
+    private final IncomingHttpSgnl request;
     private final String headerName;
     private final Function<String, T> parser;
     private final T defaultValue;
 
-    public NumberHeader(IncomingHttpMsg msg, String headerName, Function<String, T> parser, T defaultValue) {
-        this.msg = msg;
+    public NumberHeader(IncomingHttpSgnl request, String headerName, Function<String, T> parser, T defaultValue) {
+        this.request = request;
         this.headerName = headerName;
         this.parser = parser;
         this.defaultValue = defaultValue;
     }
 
-    public NumberHeader(IncomingHttpMsg msg, String headerName, Function<String, T> parser) {
-        this.msg = msg;
+    public NumberHeader(IncomingHttpSgnl request, String headerName, Function<String, T> parser) {
+        this.request = request;
         this.headerName = headerName;
         this.parser = parser;
         this.defaultValue = null;
@@ -41,7 +40,7 @@ public abstract class NumberHeader<T extends Number> implements IncludableFallib
             return new Bug<>(new BadHeaderName(this.headerName));
         }
 
-        final Optional<String> opt = this.msg.headers()
+        final Optional<String> opt = this.request.headers()
             .pick(this.headerName)
             .flatMap(Seq::first);
 
@@ -74,7 +73,7 @@ public abstract class NumberHeader<T extends Number> implements IncludableFallib
 
         NumberHeader<?> that = (NumberHeader<?>) o;
 
-        return Objects.equals(this.msg, that.msg)
+        return Objects.equals(this.request, that.request)
             && Objects.equals(this.headerName, that.headerName)
             && Objects.equals(this.parser, that.parser)
             && Objects.equals(this.defaultValue, that.defaultValue);
@@ -82,6 +81,6 @@ public abstract class NumberHeader<T extends Number> implements IncludableFallib
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.msg, this.headerName, this.parser, this.defaultValue);
+        return Objects.hash(this.request, this.headerName, this.parser, this.defaultValue);
     }
 }

@@ -3,7 +3,6 @@ package lorikeet.http;
 import lorikeet.core.DictOf;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
-import lorikeet.lobe.IncomingHttpMsg;
 import lorikeet.resource.HttpMethod;
 import org.junit.Test;
 
@@ -187,7 +186,7 @@ class DeleteRequest {
 
 public class HttpMsgTest {
 
-    private final IncomingHttpMsg incoming = new MockIncomingHttpMsg(
+    private final IncomingHttpSgnl incoming = new MockIncomingHttpMsg(
         "/user/786",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
@@ -197,7 +196,7 @@ public class HttpMsgTest {
             .push("bad-num", "1a")
     );
 
-    private final IncomingHttpMsg incomingMultiPathVar = new MockIncomingHttpMsg(
+    private final IncomingHttpSgnl incomingMultiPathVar = new MockIncomingHttpMsg(
         "/orders/123/product-codes/ABC",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
@@ -303,7 +302,7 @@ public class HttpMsgTest {
 
     @Test
     public void testOneQueryParam() {
-        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100");
+        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?max=100");
         OneQueryParam msg = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .orPanic();
@@ -313,7 +312,7 @@ public class HttpMsgTest {
 
     @Test
     public void testQueryParamNotFound() {
-        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?min=100");
+        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?min=100");
         boolean failed = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .failure();
@@ -323,7 +322,7 @@ public class HttpMsgTest {
 
     @Test
     public void testMultipleQueryParams() {
-        IncomingHttpMsg request = new MockIncomingHttpMsg("/user/56?max=100&zone=FOO&active=false");
+        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?max=100&zone=FOO&active=false");
         MultipleQueryParams msg = new HttpMsg<>(request, MultipleQueryParams.class)
             .include()
             .orPanic();
@@ -335,7 +334,7 @@ public class HttpMsgTest {
 
     @Test
     public void testHttpMethod() {
-        IncomingHttpMsg request = new MockIncomingHttpMsg(HttpMethod.DELETE, "/user/56");
+        IncomingHttpSgnl request = new MockIncomingHttpMsg(HttpMethod.DELETE, "/user/56");
         boolean success = new HttpMsg<>(request, DeleteRequest.class)
             .include()
             .success();

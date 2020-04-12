@@ -7,14 +7,14 @@ import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqCollector;
 import lorikeet.core.SeqOf;
-import lorikeet.lobe.IncomingHttpMsg;
+import lorikeet.http.IncomingHttpSgnl;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class UndertowIncomingMsg implements IncomingHttpMsg {
+public class UndertowIncomingMsg implements IncomingHttpSgnl {
     private final HttpMethod method;
     private final URI uri;
     private final Dict<String, Seq<String>> headers;

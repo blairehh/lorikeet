@@ -5,12 +5,11 @@ import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.internal.UriHelper;
-import lorikeet.lobe.IncomingHttpMsg;
 import lorikeet.resource.HttpMethod;
 
 import java.net.URI;
 
-public class MockIncomingHttpMsg implements IncomingHttpMsg {
+public class MockIncomingHttpMsg implements IncomingHttpSgnl {
     private final HttpMethod method;
     private final URI uri;
     private final Dict<String, Seq<String>> headers;

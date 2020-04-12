@@ -1,14 +1,13 @@
 package lorikeet.http;
 
 import lorikeet.core.DictOf;
-import lorikeet.lobe.IncomingHttpMsg;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoolHeaderTest {
 
-    private final IncomingHttpMsg msg = new MockIncomingHttpMsg(
+    private final IncomingHttpSgnl msg = new MockIncomingHttpMsg(
         "/test", new DictOf<String, String>().push("good", "true").push("bad", "falsk")
     );
 

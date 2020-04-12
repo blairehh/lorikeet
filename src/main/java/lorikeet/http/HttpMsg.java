@@ -15,7 +15,6 @@ import lorikeet.http.error.UnsupportedQueryParameterValueType;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
-import lorikeet.lobe.IncomingHttpMsg;
 import lorikeet.resource.HttpMethod;
 
 import javax.ws.rs.HeaderParam;
@@ -29,10 +28,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class HttpMsg<T> implements IncludableFallible<T> {
-    private final IncomingHttpMsg msg;
+    private final IncomingHttpSgnl msg;
     private final Class<T> msgClass;
 
-    public HttpMsg(IncomingHttpMsg msg, Class<T> msgClass) {
+    public HttpMsg(IncomingHttpSgnl msg, Class<T> msgClass) {
         this.msg = msg;
         this.msgClass = msgClass;
     }

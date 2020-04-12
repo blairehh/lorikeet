@@ -3,7 +3,6 @@ package lorikeet.http;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.internal.HttpMsgReceptorWrapper;
-import lorikeet.lobe.HttpReceptor;
 import lorikeet.lobe.UsesLogging;
 
 import java.util.Objects;

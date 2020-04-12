@@ -9,13 +9,12 @@ import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.error.BadQueryParameterName;
 import lorikeet.http.error.QueryParameterNotFound;
-import lorikeet.lobe.IncomingHttpMsg;
 
 public class StringQueryParam implements IncludableFallible<String> {
-    private final IncomingHttpMsg msg;
+    private final IncomingHttpSgnl msg;
     private final String queryParameterName;
 
-    public StringQueryParam(IncomingHttpMsg msg, String queryParameterName) {
+    public StringQueryParam(IncomingHttpSgnl msg, String queryParameterName) {
         this.msg = msg;
         this.queryParameterName = queryParameterName;
     }

@@ -9,24 +9,23 @@ import lorikeet.core.Seq;
 import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.BadHeaderValue;
 import lorikeet.http.error.HeaderNotFound;
-import lorikeet.lobe.IncomingHttpMsg;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public class BoolHeader implements IncludableFallible<Boolean> {
-    private final IncomingHttpMsg msg;
+    private final IncomingHttpSgnl request;
     private final String headerName;
     private final Boolean defaultValue;
 
-    public BoolHeader(IncomingHttpMsg msg, String headerName, Boolean defaultValue) {
-        this.msg = msg;
+    public BoolHeader(IncomingHttpSgnl request, String headerName, Boolean defaultValue) {
+        this.request = request;
         this.headerName = headerName;
         this.defaultValue = defaultValue;
     }
 
-    public BoolHeader(IncomingHttpMsg msg, String headerName) {
-        this.msg = msg;
+    public BoolHeader(IncomingHttpSgnl request, String headerName) {
+        this.request = request;
         this.headerName = headerName;
         this.defaultValue = null;
     }
@@ -37,7 +36,7 @@ public class BoolHeader implements IncludableFallible<Boolean> {
             return new Bug<>(new BadHeaderName(this.headerName));
         }
 
-        final Optional<String> opt = this.msg.headers()
+        final Optional<String> opt = this.request.headers()
             .pick(this.headerName)
             .flatMap(Seq::first);
 
@@ -69,13 +68,13 @@ public class BoolHeader implements IncludableFallible<Boolean> {
 
         BoolHeader that = (BoolHeader) o;
 
-        return Objects.equals(this.msg, that.msg)
+        return Objects.equals(this.request, that.request)
             && Objects.equals(this.headerName, that.headerName)
             && Objects.equals(this.defaultValue, that.defaultValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.msg, this.headerName, this.defaultValue);
+        return Objects.hash(this.request, this.headerName, this.defaultValue);
     }
 }
