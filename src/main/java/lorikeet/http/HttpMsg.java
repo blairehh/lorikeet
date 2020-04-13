@@ -8,8 +8,10 @@ import lorikeet.core.Ok;
 import lorikeet.http.annotation.Delete;
 import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.Header;
+import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.Patch;
 import lorikeet.http.annotation.Put;
+import lorikeet.http.error.AnnotatedHeadersMustBeOfTypeHeaderSet;
 import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.http.error.HttpMsgMustHavePath;
@@ -93,6 +95,14 @@ public class HttpMsg<T> implements IncludableFallible<T> {
                     return (Fallible<T>) result;
                 }
                 parameterValues[i] = result.orPanic();
+                continue;
+            }
+            final Headers headers = parameter.getAnnotation(Headers.class);
+            if (headers != null) {
+                if (!parameter.getType().equals(HeaderSet.class)) {
+                    return new Err<>(new AnnotatedHeadersMustBeOfTypeHeaderSet(this.msgClass));
+                }
+                parameterValues[i] = this.msg.headers();
                 continue;
             }
         }

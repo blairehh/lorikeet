@@ -1,9 +1,12 @@
 package lorikeet.http;
 
+import lorikeet.core.Dict;
 import lorikeet.core.DictOf;
+import lorikeet.core.Seq;
 import lorikeet.http.annotation.Delete;
 import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.Header;
+import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.MsgCtor;
 import lorikeet.http.annotation.Patch;
 import lorikeet.http.annotation.Put;
@@ -187,6 +190,24 @@ class DeleteRequest {
     }
 }
 
+@Get("/user/{id}")
+class AllHeaders {
+    final HeaderSet headers;
+    @MsgCtor
+    public AllHeaders(@Headers HeaderSet headers) {
+        this.headers = headers;
+    }
+}
+
+@Get("/user/{id}")
+class AllHeadersAsDict {
+    final Dict<String, Seq<String>> headers;
+    @MsgCtor
+    public AllHeadersAsDict(@Headers Dict<String, Seq<String>> headers) {
+        this.headers = headers;
+    }
+}
+
 
 public class HttpMsgTest {
 
@@ -198,6 +219,7 @@ public class HttpMsgTest {
             .push("active", "false")
             .push("score", "34.64")
             .push("bad-num", "1a")
+            .push("Authorization", "Basic f8eyrf7")
     );
 
     private final IncomingHttpSgnl incomingMultiPathVar = new MockIncomingHttpMsg(
@@ -251,6 +273,28 @@ public class HttpMsgTest {
         assertThat(msg.limit).isEqualTo(10);
         assertThat(msg.active).isFalse();
         assertThat(msg.score).isEqualTo(34.64);
+    }
+
+    @Test
+    public void testAllHeaders() {
+        AllHeaders msg = new HttpMsg<>(incoming, AllHeaders.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.headers.getAny("name")).isEqualTo("Bob Doe");
+        assertThat(msg.headers.getAny("limit")).isEqualTo("10");
+        assertThat(msg.headers.getAny("active")).isEqualTo("false");
+        assertThat(msg.headers.getAny("score")).isEqualTo("34.64");
+        assertThat(msg.headers.authorization()).isEqualTo("Basic f8eyrf7");
+    }
+
+    @Test
+    public void testAllHeadersWithInvalidType() {
+        boolean failed = new HttpMsg<>(incoming, AllHeadersAsDict.class)
+            .include()
+            .failure();
+
+        assertThat(failed).isTrue();
     }
 
     @Test
