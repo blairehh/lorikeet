@@ -21,7 +21,6 @@ import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
 
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.lang.reflect.Constructor;
@@ -66,29 +65,6 @@ public class HttpMsg<T> implements IncludableFallible<T> {
         }
         final HttpMsgPath msgPath = pathResult.orPanic();
 
-//        final Path path = this.msgClass.getAnnotation(Path.class);
-//        if (path == null) {
-//            return new Err<>(new HttpMsgMustHavePath(this.msgClass));
-//        }
-//
-//        final Fallible<HttpMsgPath> pathResult = new UriPath(this.msg, path.value())
-//            .include();
-//        if (pathResult.failure()) {
-//            return (Fallible<T>)pathResult;
-//        }
-//        final HttpMsgPath msgPath = pathResult.orPanic();
-//
-//        final Optional<HttpMethod> httpMethod = this.findHttpMethod();
-//        if (httpMethod.isEmpty()) {
-//            return new Err<>(new HttpMsgMustHaveMethod(this.msgClass));
-//        }
-//        final boolean matchesMethod = httpMethod.map((method) -> this.msg.method() == method)
-//            .orElse(false);
-//        if (!matchesMethod) {
-//            return new Err<>(new HttpMethodDoesNotMatchRequest());
-//        }
-
-
         Object[] parameterValues = new Object[ctor.getParameters().length];
         for (int i = 0; i < ctor.getParameters().length; i++) {
             final Parameter parameter = ctor.getParameters()[i];
@@ -129,11 +105,6 @@ public class HttpMsg<T> implements IncludableFallible<T> {
     }
 
     private HeaderAnnotation retrieveHeaderAnnotation(Parameter parameter) {
-        final HeaderParam headerParam = parameter.getAnnotation(HeaderParam.class);
-        if (headerParam != null) {
-            return new HeaderAnnotation(headerParam.value());
-        }
-
         final Header header = parameter.getAnnotation(Header.class);
         if (header != null) {
             return new HeaderAnnotation(header.value());

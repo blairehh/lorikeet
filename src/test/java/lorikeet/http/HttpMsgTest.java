@@ -11,7 +11,6 @@ import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import org.junit.Test;
 
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.util.Random;
@@ -23,7 +22,7 @@ class SingleHeader {
     final String name;
 
     @MsgCtor
-    public SingleHeader(@HeaderParam("name") String name) {
+    public SingleHeader(@Header("name") String name) {
         this.name = name;
     }
 }
@@ -33,7 +32,7 @@ class UnsupportedHeaderType {
     final Random name;
 
     @MsgCtor
-    public UnsupportedHeaderType(@HeaderParam("name") Random name) {
+    public UnsupportedHeaderType(@Header("name") Random name) {
         this.name = name;
     }
 }
@@ -42,7 +41,7 @@ class UnsupportedHeaderType {
 class SingleHeaderNoCtor {
     final String name;
 
-    public SingleHeaderNoCtor(@HeaderParam("name") String name) {
+    public SingleHeaderNoCtor(@Header("name") String name) {
         this.name = name;
     }
 }
@@ -56,10 +55,10 @@ class MultiHeader {
 
     @MsgCtor
     public MultiHeader(
-        @HeaderParam("name") String name,
-        @HeaderParam("limit") Integer limit,
-        @HeaderParam("active") Boolean active,
-        @HeaderParam("score") Double score
+        @Header("name") String name,
+        @Header("limit") Integer limit,
+        @Header("active") Boolean active,
+        @Header("score") Double score
     ) {
         this.name = name;
         this.limit = limit;
@@ -94,7 +93,7 @@ class BadHeaderValue {
     final Integer number;
 
     @MsgCtor
-    public BadHeaderValue(@HeaderParam("bad-num") int number) {
+    public BadHeaderValue(@Header("bad-num") int number) {
         this.number = number;
     }
 }
