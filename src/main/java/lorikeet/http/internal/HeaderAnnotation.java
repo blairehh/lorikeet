@@ -1,5 +1,7 @@
 package lorikeet.http.internal;
 
+import lorikeet.http.HeaderField;
+
 import java.util.Objects;
 
 public class HeaderAnnotation {
@@ -7,6 +9,10 @@ public class HeaderAnnotation {
 
     public HeaderAnnotation(String headerName) {
         this.headerName = headerName;
+    }
+
+    public HeaderAnnotation(HeaderField header) {
+        this.headerName = header.key();
     }
 
     public String headerName() {

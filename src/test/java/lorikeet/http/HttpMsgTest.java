@@ -12,6 +12,9 @@ import lorikeet.http.annotation.Patch;
 import lorikeet.http.annotation.PathVar;
 import lorikeet.http.annotation.Put;
 import lorikeet.http.annotation.Query;
+import lorikeet.http.annotation.headers.Authorization;
+import lorikeet.http.annotation.headers.ContentType;
+import lorikeet.http.annotation.headers.XForwardedFor;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import org.junit.Test;
@@ -219,6 +222,23 @@ class AllHeadersAsDict {
     }
 }
 
+@Get("/user/{id}")
+class StandardHeaders {
+    final String contentType;
+    final String authorization;
+    final String forwarded;
+
+    @MsgCtor
+    public StandardHeaders(
+        @ContentType String contentType,
+        @Authorization String authorization,
+        @XForwardedFor String forwarded
+    ) {
+        this.contentType = contentType;
+        this.authorization = authorization;
+        this.forwarded = forwarded;
+    }
+}
 
 public class HttpMsgTest {
 
@@ -231,6 +251,8 @@ public class HttpMsgTest {
             .push("score", "34.64")
             .push("bad-num", "1a")
             .push("Authorization", "Basic f8eyrf7")
+            .push("Content-Type", "application/json")
+            .push("X-Forwarded-For", "127.0.0.1")
     );
 
     private final IncomingHttpSgnl incomingMultiPathVar = new MockIncomingHttpMsg(
@@ -297,6 +319,17 @@ public class HttpMsgTest {
         assertThat(msg.headers.getAny("active")).isEqualTo("false");
         assertThat(msg.headers.getAny("score")).isEqualTo("34.64");
         assertThat(msg.headers.authorization()).isEqualTo("Basic f8eyrf7");
+    }
+
+    @Test
+    public void testStandardHeaders() {
+        StandardHeaders msg = new HttpMsg<>(incoming, StandardHeaders.class)
+            .include()
+            .orPanic();
+
+        assertThat(msg.contentType).isEqualTo("application/json");
+        assertThat(msg.authorization).isEqualTo("Basic f8eyrf7");
+        assertThat(msg.forwarded).isEqualTo("127.0.0.1");
     }
 
     @Test
