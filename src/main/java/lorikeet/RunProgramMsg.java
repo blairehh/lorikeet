@@ -1,7 +1,7 @@
 package lorikeet;
 
-import lorikeet.http.Get;
-import lorikeet.http.MsgCtor;
+import lorikeet.http.annotation.Get;
+import lorikeet.http.annotation.MsgCtor;
 
 import javax.ws.rs.QueryParam;
 

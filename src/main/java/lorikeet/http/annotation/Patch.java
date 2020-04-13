@@ -1,10 +1,10 @@
-package lorikeet.http;
+package lorikeet.http.annotation;
 
 import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(value=RUNTIME)
-public @interface Header {
+public @interface Patch {
     String value();
 }

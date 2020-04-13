@@ -1,6 +1,12 @@
 package lorikeet.http;
 
 import lorikeet.core.DictOf;
+import lorikeet.http.annotation.Delete;
+import lorikeet.http.annotation.Get;
+import lorikeet.http.annotation.Header;
+import lorikeet.http.annotation.MsgCtor;
+import lorikeet.http.annotation.Patch;
+import lorikeet.http.annotation.Put;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import org.junit.Test;

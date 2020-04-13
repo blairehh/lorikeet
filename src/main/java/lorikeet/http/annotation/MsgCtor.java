@@ -1,4 +1,4 @@
-package lorikeet.http;
+package lorikeet.http.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
