@@ -2,9 +2,7 @@ package lorikeet.http;
 
 import lorikeet.http.error.HttpAgentIsMissingSession;
 import lorikeet.http.error.InvalidHttpSessionObject;
-import lorikeet.lobe.ResourceInsignia;
 import lorikeet.lobe.UsesHttpServer;
-import lorikeet.lobe.WriteAgent;
 
 public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
     private final Object session;
@@ -35,12 +33,7 @@ public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
     }
 
     @Override
-    public ResourceInsignia resourceInsignia() {
-        return new HttpServerInsignia();
-    }
-
-    @Override
-    public WriteAgent<R, HttpWriteResult> withSession(Object session) {
+    public Http200<R> withSession(Object session) {
         return new Http200<>(session, this.body);
     }
 }

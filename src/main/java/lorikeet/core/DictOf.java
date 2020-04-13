@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DictOf<K, V> implements Dict<K, V> {
@@ -53,6 +54,24 @@ public class DictOf<K, V> implements Dict<K, V> {
             return Optional.empty();
         }
         return Optional.of(value);
+    }
+
+    @Override
+    public DictOf<K, V> modify(K key, Function<V, V> modifier) {
+        final V value = this.map.get(key);
+        if (value == null) {
+            return this;
+        }
+        return new DictOf<>(this.map.plus(key, modifier.apply(value)));
+    }
+
+    @Override
+    public Dict<K, V> modify(K key, Function<V, V> modifierIfFound, Supplier<V> supplierIfNotFound) {
+        final V value = this.map.get(key);
+        if (value == null) {
+            return new DictOf<>(this.map.plus(key, supplierIfNotFound.get()));
+        }
+        return new DictOf<>(this.map.plus(key, modifierIfFound.apply(value)));
     }
 
     @Override
