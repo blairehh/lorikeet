@@ -7,6 +7,7 @@ import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqCollector;
 import lorikeet.core.SeqOf;
+import lorikeet.http.HeaderSet;
 import lorikeet.http.HttpMethod;
 import lorikeet.http.IncomingHttpSgnl;
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class UndertowIncomingMsg implements IncomingHttpSgnl {
     private final HttpMethod method;
     private final URI uri;
-    private final Dict<String, Seq<String>> headers;
+    private final HeaderSet headers;
     private final Dict<String, Seq<String>> queryParameters;
 
     public UndertowIncomingMsg(HttpServerExchange exchange) {
@@ -28,7 +29,7 @@ public class UndertowIncomingMsg implements IncomingHttpSgnl {
         this.queryParameters = queryParams(exchange);
     }
 
-    private Dict<String, Seq<String>> headers(HttpServerExchange exchange) {
+    private HeaderSet headers(HttpServerExchange exchange) {
         Dict<String, Seq<String>> dict = new DictOf<>();
         for (HttpString header : exchange.getRequestHeaders().getHeaderNames()) {
             final Seq<String> values = exchange.getRequestHeaders().get(header)
@@ -36,7 +37,7 @@ public class UndertowIncomingMsg implements IncomingHttpSgnl {
                 .collect(new SeqCollector<>());
             dict = dict.push(header.toString(), values);
         }
-        return dict;
+        return new HeaderSet(dict);
     }
 
     private Dict<String, Seq<String>> queryParams(HttpServerExchange exchange) {
@@ -55,7 +56,7 @@ public class UndertowIncomingMsg implements IncomingHttpSgnl {
     }
 
     @Override
-    public Dict<String, Seq<String>> headers() {
+    public HeaderSet headers() {
         return this.headers;
     }
 

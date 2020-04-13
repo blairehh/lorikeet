@@ -36,19 +36,15 @@ public class BoolHeader implements IncludableFallible<Boolean> {
             return new Bug<>(new BadHeaderName(this.headerName));
         }
 
-        final Optional<String> opt = this.request.headers()
-            .pick(this.headerName)
-            .flatMap(Seq::first);
+        final String value = this.request.headers().getAny(this.headerName);
 
-        if (opt.isEmpty() && this.defaultValue == null) {
+        if (value.isBlank() && this.defaultValue == null) {
             return new Err<>(new HeaderNotFound(this.headerName));
         }
 
-        if (opt.isEmpty()) {
+        if (value.isBlank()) {
             return new Ok<>(this.defaultValue);
         }
-
-        final String value = opt.orElseThrow();
 
         if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
             return new Ok<>("true".equalsIgnoreCase(value));

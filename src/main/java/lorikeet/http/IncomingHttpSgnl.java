@@ -7,7 +7,7 @@ import java.net.URI;
 
 public interface IncomingHttpSgnl {
     HttpMethod method();
-    Dict<String, Seq<String>> headers();
+    HeaderSet headers();
     URI uri();
     Dict<String, Seq<String>> queryParameters();
 }

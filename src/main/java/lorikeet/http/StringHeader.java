@@ -34,18 +34,16 @@ public class StringHeader implements IncludableFallible<String> {
             return new Bug<>(new BadHeaderName(this.headerName));
         }
 
-        final var opt = this.msg.headers()
-            .pick(this.headerName)
-            .flatMap(Seq::first);
+        final String value = this.msg.headers().getAny(this.headerName);
 
-        if (opt.isEmpty() && this.defaultValue == null) {
+        if (value.isBlank() && this.defaultValue == null) {
             return new Err<>(new HeaderNotFound(this.headerName));
         }
 
-        if (opt.isEmpty()) {
+        if (value.isBlank()) {
             return new Ok<>(this.defaultValue);
         }
-       return new Ok<>(opt.orElseThrow());
+       return new Ok<>(value);
     }
 
     @Override
