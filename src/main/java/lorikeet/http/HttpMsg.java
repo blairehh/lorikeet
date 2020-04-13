@@ -10,7 +10,9 @@ import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.Header;
 import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.Patch;
+import lorikeet.http.annotation.PathVar;
 import lorikeet.http.annotation.Put;
+import lorikeet.http.annotation.Query;
 import lorikeet.http.error.AnnotatedHeadersMustBeOfTypeHeaderSet;
 import lorikeet.http.error.FailedToConstructHttpMsg;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
@@ -23,8 +25,6 @@ import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -79,7 +79,7 @@ public class HttpMsg<T> implements IncludableFallible<T> {
                 parameterValues[i] = result.orPanic();
                 continue;
             }
-            final PathParam pathParam = parameter.getAnnotation(PathParam.class);
+            final PathVar pathParam = parameter.getAnnotation(PathVar.class);
             if (pathParam != null) {
                 final Fallible<?> result = this.handlePathVar(parameter, msgPath, pathParam);
                 if (result.failure()) {
@@ -88,7 +88,7 @@ public class HttpMsg<T> implements IncludableFallible<T> {
                 parameterValues[i] = result.orPanic();
                 continue;
             }
-            final QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
+            final Query queryParam = parameter.getAnnotation(Query.class);
             if (queryParam != null) {
                 final Fallible<?> result = this.handleQueryParam(parameter, queryParam);
                 if (result.failure()) {
@@ -141,7 +141,7 @@ public class HttpMsg<T> implements IncludableFallible<T> {
         return new Bug<>(new UnsupportedHeaderValueType(parameter.getType()));
     }
 
-    private Fallible<?> handlePathVar(Parameter parameter, HttpMsgPath path, PathParam param) {
+    private Fallible<?> handlePathVar(Parameter parameter, HttpMsgPath path, PathVar param) {
         if (parameter.getType().equals(Integer.class) || parameter.getType().equals(int.class)) {
             return new IntPathVar(path, param.value()).include();
         }
@@ -160,7 +160,7 @@ public class HttpMsg<T> implements IncludableFallible<T> {
         return new Bug<>(new UnsupportedPathValueType(parameter.getType()));
     }
 
-    private Fallible<?> handleQueryParam(Parameter parameter, QueryParam param) {
+    private Fallible<?> handleQueryParam(Parameter parameter, Query param) {
         if (parameter.getType().equals(Integer.class) || parameter.getType().equals(int.class)) {
             return new IntQueryParam(this.msg, param.value()).include();
         }

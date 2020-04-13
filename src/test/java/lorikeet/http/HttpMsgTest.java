@@ -9,13 +9,12 @@ import lorikeet.http.annotation.Header;
 import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.MsgCtor;
 import lorikeet.http.annotation.Patch;
+import lorikeet.http.annotation.PathVar;
 import lorikeet.http.annotation.Put;
+import lorikeet.http.annotation.Query;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import org.junit.Test;
-
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,7 +121,7 @@ class OneQueryParam {
     final int max;
 
     @MsgCtor
-    public OneQueryParam(@QueryParam("max") int max) {
+    public OneQueryParam(@Query("max") int max) {
         this.max = max;
     }
 }
@@ -135,9 +134,9 @@ class MultipleQueryParams {
 
     @MsgCtor
     public MultipleQueryParams(
-        @QueryParam("max") int max,
-        @QueryParam("active") boolean active,
-        @QueryParam("zone") String zone
+        @Query("max") int max,
+        @Query("active") boolean active,
+        @Query("zone") String zone
     ) {
         this.max = max;
         this.active = active;
@@ -152,9 +151,21 @@ class MsgWithPathVars {
     final String code;
 
     @MsgCtor
-    public MsgWithPathVars(@PathParam("id") long id, @PathParam("code") String productCode) {
+    public MsgWithPathVars(@PathVar("id") long id, @PathVar("code") String productCode) {
         this.id = id;
         this.code = productCode;
+    }
+}
+
+@Get("/orders/{id}/product-codes/{code}")
+class MsgWithMissingPathVars {
+    final long id;
+    final String reference;
+
+    @MsgCtor
+    public MsgWithMissingPathVars(@PathVar("id") long id, @PathVar("reference") String reference) {
+        this.id = id;
+        this.reference = reference;
     }
 }
 
@@ -346,6 +357,15 @@ public class HttpMsgTest {
 
         assertThat(msg.id).isEqualTo(123);
         assertThat(msg.code).isEqualTo("ABC");
+    }
+
+    @Test
+    public void testMissingPathVars() {
+        boolean failed = new HttpMsg<>(incomingMultiPathVar, MsgWithMissingPathVars.class)
+            .include()
+            .failure();
+
+        assertThat(failed).isTrue();
     }
 
     @Test

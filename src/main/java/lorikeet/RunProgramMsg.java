@@ -2,15 +2,14 @@ package lorikeet;
 
 import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.MsgCtor;
-
-import javax.ws.rs.QueryParam;
+import lorikeet.http.annotation.Query;
 
 @Get("/run-program")
 public class RunProgramMsg {
     private final int timeout;
 
     @MsgCtor
-    public RunProgramMsg(@QueryParam("timeout") int timeout) {
+    public RunProgramMsg(@Query("timeout") int timeout) {
         this.timeout = timeout;
     }
 
