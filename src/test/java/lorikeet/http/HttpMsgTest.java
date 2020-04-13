@@ -242,7 +242,7 @@ class StandardHeaders {
 
 public class HttpMsgTest {
 
-    private final IncomingHttpSgnl incoming = new MockIncomingHttpMsg(
+    private final IncomingHttpSgnl incoming = new MockIncomingHttpSgnl(
         "/user/786",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
@@ -255,7 +255,7 @@ public class HttpMsgTest {
             .push("X-Forwarded-For", "127.0.0.1")
     );
 
-    private final IncomingHttpSgnl incomingMultiPathVar = new MockIncomingHttpMsg(
+    private final IncomingHttpSgnl incomingMultiPathVar = new MockIncomingHttpSgnl(
         "/orders/123/product-codes/ABC",
         new DictOf<String, String>()
             .push("name", "Bob Doe")
@@ -403,7 +403,7 @@ public class HttpMsgTest {
 
     @Test
     public void testOneQueryParam() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?max=100");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100");
         OneQueryParam msg = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .orPanic();
@@ -413,7 +413,7 @@ public class HttpMsgTest {
 
     @Test
     public void testQueryParamNotFound() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?min=100");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?min=100");
         boolean failed = new HttpMsg<>(request, OneQueryParam.class)
             .include()
             .failure();
@@ -423,7 +423,7 @@ public class HttpMsgTest {
 
     @Test
     public void testMultipleQueryParams() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg("/user/56?max=100&zone=FOO&active=false");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100&zone=FOO&active=false");
         MultipleQueryParams msg = new HttpMsg<>(request, MultipleQueryParams.class)
             .include()
             .orPanic();
@@ -435,7 +435,7 @@ public class HttpMsgTest {
 
     @Test
     public void testHttpMethod() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg(HttpMethod.DELETE, "/user/56");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl(HttpMethod.DELETE, "/user/56");
         boolean success = new HttpMsg<>(request, DeleteRequest.class)
             .include()
             .success();

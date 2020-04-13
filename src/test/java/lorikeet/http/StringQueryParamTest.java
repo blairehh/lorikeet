@@ -8,7 +8,7 @@ public class StringQueryParamTest {
 
     @Test
     public void testNotFound() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg("/test?name=foo");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl("/test?name=foo");
 
         boolean failed = new StringQueryParam(request, "surname")
             .include()
@@ -19,7 +19,7 @@ public class StringQueryParamTest {
 
     @Test
     public void testValid() {
-        IncomingHttpSgnl request = new MockIncomingHttpMsg("/test?name=foo");
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl("/test?name=foo");
 
         String value = new StringQueryParam(request, "name")
             .include()

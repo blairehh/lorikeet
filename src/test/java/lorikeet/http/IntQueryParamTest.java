@@ -8,7 +8,7 @@ public class IntQueryParamTest {
 
     @Test
     public void testValidNumber() {
-        MockIncomingHttpMsg incoming = new MockIncomingHttpMsg("/test?max=456");
+        MockIncomingHttpSgnl incoming = new MockIncomingHttpSgnl("/test?max=456");
 
         final int max = new IntQueryParam(incoming, "max")
             .include()
@@ -19,7 +19,7 @@ public class IntQueryParamTest {
 
     @Test
     public void testGetsFirstValueIfMultipleFound() {
-        MockIncomingHttpMsg incoming = new MockIncomingHttpMsg("/test?max=100&max=101");
+        MockIncomingHttpSgnl incoming = new MockIncomingHttpSgnl("/test?max=100&max=101");
 
         final int max = new IntQueryParam(incoming, "max")
             .include()
@@ -31,7 +31,7 @@ public class IntQueryParamTest {
 
     @Test
     public void testInvalidNumber() {
-        MockIncomingHttpMsg incoming = new MockIncomingHttpMsg("/test?max=4a");
+        MockIncomingHttpSgnl incoming = new MockIncomingHttpSgnl("/test?max=4a");
 
         boolean failed = new IntQueryParam(incoming, "max")
             .include()
@@ -42,7 +42,7 @@ public class IntQueryParamTest {
 
     @Test
     public void testQueryParamNameNotFound() {
-        MockIncomingHttpMsg incoming = new MockIncomingHttpMsg("/test?max=100");
+        MockIncomingHttpSgnl incoming = new MockIncomingHttpSgnl("/test?max=100");
 
         boolean failed = new IntQueryParam(incoming, "min")
             .include()
