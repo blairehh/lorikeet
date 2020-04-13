@@ -27,6 +27,20 @@ public abstract class NumberHeader<T extends Number> implements IncludableFallib
         this.defaultValue = defaultValue;
     }
 
+    public NumberHeader(IncomingHttpSgnl request, HeaderField header, Function<String, T> parser) {
+        this.request = request;
+        this.headerName = header.key();
+        this.parser = parser;
+        this.defaultValue = null;
+    }
+
+    public NumberHeader(IncomingHttpSgnl request, HeaderField header, Function<String, T> parser, T defaultValue) {
+        this.request = request;
+        this.headerName = header.key();
+        this.parser = parser;
+        this.defaultValue = defaultValue;
+    }
+
     public NumberHeader(IncomingHttpSgnl request, String headerName, Function<String, T> parser) {
         this.request = request;
         this.headerName = headerName;

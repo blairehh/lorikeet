@@ -28,6 +28,18 @@ public class StringHeader implements IncludableFallible<String> {
         this.defaultValue = null;
     }
 
+    public StringHeader(IncomingHttpSgnl msg, HeaderField header, String defaultValue) {
+        this.msg = msg;
+        this.headerName = header.key();
+        this.defaultValue = defaultValue;
+    }
+
+    public StringHeader(IncomingHttpSgnl msg, HeaderField header) {
+        this.msg = msg;
+        this.headerName = header.key();
+        this.defaultValue = null;
+    }
+
     @Override
     public Fallible<String> include() {
         if (this.headerName.isBlank()) {

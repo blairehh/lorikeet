@@ -30,6 +30,18 @@ public class BoolHeader implements IncludableFallible<Boolean> {
         this.defaultValue = null;
     }
 
+    public BoolHeader(IncomingHttpSgnl request, HeaderField header, Boolean defaultValue) {
+        this.request = request;
+        this.headerName = header.key();
+        this.defaultValue = defaultValue;
+    }
+
+    public BoolHeader(IncomingHttpSgnl request, HeaderField header) {
+        this.request = request;
+        this.headerName = header.key();
+        this.defaultValue = null;
+    }
+
     @Override
     public Fallible<Boolean> include() {
         if (this.headerName.isBlank()) {
