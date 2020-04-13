@@ -2,7 +2,9 @@ package lorikeet.http;
 
 
 import lorikeet.http.annotation.StatusCode;
+import lorikeet.http.error.BadHttpStatusCodeFieldType;
 import lorikeet.http.error.StatusCodeAnnotationOnClassMustHaveCodeSpecified;
+import lorikeet.http.error.StatusCodeFiledCanNotBeNull;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +17,42 @@ class StatusCodeOnClass {
 @StatusCode
 class CodeMissingOnStatusCode {
 
+}
+
+class StatusCodeAsField {
+    @StatusCode private int statusCode;
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public int getStatusCode() {
+        return this.statusCode;
+    }
+}
+
+class StatusCodeAsEnumField {
+    @StatusCode private HttpStatus status;
+
+    public HttpStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+}
+
+class BadStatusCodeFieldType {
+    @StatusCode private String status;
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
 
 public class MsgToHttpOutgoingSgnlTest {
@@ -42,5 +80,62 @@ public class MsgToHttpOutgoingSgnlTest {
             .orElseThrow();
 
         assertThat(exception.getClass()).isEqualTo(StatusCodeAnnotationOnClassMustHaveCodeSpecified.class);
+    }
+
+    @Test
+    public void testStatusCodeAsClassField() {
+        MockOutgoingHttpSgnl outgoing = new MockOutgoingHttpSgnl();
+        StatusCodeAsField msg = new StatusCodeAsField();
+        msg.setStatusCode(204);
+
+        boolean succedded = new MsgToHttpOutgoingSgnl()
+            .toOugoing(msg, outgoing)
+            .success();
+
+        assertThat(succedded).isTrue();
+        assertThat(outgoing.statusCode).isEqualTo(204);
+    }
+
+    @Test
+    public void testStatusCodeAsClassFieldAsEnum() {
+        MockOutgoingHttpSgnl outgoing = new MockOutgoingHttpSgnl();
+        StatusCodeAsEnumField msg = new StatusCodeAsEnumField();
+        msg.setStatus(HttpStatus.CONFLICT);
+
+        boolean succedded = new MsgToHttpOutgoingSgnl()
+            .toOugoing(msg, outgoing)
+            .success();
+
+        assertThat(succedded).isTrue();
+        assertThat(outgoing.statusCode).isEqualTo(409);
+    }
+
+    @Test
+    public void testBadStatusCodeFieldType() {
+        MockOutgoingHttpSgnl outgoing = new MockOutgoingHttpSgnl();
+        BadStatusCodeFieldType msg = new BadStatusCodeFieldType();
+        msg.setStatus("400");
+
+        Exception exception = new MsgToHttpOutgoingSgnl()
+            .toOugoing(msg, outgoing)
+            .errors()
+            .first()
+            .orElseThrow();
+
+        assertThat(exception.getClass()).isEqualTo(BadHttpStatusCodeFieldType.class);
+    }
+
+    @Test
+    public void testStatusCodeFieldCanNotBeNull() {
+        MockOutgoingHttpSgnl outgoing = new MockOutgoingHttpSgnl();
+        StatusCodeAsEnumField msg = new StatusCodeAsEnumField();
+
+        Exception exception = new MsgToHttpOutgoingSgnl()
+            .toOugoing(msg, outgoing)
+            .errors()
+            .first()
+            .orElseThrow();
+
+        assertThat(exception.getClass()).isEqualTo(StatusCodeFiledCanNotBeNull.class);
     }
 }
