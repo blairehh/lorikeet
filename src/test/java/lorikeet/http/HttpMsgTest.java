@@ -3,7 +3,6 @@ package lorikeet.http;
 import lorikeet.core.DictOf;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
-import lorikeet.resource.HttpMethod;
 import org.junit.Test;
 
 import javax.ws.rs.HeaderParam;

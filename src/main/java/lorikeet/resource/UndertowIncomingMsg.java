@@ -7,6 +7,7 @@ import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqCollector;
 import lorikeet.core.SeqOf;
+import lorikeet.http.HttpMethod;
 import lorikeet.http.IncomingHttpSgnl;
 
 import java.net.URI;

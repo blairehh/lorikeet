@@ -15,7 +15,6 @@ import lorikeet.http.error.UnsupportedQueryParameterValueType;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
-import lorikeet.resource.HttpMethod;
 
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;

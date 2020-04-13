@@ -1,6 +1,6 @@
 package lorikeet.http.internal;
 
-import lorikeet.resource.HttpMethod;
+import lorikeet.http.HttpMethod;
 
 import java.util.Objects;
 

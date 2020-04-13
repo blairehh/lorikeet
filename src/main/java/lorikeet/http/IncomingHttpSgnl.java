@@ -2,7 +2,6 @@ package lorikeet.http;
 
 import lorikeet.core.Dict;
 import lorikeet.core.Seq;
-import lorikeet.resource.HttpMethod;
 
 import java.net.URI;
 

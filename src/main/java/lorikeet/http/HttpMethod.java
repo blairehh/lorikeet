@@ -1,4 +1,4 @@
-package lorikeet.resource;
+package lorikeet.http;
 
 import lorikeet.core.SeqOf;
 

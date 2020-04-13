@@ -5,7 +5,6 @@ import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.internal.UriHelper;
-import lorikeet.resource.HttpMethod;
 
 import java.net.URI;
 
