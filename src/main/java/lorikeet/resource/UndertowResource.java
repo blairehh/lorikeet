@@ -46,10 +46,14 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
             .session(new TractSession(new HttpServerInsignia(), outgoing));
 
         final HttpDirective directive = this.directiveForSignal(application, incoming, tract);
-        if (directive.reject()) {
+        if (directive.reject() && !directive.wrongMethod()) {
             exchange.setStatusCode(404);
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
             exchange.getResponseSender().send("not found");
+        } else if (directive.reject() && directive.wrongMethod()) {
+            exchange.setStatusCode(405);
+            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+            exchange.getResponseSender().send("bad method");
         } else {
             final HttpReply reply = directive.perform();
             if (reply instanceof HttpWrite) {
@@ -59,18 +63,19 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
         }
     }
 
-    // @TODO remove and close this session
     private HttpDirective directiveForSignal(A application, IncomingHttpSgnl incoming, Tract<R> tract) {
-        final Function<HttpReceptor<R>, Optional<HttpDirective>> selector = (receptor) -> {
+        boolean matchedButWrongMethod = false;
+        for (HttpReceptor<R> receptor : application.provideHttpReceptors().receptors()) {
             final HttpDirective directive = receptor.junction(tract, incoming);
-            if (directive.reject()) {
-                return Optional.empty();
+            if (directive.wrongMethod()) {
+                matchedButWrongMethod = true;
             }
-            return Optional.of(directive);
-        };
-        return application.provideHttpReceptors()
-            .receptors()
-            .select(selector)
-            .orElse(new HttpReject());
+            if (directive.reject()) {
+                continue;
+            }
+            return directive;
+        }
+
+        return new HttpReject(matchedButWrongMethod);
     }
 }

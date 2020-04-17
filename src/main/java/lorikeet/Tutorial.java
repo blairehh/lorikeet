@@ -46,7 +46,8 @@ public class Tutorial implements
     @Override
     public ReceptorBundle<Tutorial> provideHttpReceptors() {
         return new ReceptorBundle<Tutorial>()
-            .add(new RunProgramMsgReceptor(), RunProgramMsg.class);
+            .add(new RunProgramMsgReceptor(), RunProgramMsg.class)
+            .add(new RunProgramPostMsgReceptor(), RunProgramPostMsg.class);
     }
 
     @Override

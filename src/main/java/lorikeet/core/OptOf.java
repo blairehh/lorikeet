@@ -74,6 +74,14 @@ public class OptOf<T> implements Fallible<T> {
     }
 
     @Override
+    public boolean hasError(Exception exception) {
+        if (this.optional.isPresent()) {
+            return false;
+        }
+        return new NoSuchElementException().equals(exception);
+    }
+
+    @Override
     public Fallible<T> onFailure(Consumer<Exception> consumer) {
         if (this.optional.isEmpty()) {
             consumer.accept(this.exception);

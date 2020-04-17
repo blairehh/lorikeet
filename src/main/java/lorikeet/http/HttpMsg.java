@@ -11,6 +11,7 @@ import lorikeet.http.annotation.Header;
 import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.Patch;
 import lorikeet.http.annotation.PathVar;
+import lorikeet.http.annotation.Post;
 import lorikeet.http.annotation.Put;
 import lorikeet.http.annotation.Query;
 import lorikeet.http.annotation.headers.*;
@@ -185,6 +186,11 @@ public class HttpMsg<T> implements IncludableFallible<T> {
         final Get get = this.msgClass.getAnnotation(Get.class);
         if (get != null) {
             return Optional.of(new IdentifierAnnotation(HttpMethod.GET, get.value()));
+        }
+
+        final Post post = this.msgClass.getAnnotation(Post.class);
+        if (post != null) {
+            return Optional.of(new IdentifierAnnotation(HttpMethod.POST, post.value()));
         }
 
         final Put put = this.msgClass.getAnnotation(Put.class);

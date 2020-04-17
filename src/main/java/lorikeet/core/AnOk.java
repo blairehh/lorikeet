@@ -54,6 +54,11 @@ public interface AnOk<T> extends Fallible<T> {
     }
 
     @Override
+    default boolean hasError(Exception exception) {
+        return false;
+    }
+
+    @Override
     default AnOk<T> onSuccess(Consumer<T> consumer) {
         consumer.accept(this.value());
         return this;

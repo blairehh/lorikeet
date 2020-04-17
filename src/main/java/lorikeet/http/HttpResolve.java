@@ -21,6 +21,11 @@ public class HttpResolve implements HttpDirective {
     }
 
     @Override
+    public boolean wrongMethod() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;

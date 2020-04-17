@@ -1,5 +1,6 @@
 package lorikeet.core;
 
+import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import org.junit.Test;
 
 import java.util.Objects;

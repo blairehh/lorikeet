@@ -8,6 +8,7 @@ import lorikeet.http.HttpReject;
 import lorikeet.http.HttpResolve;
 import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
+import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.lobe.Tract;
 import lorikeet.lobe.UsesLogging;
 
@@ -22,10 +23,10 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpR
 
     @Override
     public HttpDirective junction(Tract<R> tract, IncomingHttpSgnl request) {
-        final Fallible<HttpDirective> d = new HttpMsg<>(request, this.msgClass)
+        final Fallible<HttpDirective> directive = new HttpMsg<>(request, this.msgClass)
             .include()
             .map((msg) -> new HttpResolve(() -> this.msgReceptor.accept(tract, msg)));
 
-        return d.orGive(new HttpReject());
+        return directive.orGive(new HttpReject(directive.hasError(new HttpMethodDoesNotMatchRequest())));
     }
 }

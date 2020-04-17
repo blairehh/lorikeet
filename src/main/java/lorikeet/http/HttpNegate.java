@@ -10,4 +10,9 @@ public class HttpNegate implements HttpDirective {
     public HttpReply perform() {
         return new HttpNoOp();
     }
+
+    @Override
+    public boolean wrongMethod() {
+        return false;
+    }
 }

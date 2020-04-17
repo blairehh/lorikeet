@@ -49,6 +49,11 @@ public interface AnErr<T> extends Fallible<T> {
     }
 
     @Override
+    default boolean hasError(Exception exception) {
+        return this.errors().contains(exception);
+    }
+
+    @Override
     default AnErr<T> onSuccess(Consumer<T> consumer) {
         return this;
     }
