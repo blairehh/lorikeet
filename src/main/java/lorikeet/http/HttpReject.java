@@ -1,27 +1,26 @@
 package lorikeet.http;
 
+import lorikeet.core.AnErr;
+import lorikeet.core.Seq;
+
 import java.util.Objects;
 
-public class HttpReject implements HttpDirective {
-    private final boolean wrongMethod;
+public class HttpReject implements AnErr<HttpReplier>, HttpDirective {
 
-    public HttpReject(boolean wrongMethod) {
-        this.wrongMethod = wrongMethod;
+    private final Seq<Exception> errors;
+
+    public HttpReject(Seq<Exception> errors) {
+        this.errors = errors;
     }
 
     @Override
-    public boolean reject() {
-        return true;
+    public Exception exception() {
+        return this.errors.first().orElseThrow();
     }
 
     @Override
-    public HttpReply perform() {
-        return new HttpNoOp();
-    }
-
-    @Override
-    public boolean wrongMethod() {
-        return this.wrongMethod;
+    public Seq<? extends Exception> errors() {
+        return this.errors;
     }
 
     @Override
@@ -36,11 +35,11 @@ public class HttpReject implements HttpDirective {
 
         HttpReject that = (HttpReject) o;
 
-        return Objects.equals(this.wrongMethod(), that.wrongMethod());
+        return Objects.equals(this.errors, that.errors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.wrongMethod());
+        return Objects.hash(this.errors);
     }
 }

@@ -1,7 +1,6 @@
 package lorikeet.http;
 
-public interface HttpDirective {
-    boolean reject();
-    HttpReply perform();
-    boolean wrongMethod();
+import lorikeet.core.Fallible;
+
+public interface HttpDirective extends Fallible<HttpReplier> {
 }

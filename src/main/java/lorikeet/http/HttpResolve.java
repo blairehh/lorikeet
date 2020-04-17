@@ -1,28 +1,19 @@
 package lorikeet.http;
 
+import lorikeet.core.AnOk;
+
 import java.util.Objects;
-import java.util.function.Supplier;
 
-public class HttpResolve implements HttpDirective {
-    private final Supplier<HttpReply> action;
+public class HttpResolve implements AnOk<HttpReplier>, HttpDirective {
+    private final HttpReplier replier;
 
-    public HttpResolve(Supplier<HttpReply> action) {
-        this.action = action;
+    public HttpResolve(HttpReplier replier) {
+        this.replier = replier;
     }
 
     @Override
-    public boolean reject() {
-        return false;
-    }
-
-    @Override
-    public HttpReply perform() {
-        return this.action.get();
-    }
-
-    @Override
-    public boolean wrongMethod() {
-        return false;
+    public HttpReplier value() {
+        return this.replier;
     }
 
     @Override
@@ -37,11 +28,11 @@ public class HttpResolve implements HttpDirective {
 
         HttpResolve that = (HttpResolve) o;
 
-        return Objects.equals(this.action, that.action);
+        return Objects.equals(this.replier, that.replier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.action);
+        return Objects.hash(this.replier);
     }
 }

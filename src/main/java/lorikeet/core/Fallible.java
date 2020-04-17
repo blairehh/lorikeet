@@ -4,6 +4,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+// @TODO
+// A) always return a seq of errors
+// B) make AnOk and AnErr an abstract class
 public interface Fallible<T> {
 
     boolean success();

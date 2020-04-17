@@ -3,6 +3,8 @@ package lorikeet.resource;
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import lorikeet.core.Seq;
+import lorikeet.core.SeqOf;
 import lorikeet.http.HttpDirective;
 import lorikeet.http.HttpReject;
 import lorikeet.http.HttpResource;
@@ -12,6 +14,7 @@ import lorikeet.http.HttpWrite;
 import lorikeet.http.OutgoingHttpSgnl;
 import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
+import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.ProvidesTract;
 import lorikeet.lobe.Tract;
@@ -46,16 +49,19 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
             .session(new TractSession(new HttpServerInsignia(), outgoing));
 
         final HttpDirective directive = this.directiveForSignal(application, incoming, tract);
-        if (directive.reject() && !directive.wrongMethod()) {
-            exchange.setStatusCode(404);
-            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-            exchange.getResponseSender().send("not found");
-        } else if (directive.reject() && directive.wrongMethod()) {
-            exchange.setStatusCode(405);
-            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-            exchange.getResponseSender().send("bad method");
+
+        if (directive.failure()) {
+            if (directive.hasError(HttpMethodDoesNotMatchRequest.class)) {
+                exchange.setStatusCode(405);
+                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                exchange.getResponseSender().send("bad method");
+            } else {
+                exchange.setStatusCode(404);
+                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                exchange.getResponseSender().send("not found");
+            }
         } else {
-            final HttpReply reply = directive.perform();
+            final HttpReply reply = directive.orPanic().reply();
             if (reply instanceof HttpWrite) {
                 // unchecked here
                 tract.write((HttpWrite<R>)reply);
@@ -64,18 +70,19 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
     }
 
     private HttpDirective directiveForSignal(A application, IncomingHttpSgnl incoming, Tract<R> tract) {
-        boolean matchedButWrongMethod = false;
+        Seq<Exception> errors = new SeqOf<>();
+
         for (HttpReceptor<R> receptor : application.provideHttpReceptors().receptors()) {
             final HttpDirective directive = receptor.junction(tract, incoming);
-            if (directive.wrongMethod()) {
-                matchedButWrongMethod = true;
+            if (!directive.errors().isEmpty()) {
+                errors = errors.affix(directive.errors());
             }
-            if (directive.reject()) {
+            if (directive.failure()) {
                 continue;
             }
             return directive;
         }
 
-        return new HttpReject(matchedButWrongMethod);
+        return new HttpReject(errors);
     }
 }
