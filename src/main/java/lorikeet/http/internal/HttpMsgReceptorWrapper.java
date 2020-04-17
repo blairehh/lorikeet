@@ -27,6 +27,6 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpR
             .include()
             .map((msg) -> new HttpResolve(() -> this.msgReceptor.accept(tract, msg)));
 
-        return directive.orGive(new HttpReject(directive.hasError(new HttpMethodDoesNotMatchRequest())));
+        return directive.orGive(new HttpReject(directive.hasError(HttpMethodDoesNotMatchRequest.class)));
     }
 }

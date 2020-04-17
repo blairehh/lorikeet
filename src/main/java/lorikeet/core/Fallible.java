@@ -19,6 +19,7 @@ public interface Fallible<T> {
     <X> Fallible<X> then(Function<T, Fallible<X>> then);
 
     boolean hasError(Exception exception);
+    boolean hasError(Class<? extends Exception> exceptionType);
 
     Fallible<T> onSuccess(Consumer<T> consumer);
     Fallible<T> onFailure(Consumer<Exception> consumer);

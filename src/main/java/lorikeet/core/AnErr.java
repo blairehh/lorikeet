@@ -54,6 +54,11 @@ public interface AnErr<T> extends Fallible<T> {
     }
 
     @Override
+    default boolean hasError(Class<? extends Exception> exceptionType) {
+        return this.errors().stream().anyMatch((ex) -> ex.getClass().equals(exceptionType));
+    }
+
+    @Override
     default AnErr<T> onSuccess(Consumer<T> consumer) {
         return this;
     }
