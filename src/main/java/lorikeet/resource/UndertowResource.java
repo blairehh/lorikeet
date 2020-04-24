@@ -17,14 +17,9 @@ import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.http.error.IncomingHttpSgnlError;
-import lorikeet.lobe.ProvidesHttpReceptors;
-import lorikeet.lobe.ProvidesTract;
-import lorikeet.lobe.Tract;
-import lorikeet.lobe.TractSession;
-import lorikeet.lobe.UsesHttpServer;
-import lorikeet.lobe.UsesLogging;
+import lorikeet.lobe.*;
 
-public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends ProvidesHttpReceptors<R> & ProvidesTract<R>>
+public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServer, A extends ProvidesHttpReceptors<R> & ProvidesTract<R>>
     implements HttpResource {
     private final UndertowConfig config;
 

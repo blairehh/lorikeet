@@ -9,9 +9,10 @@ import lorikeet.http.HttpResolve;
 import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.lobe.Tract;
+import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesLogging;
 
-public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpReceptor<R> {
+public class HttpMsgReceptorWrapper<R extends UsesLogging & UsesCoding, Msg> implements HttpReceptor<R> {
     private final HttpMsgReceptor<R, Msg> msgReceptor;
     private final Class<Msg> msgClass;
 
