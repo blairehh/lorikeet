@@ -3,6 +3,7 @@ package lorikeet.http;
 import lorikeet.core.ErrResult;
 import lorikeet.core.FallibleResult;
 import lorikeet.core.OkResult;
+import lorikeet.http.annotation.Body;
 import lorikeet.http.annotation.Delete;
 import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.Header;
@@ -26,6 +27,10 @@ import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
 import lorikeet.http.internal.IncomingHttpSgnlStrop;
+import lorikeet.http.internal.IncomingHttpSgnlStrop2;
+import lorikeet.lobe.Tract;
+import lorikeet.lobe.UsesCoding;
+import lorikeet.lobe.UsesLogging;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -35,7 +40,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
+public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingHttpSgnlStrop2<T, R> {
     private final Class<T> msgClass;
 
     public HttpMsg(Class<T> msgClass) {
@@ -43,14 +48,18 @@ public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
     }
 
     @Override
-    public FallibleResult<T, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
+    public FallibleResult<T, IncomingHttpSgnlError> include(IncomingHttpSgnl request, Tract<R> tract) {
         return this.findCtor()
-            .map((ctor) -> this.include(request, ctor))
+            .map((ctor) -> this.include(tract, request, ctor))
             .orElse(new ErrResult<>(new MsgTypeDidNotHaveAnnotatedCtor(this.msgClass)));
     }
 
     @SuppressWarnings("unchecked")
-    private FallibleResult<T, IncomingHttpSgnlError> include(IncomingHttpSgnl request, Constructor<T> ctor) {
+    private FallibleResult<T, IncomingHttpSgnlError> include(
+        Tract<R> tract,
+        IncomingHttpSgnl request,
+        Constructor<T> ctor
+    ) {
         final IdentifierAnnotation id = this.retrieveIdentifierAnnotation()
             .orElse(null);
         if (id == null) {
@@ -98,6 +107,14 @@ public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
                 parameterValues[i] = result.orPanic();
                 continue;
             }
+            final Body body = parameter.getAnnotation(Body.class);
+            if (body != null) {
+                final FallibleResult<?, IncomingHttpSgnlError> result = this.handleBody(tract, request, parameter, body);
+                if (result.failure()) {
+                    return (FallibleResult<T, IncomingHttpSgnlError>) result;
+                }
+                parameterValues[i] = result.orPanic();
+            }
             final Headers headers = parameter.getAnnotation(Headers.class);
             if (headers != null) {
                 if (!parameter.getType().equals(HeaderSet.class)) {
@@ -112,6 +129,16 @@ public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             return new ErrResult<>(new FailedToConstructHttpMsg(this.msgClass, e));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private FallibleResult<Object, IncomingHttpSgnlError> handleBody(
+        Tract<R> tract,
+        IncomingHttpSgnl request,
+        Parameter parameter,
+        Body body
+    ) {
+        return new RequestBody<Object, R>(body.value(), (Class<Object>)parameter.getType()).include(request, tract);
     }
 
     private FallibleResult<?, IncomingHttpSgnlError> handleHeader(
@@ -733,7 +760,7 @@ public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
             return false;
         }
 
-        HttpMsg<?> httpMsgOf = (HttpMsg<?>) o;
+        HttpMsg<?, ?> httpMsgOf = (HttpMsg<?, ?>) o;
 
         return Objects.equals(this.msgClass, httpMsgOf.msgClass);
     }
