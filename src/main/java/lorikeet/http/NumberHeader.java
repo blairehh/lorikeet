@@ -7,12 +7,12 @@ import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.BadHeaderValue;
 import lorikeet.http.error.HeaderNotFound;
 import lorikeet.http.error.IncomingHttpSgnlError;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class NumberHeader<T extends Number> implements IncomingHttpSgnlStreamInclude<T> {
+public abstract class NumberHeader<T extends Number> implements IncomingHttpSgnlStrop<T> {
     private final String headerName;
     private final Function<String, T> parser;
     private final T defaultValue;

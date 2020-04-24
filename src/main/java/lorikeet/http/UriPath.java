@@ -10,13 +10,13 @@ import lorikeet.http.error.BadUriPattern;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.UriPatternDoesNotMatchUri;
 import lorikeet.http.internal.HttpMsgPath;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-public class UriPath implements IncomingHttpSgnlStreamInclude<HttpMsgPath> {
+public class UriPath implements IncomingHttpSgnlStrop<HttpMsgPath> {
     private final String uriPattern;
 
     public UriPath(String uriPattern) {

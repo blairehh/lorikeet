@@ -73,4 +73,9 @@ public abstract class BasicErr<T> implements Fallible<T> {
         consumer.accept(this.exception());
         return this;
     }
+
+    @Override
+    public <E extends Exception> FallibleResult<T, E> asResult(Function<Exception, E> errorMapper) {
+        return new ErrResult<>(errorMapper.apply(this.exception()));
+    }
 }

@@ -6,11 +6,11 @@ import lorikeet.core.OkResult;
 import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.HeaderNotFound;
 import lorikeet.http.error.IncomingHttpSgnlError;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 
-public class StringHeader implements IncomingHttpSgnlStreamInclude<String> {
+public class StringHeader implements IncomingHttpSgnlStrop<String> {
     private final String headerName;
     private final String defaultValue;
 

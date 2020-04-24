@@ -7,11 +7,11 @@ import lorikeet.http.error.BadPathVariableName;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.PathVarNotFound;
 import lorikeet.http.internal.HttpMsgPath;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 
-public class StringPathVar implements IncomingHttpSgnlStreamInclude<String> {
+public class StringPathVar implements IncomingHttpSgnlStrop<String> {
     private final HttpMsgPath path;
     private final String name;
 

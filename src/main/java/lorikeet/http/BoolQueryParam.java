@@ -10,11 +10,11 @@ import lorikeet.http.error.BadQueryParameterName;
 import lorikeet.http.error.BadQueryParameterValue;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.QueryParameterNotFound;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 
-public class BoolQueryParam implements IncomingHttpSgnlStreamInclude<Boolean> {
+public class BoolQueryParam implements IncomingHttpSgnlStrop<Boolean> {
     private final String queryParameterName;
 
     public BoolQueryParam(String queryParameterName) {

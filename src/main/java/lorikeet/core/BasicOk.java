@@ -78,4 +78,9 @@ public abstract class BasicOk<T> implements Fallible<T> {
     public BasicOk<T> onFailure(Consumer<Exception> consumer) {
         return this;
     }
+
+    @Override
+    public <E extends Exception> FallibleResult<T, E> asResult(Function<Exception, E> errorMapper) {
+        return new OkResult<>(this.value());
+    }
 }

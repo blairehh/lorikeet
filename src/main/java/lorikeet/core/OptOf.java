@@ -102,7 +102,15 @@ public class OptOf<T> implements Fallible<T> {
         if (this.optional.isEmpty()) {
             consumer.accept(this.exception);
         }
-        return null;
+        return this;
+    }
+
+    @Override
+    public <E extends Exception> FallibleResult<T, E> asResult(Function<Exception, E> errorMapper) {
+        if (this.optional.isEmpty()) {
+            return new ErrResult<>(errorMapper.apply(this.exception));
+        }
+        return new OkResult<>(this.optional.orElseThrow());
     }
 
     @Override

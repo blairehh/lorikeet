@@ -9,9 +9,9 @@ import lorikeet.core.SeqOf;
 import lorikeet.http.error.BadQueryParameterName;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.QueryParameterNotFound;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
-public class StringQueryParam implements IncomingHttpSgnlStreamInclude<String> {
+public class StringQueryParam implements IncomingHttpSgnlStrop<String> {
     private final String queryParameterName;
 
     public StringQueryParam(String queryParameterName) {

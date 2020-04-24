@@ -1,6 +1,8 @@
 package lorikeet.resource;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import lorikeet.core.Err;
 import lorikeet.core.Fallible;
 import lorikeet.core.Ok;
 import lorikeet.lobe.CodingResource;
@@ -19,10 +21,13 @@ public class DefaultCodingResource implements CodingResource {
         this.gson = gson;
     }
 
-    // @TODO catch JsonSyntaxException
     @Override
     public <T> Fallible<T> decodeJsonObject(InputStream input, Class<T> type) {
-        return new Ok<>(this.gson.fromJson(new InputStreamReader(input), type));
+        try {
+            return new Ok<>(this.gson.fromJson(new InputStreamReader(input), type));
+        } catch (JsonSyntaxException e) {
+            return new Err<>(e);
+        }
     }
 
     @Override

@@ -7,11 +7,11 @@ import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.BadHeaderValue;
 import lorikeet.http.error.HeaderNotFound;
 import lorikeet.http.error.IncomingHttpSgnlError;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 
-public class BoolHeader implements IncomingHttpSgnlStreamInclude<Boolean> {
+public class BoolHeader implements IncomingHttpSgnlStrop<Boolean> {
     private final String headerName;
     private final Boolean defaultValue;
 

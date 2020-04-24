@@ -8,11 +8,11 @@ import lorikeet.http.error.BadPathVariableValue;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.PathVarNotFound;
 import lorikeet.http.internal.HttpMsgPath;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 
-public class BoolPathVar implements IncomingHttpSgnlStreamInclude<Boolean> {
+public class BoolPathVar implements IncomingHttpSgnlStrop<Boolean> {
     private final HttpMsgPath path;
     private final String pathVarName;
 

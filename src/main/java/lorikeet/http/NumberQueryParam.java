@@ -10,12 +10,12 @@ import lorikeet.http.error.BadQueryParameterName;
 import lorikeet.http.error.BadQueryParameterValue;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.QueryParameterNotFound;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class NumberQueryParam<T extends Number> implements IncomingHttpSgnlStreamInclude<T> {
+public abstract class NumberQueryParam<T extends Number> implements IncomingHttpSgnlStrop<T> {
     private final String queryParamName;
     private final Function<String, T> parser;
     private final Class<T> valueType;

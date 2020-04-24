@@ -25,7 +25,7 @@ import lorikeet.http.error.UnsupportedQueryParameterValueType;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
-import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
+import lorikeet.http.internal.IncomingHttpSgnlStrop;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-public class HttpMsg<T> implements IncomingHttpSgnlStreamInclude<T> {
+public class HttpMsg<T> implements IncomingHttpSgnlStrop<T> {
     private final Class<T> msgClass;
 
     public HttpMsg(Class<T> msgClass) {

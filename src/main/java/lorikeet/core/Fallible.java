@@ -23,4 +23,6 @@ public interface Fallible<T> extends FallibleResult<T, Exception> {
 
     Fallible<T> onSuccess(Consumer<T> consumer);
     Fallible<T> onFailure(Consumer<Exception> consumer);
+
+    <E extends Exception> FallibleResult<T, E> asResult(Function<Exception, E> errorMapper);
 }
