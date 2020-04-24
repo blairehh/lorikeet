@@ -1,8 +1,8 @@
-package lorikeet.core;
+package lorikeet.core.stream;
 
 import java.util.function.Supplier;
 
-public interface Includable<T> extends Supplier<T> {
+public interface Strop<T> extends Supplier<T> {
     T include();
 
     @Override

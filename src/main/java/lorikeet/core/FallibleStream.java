@@ -1,5 +1,7 @@
 package lorikeet.core;
 
+import lorikeet.core.stream.*;
+
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -26,11 +28,11 @@ public class FallibleStream<ErrorT extends Exception> {
         return new FS1<>(new OkResult<>(supplier.get()));
     }
 
-    public <T> FS1<T, ErrorT> include(StreamInclude<T> includable) {
+    public <T> FS1<T, ErrorT> include(Strop<T> includable) {
         return this.include(includable.include());
     }
 
-    public <T> FS1<T, ErrorT> include(FallibleStreamInclude<T, ErrorT> includable) {
+    public <T> FS1<T, ErrorT> include(FStrop<T, ErrorT> includable) {
         return this.include(includable.include());
     }
 
@@ -61,11 +63,11 @@ public class FallibleStream<ErrorT extends Exception> {
 //            return this.a.then((aValue) -> new OptOf<>(coalesce.apply(aValue)));
 //        }
 
-        public <B> FS2<A, B, ErrorT> include(StreamInclude<B> includable) {
+        public <B> FS2<A, B, ErrorT> include(Strop<B> includable) {
             return this.include(new OkResult<>(includable.include()));
         }
 
-        public <B> FS2<A, B, ErrorT> include(FallibleStreamInclude<B, ErrorT> includable) {
+        public <B> FS2<A, B, ErrorT> include(FStrop<B, ErrorT> includable) {
             return this.include(includable.include());
         }
 
@@ -138,20 +140,24 @@ public class FallibleStream<ErrorT extends Exception> {
 //            );
 //        }
 
-        public <C> FS3<A, B, C, ErrorT> include(StreamInclude<C> includable) {
+        public <C> FS3<A, B, C, ErrorT> include(Strop<C> includable) {
             return this.include(new OkResult<>(includable.include()));
         }
 
-        public <C> FS3<A, B, C, ErrorT> include(FallibleStreamInclude<C, ErrorT> includable) {
+        public <C> FS3<A, B, C, ErrorT> include(FStrop<C, ErrorT> includable) {
             return this.include(includable.include());
         }
 
-        public <C> FS3<A, B, C, ErrorT> include(InputStreamInclude<A, C> include) {
-            return this.include((a, b) -> include.include(a));
+        public <C> FS3<A, B, C, ErrorT> include(Strop1<A, C> include) {
+            return this.include((BiFunction<A, B, C>)(a, b) -> include.include(a));
         }
 
-        public <C> FS3<A, B, C, ErrorT> include(InputFallibleStreamInclude<A, C, ErrorT> include) {
+        public <C> FS3<A, B, C, ErrorT> include(FStrop1<A, C, ErrorT> include) {
             return this.includef((a, b) -> include.include(a));
+        }
+
+        public <C> FS3<A, B, C, ErrorT> include(FStrop2<A, B, C, ErrorT> strop) {
+            return this.includef(strop::include);
         }
 
         public <C> FS3<A, B, C, ErrorT> include(FallibleResult<C, ErrorT> value) {
@@ -163,7 +169,7 @@ public class FallibleStream<ErrorT extends Exception> {
 //        }
 
         public <C> FS3<A, B, C, ErrorT> include(Supplier<C> supplier) {
-            return this.include((a, b) -> supplier.get());
+            return this.include((BiFunction<A, B, C>)(a, b) -> supplier.get());
         }
 
         public <C> FS3<A, B, C, ErrorT> include(F1<C, ErrorT> supplier) {
@@ -238,20 +244,24 @@ public class FallibleStream<ErrorT extends Exception> {
 //            );
 //        }
 
-        public <D> FS4<A, B, C, D, ErrorT> include(StreamInclude<D> includable) {
+        public <D> FS4<A, B, C, D, ErrorT> include(Strop<D> includable) {
             return this.include(new OkResult<>(includable.include()));
         }
 
-        public <D> FS4<A, B, C, D, ErrorT> include(FallibleStreamInclude<D, ErrorT> includable) {
+        public <D> FS4<A, B, C, D, ErrorT> include(FStrop<D, ErrorT> includable) {
             return this.include(includable.include());
         }
 
-        public <D> FS4<A, B, C, D, ErrorT> include(InputStreamInclude<A, D> include) {
+        public <D> FS4<A, B, C, D, ErrorT> include(Strop1<A, D> include) {
             return this.include((a, b, c) -> include.include(a));
         }
 
-        public <D> FS4<A, B, C, D, ErrorT> include(InputFallibleStreamInclude<A, D, ErrorT> include) {
+        public <D> FS4<A, B, C, D, ErrorT> include(FStrop1<A, D, ErrorT> include) {
             return this.includef((a, b, c) -> include.include(a));
+        }
+
+        public <D> FS4<A, B, C, D, ErrorT> include(FStrop2<A, B, D, ErrorT> strop) {
+            return this.includef((a, b, c) -> strop.include(a, b));
         }
 
         public <D> FS4<A, B, C, D, ErrorT> include(FallibleResult<D, ErrorT> value) {
@@ -354,11 +364,11 @@ public class FallibleStream<ErrorT extends Exception> {
 //            );
 //        }
 
-        public <E> FS5<A, B, C, D, E, ErrorT> include(StreamInclude<E> includable) {
+        public <E> FS5<A, B, C, D, E, ErrorT> include(Strop<E> includable) {
             return this.include(new OkResult<>(includable.include()));
         }
 
-        public <E> FS5<A, B, C, D, E, ErrorT> include(FallibleStreamInclude<E, ErrorT> includable) {
+        public <E> FS5<A, B, C, D, E, ErrorT> include(FStrop<E, ErrorT> includable) {
             return this.include(includable.include());
         }
 
@@ -366,13 +376,18 @@ public class FallibleStream<ErrorT extends Exception> {
             return new FS5<>(this.a, this.b, this.c, this.d, value);
         }
 
-        public <E> FS5<A, B, C, D, E, ErrorT> include(InputStreamInclude<A, E> include) {
+        public <E> FS5<A, B, C, D, E, ErrorT> include(Strop1<A, E> include) {
             return this.include((a, b, c, d) -> include.include(a));
         }
 
-        public <E> FS5<A, B, C, D, E, ErrorT> include(InputFallibleStreamInclude<A, E, ErrorT> include) {
+        public <E> FS5<A, B, C, D, E, ErrorT> include(FStrop1<A, E, ErrorT> include) {
             return this.includef((a, b, c, e) -> include.include(a));
         }
+
+        public <E> FS5<A, B, C, D, E, ErrorT> include(FStrop2<A, B, E, ErrorT> strop) {
+            return this.includef((a, b, c, d) -> strop.include(a, b));
+        }
+
 
 //        public <E> FS5<A, B, C, D, E> include(Optional<E> value) {
 //            return new FS5<>(this.a, this.b, this.c, this.d, new OptOf<>(value));

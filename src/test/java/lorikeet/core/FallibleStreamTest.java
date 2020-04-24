@@ -1,5 +1,7 @@
 package lorikeet.core;
 
+import lorikeet.core.stream.FStrop1;
+import lorikeet.core.stream.Strop1;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -160,7 +162,7 @@ public class FallibleStreamTest {
         assertThat(r).isEqualTo(1100);
     }
 
-    static class MultipleStreamInclude implements InputStreamInclude<Integer, Integer> {
+    static class MultipleStreamInclude implements Strop1<Integer, Integer> {
         int amount;
 
         public MultipleStreamInclude(int amount) {
@@ -173,7 +175,7 @@ public class FallibleStreamTest {
         }
     }
 
-    static class FallibleMultipleStreamInclude implements InputFallibleStreamInclude<Integer, Integer, Exception> {
+    static class FallibleMultipleStreamInclude implements FStrop1<Integer, Integer, Exception> {
         int amount;
 
         public FallibleMultipleStreamInclude(int amount) {

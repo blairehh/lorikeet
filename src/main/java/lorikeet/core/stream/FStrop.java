@@ -1,8 +1,10 @@
-package lorikeet.core;
+package lorikeet.core.stream;
+
+import lorikeet.core.FallibleResult;
 
 import java.util.function.Supplier;
 
-public interface FallibleStreamInclude<T, E extends Exception> extends Supplier<FallibleResult<T, E>> {
+public interface FStrop<T, E extends Exception> extends Supplier<FallibleResult<T, E>> {
     FallibleResult<T, E> include();
 
     @Override
