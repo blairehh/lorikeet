@@ -42,6 +42,14 @@ public class MockIncomingHttpSgnl implements IncomingHttpSgnl {
         this.body = new StringInputStream("");
     }
 
+    public MockIncomingHttpSgnl(HttpMethod method, String uri, InputStream body) {
+        this.method = method;
+        this.uri = URI.create(uri);
+        this.headers = new HeaderSet();
+        this.queryParameters = new UriHelper().parseQueryParameters(this.uri);
+        this.body = body;
+    }
+
     public MockIncomingHttpSgnl(String uri, Dict<String, String> headers) {
         this.method = HttpMethod.GET;
         this.headers = new HeaderSet(headers.modifyValues(SeqOf::new));

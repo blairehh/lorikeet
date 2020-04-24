@@ -1,8 +1,12 @@
 package lorikeet.http;
 
+import lorikeet.TestResources;
+import lorikeet.coding.InternetMediaType;
 import lorikeet.core.Dict;
 import lorikeet.core.DictOf;
 import lorikeet.core.Seq;
+import lorikeet.core.StringInputStream;
+import lorikeet.http.annotation.Body;
 import lorikeet.http.annotation.Delete;
 import lorikeet.http.annotation.Get;
 import lorikeet.http.annotation.Header;
@@ -10,6 +14,7 @@ import lorikeet.http.annotation.Headers;
 import lorikeet.http.annotation.MsgCtor;
 import lorikeet.http.annotation.Patch;
 import lorikeet.http.annotation.PathVar;
+import lorikeet.http.annotation.Post;
 import lorikeet.http.annotation.Put;
 import lorikeet.http.annotation.Query;
 import lorikeet.http.annotation.headers.Authorization;
@@ -17,6 +22,11 @@ import lorikeet.http.annotation.headers.ContentType;
 import lorikeet.http.annotation.headers.XForwardedFor;
 import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
+import lorikeet.http.msg.SampleJson;
+import lorikeet.lobe.DefaultTract;
+import lorikeet.lobe.Tract;
+import lorikeet.lobe.UsesCoding;
+import lorikeet.lobe.UsesLogging;
 import org.junit.Test;
 import java.util.Random;
 
@@ -240,7 +250,22 @@ class StandardHeaders {
     }
 }
 
+
+@Post("/users")
+class PostWithPayload {
+    final SampleJson json;
+
+    @MsgCtor
+    public PostWithPayload(
+        @Body(InternetMediaType.APPLICATION_JSON) SampleJson json
+    ) {
+        this.json = json;
+    }
+}
+
 public class HttpMsgTest {
+
+    private final Tract<TestResources> tract = new DefaultTract<>(new TestResources());
 
     private final IncomingHttpSgnl incoming = new MockIncomingHttpSgnl(
         "/user/786",
@@ -265,10 +290,16 @@ public class HttpMsgTest {
             .push("bad-num", "1a")
     );
 
+    @SuppressWarnings("unchecked")
+    private <RT extends UsesLogging & UsesCoding> Tract<RT> tract() {
+        return (Tract<RT>)tract;
+    }
+
+
     @Test
     public void testInitiateWithOneHeader() {
         SingleHeader msg = new HttpMsg<>(SingleHeader.class)
-            .include(incoming)
+            .include(incoming, tract())
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -277,7 +308,7 @@ public class HttpMsgTest {
     @Test
     public void testTypeMustHaveMsgCtor() {
         Exception error = new HttpMsg<>(SingleHeaderNoCtor.class)
-            .include(incoming)
+            .include(incoming, tract())
             .errors()
             .first()
             .orElseThrow();
@@ -288,7 +319,7 @@ public class HttpMsgTest {
     @Test
     public void testRejectsUnsupportedHeaderType() {
         Exception error = new HttpMsg<>(UnsupportedHeaderType.class)
-            .include(incoming)
+            .include(incoming, tract())
             .errors()
             .first()
             .orElseThrow();
@@ -299,7 +330,7 @@ public class HttpMsgTest {
     @Test
     public void testWithMultipleHeaders() {
         MultiHeader msg = new HttpMsg<>(MultiHeader.class)
-            .include(incoming)
+            .include(incoming, tract())
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -311,7 +342,7 @@ public class HttpMsgTest {
     @Test
     public void testAllHeaders() {
         AllHeaders msg = new HttpMsg<>(AllHeaders.class)
-            .include(incoming)
+            .include(incoming, tract())
             .orPanic();
 
         assertThat(msg.headers.getAny("name")).isEqualTo("Bob Doe");
@@ -324,7 +355,7 @@ public class HttpMsgTest {
     @Test
     public void testStandardHeaders() {
         StandardHeaders msg = new HttpMsg<>(StandardHeaders.class)
-            .include(incoming)
+            .include(incoming, tract())
             .orPanic();
 
         assertThat(msg.contentType).isEqualTo("application/json");
@@ -335,7 +366,7 @@ public class HttpMsgTest {
     @Test
     public void testAllHeadersWithInvalidType() {
         boolean failed = new HttpMsg<>(AllHeadersAsDict.class)
-            .include(incoming)
+            .include(incoming, tract())
             .failure();
 
         assertThat(failed).isTrue();
@@ -346,7 +377,7 @@ public class HttpMsgTest {
         MultiHeaderWithCustomAnnotationAndPrimitives msg = new HttpMsg<>(
             MultiHeaderWithCustomAnnotationAndPrimitives.class
         )
-            .include(incoming)
+            .include(incoming, tract())
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -358,7 +389,7 @@ public class HttpMsgTest {
     @Test
     public void testBestBadHeaderValue() {
         boolean failed = new HttpMsg<>(BadHeaderValue.class)
-            .include(incoming)
+            .include(incoming, tract())
             .failure();
 
         assertThat(failed).isTrue();
@@ -367,7 +398,7 @@ public class HttpMsgTest {
     @Test
     public void testPath() {
         boolean succeeded = new HttpMsg<>(MsgWithJustPath.class)
-            .include(incoming)
+            .include(incoming, tract())
             .success();
 
         assertThat(succeeded).isTrue();
@@ -376,7 +407,7 @@ public class HttpMsgTest {
     @Test
     public void testPathNotMatching() {
         boolean succeeded = new HttpMsg<>(MsgWithJustNonMatchingPath.class)
-            .include(incoming)
+            .include(incoming, tract())
             .success();
 
         assertThat(succeeded).isFalse();
@@ -385,7 +416,7 @@ public class HttpMsgTest {
     @Test
     public void testPathVars() {
         MsgWithPathVars msg = new HttpMsg<>(MsgWithPathVars.class)
-            .include(incomingMultiPathVar)
+            .include(incomingMultiPathVar, tract())
             .orPanic();
 
         assertThat(msg.id).isEqualTo(123);
@@ -395,7 +426,7 @@ public class HttpMsgTest {
     @Test
     public void testMissingPathVars() {
         boolean failed = new HttpMsg<>(MsgWithMissingPathVars.class)
-            .include(incomingMultiPathVar)
+            .include(incomingMultiPathVar, tract())
             .failure();
 
         assertThat(failed).isTrue();
@@ -405,7 +436,7 @@ public class HttpMsgTest {
     public void testOneQueryParam() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100");
         OneQueryParam msg = new HttpMsg<>(OneQueryParam.class)
-            .include(request)
+            .include(request, tract())
             .orPanic();
 
         assertThat(msg.max).isEqualTo(100);
@@ -415,7 +446,7 @@ public class HttpMsgTest {
     public void testQueryParamNotFound() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?min=100");
         boolean failed = new HttpMsg<>(OneQueryParam.class)
-            .include(request)
+            .include(request, tract())
             .failure();
 
         assertThat(failed).isTrue();
@@ -425,7 +456,7 @@ public class HttpMsgTest {
     public void testMultipleQueryParams() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100&zone=FOO&active=false");
         MultipleQueryParams msg = new HttpMsg<>(MultipleQueryParams.class)
-            .include(request)
+            .include(request, tract())
             .orPanic();
 
         assertThat(msg.max).isEqualTo(100);
@@ -437,27 +468,44 @@ public class HttpMsgTest {
     public void testHttpMethod() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl(HttpMethod.DELETE, "/user/56");
         boolean success = new HttpMsg<>(DeleteRequest.class)
-            .include(request)
+            .include(request, tract())
             .success();
 
         assertThat(success).isTrue();
 
         success = new HttpMsg<>( PutRequest.class)
-            .include(request)
+            .include(request, tract())
             .success();
 
         assertThat(success).isFalse();
 
         success = new HttpMsg<>(PatchRequest.class)
-            .include(request)
+            .include(request, tract())
             .success();
 
         assertThat(success).isFalse();
 
         success = new HttpMsg<>(GetRequest.class)
-            .include(request)
+            .include(request, tract())
             .success();
 
         assertThat(success).isFalse();
+    }
+
+    @Test
+    public void testPostWithJson() {
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl(
+            HttpMethod.POST,
+            "/users",
+            new StringInputStream("{\"id\": 1, \"name\": \"Bob\", \"active\": true}")
+        );
+
+        PostWithPayload result = new HttpMsg<>(PostWithPayload.class)
+            .include(request, tract())
+            .orPanic();
+
+        assertThat(result.json.id).isEqualTo(1);
+        assertThat(result.json.name).isEqualTo("Bob");
+        assertThat(result.json.active).isTrue();
     }
 }

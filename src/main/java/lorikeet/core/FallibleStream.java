@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+// @TODO rename include(...) to yield(...)
 public class FallibleStream<ErrorT extends Exception> {
 
     interface F1<T, ErrorT extends Exception> extends Supplier<FallibleResult<T, ErrorT>> {}

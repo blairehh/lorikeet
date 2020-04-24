@@ -12,6 +12,8 @@ import lorikeet.lobe.Tract;
 import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesLogging;
 
+import java.util.List;
+
 public class HttpMsgReceptorWrapper<R extends UsesLogging & UsesCoding, Msg> implements HttpReceptor<R> {
     private final HttpMsgReceptor<R, Msg> msgReceptor;
     private final Class<Msg> msgClass;
@@ -21,10 +23,17 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging & UsesCoding, Msg> imp
         this.msgClass = msgClass;
     }
 
+    // @TODO see if there is a way to do this without casting
+    @SuppressWarnings("unchecked")
+    private <RT extends UsesLogging & UsesCoding> Tract<RT> tract(Tract<R> tract) {
+        // not sure why this results in unchecked
+        return (Tract<RT>)tract;
+    }
+
     @Override
     public HttpDirective junction(Tract<R> tract, IncomingHttpSgnl request) {
         return new HttpMsg<>(this.msgClass)
-            .include(request)
+            .include(request, tract(tract))
             .map((msg) -> (HttpDirective)new HttpResolve(() -> this.msgReceptor.accept(tract, msg)))
             .orGive((errors) -> new HttpReject(new SeqOf<>(errors)));
     }
