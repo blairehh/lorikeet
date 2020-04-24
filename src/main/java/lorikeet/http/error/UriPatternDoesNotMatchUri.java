@@ -1,8 +1,10 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class UriPatternDoesNotMatchUri extends RuntimeException {
+public class UriPatternDoesNotMatchUri extends IncomingHttpSgnlError {
     private final String uri;
     private final String uriPattern;
 
@@ -10,6 +12,11 @@ public class UriPatternDoesNotMatchUri extends RuntimeException {
         super(String.format("URI pattern '%s' does not match URI '%s'", uriPattern, uri));
         this.uri = uri;
         this.uriPattern = uriPattern;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.NOT_FOUND;
     }
 
     @Override

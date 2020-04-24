@@ -1,17 +1,18 @@
 package lorikeet.http;
 
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.http.error.BadPathVariableName;
 import lorikeet.http.error.BadPathVariableValue;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.PathVarNotFound;
 import lorikeet.http.internal.HttpMsgPath;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
 import java.util.function.Function;
 
-public abstract class NumberPathVar<T extends Number> implements IncludableFallible<T> {
+public abstract class NumberPathVar<T extends Number> implements IncomingHttpSgnlStreamInclude<T> {
     private final HttpMsgPath path;
     private final String name;
     private final Function<String, T> parser;
@@ -25,22 +26,22 @@ public abstract class NumberPathVar<T extends Number> implements IncludableFalli
     }
 
     @Override
-    public Fallible<T> include() {
+    public FallibleResult<T, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.name == null || this.name.isBlank()) {
-            return new Err<>(new BadPathVariableName(this.name));
+            return new ErrResult<>(new BadPathVariableName(this.name));
         }
         final String value = this.path.pathVariables()
             .pick(this.name)
             .orElse(null);
 
         if (value == null) {
-            return new Err<>(new PathVarNotFound(this.name));
+            return new ErrResult<>(new PathVarNotFound(this.name));
         }
 
         try {
-            return new Ok<>(this.parser.apply(value));
+            return new OkResult<>(this.parser.apply(value));
         } catch (NumberFormatException e) {
-            return new Err<>(new BadPathVariableValue(value, this.valueType));
+            return new ErrResult<>(new BadPathVariableValue(value, this.valueType));
         }
     }
 }

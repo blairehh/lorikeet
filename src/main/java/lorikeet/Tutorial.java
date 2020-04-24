@@ -1,6 +1,7 @@
 package lorikeet;
 
 import lorikeet.http.ReceptorBundle;
+import lorikeet.lobe.CodingResource;
 import lorikeet.lobe.DefaultDiskResource;
 import lorikeet.lobe.DefaultTract;
 import lorikeet.lobe.DiskResource;
@@ -9,14 +10,17 @@ import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.ProvidesTract;
 import lorikeet.lobe.StdOutLoggingResource;
 import lorikeet.lobe.Tract;
+import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesDisk;
 import lorikeet.lobe.UsesLogging;
+import lorikeet.resource.DefaultCodingResource;
 import lorikeet.resource.UndertowResource;
 import lorikeet.resource.UsesUndertow;
 
 public class Tutorial implements
     UsesLogging,
     UsesDisk,
+    UsesCoding,
     UsesUndertow<Tutorial, Tutorial>,
     ProvidesHttpReceptors<Tutorial>,
     ProvidesTract<Tutorial>
@@ -36,6 +40,11 @@ public class Tutorial implements
     @Override
     public DiskResource useDisk() {
         return new DefaultDiskResource();
+    }
+
+    @Override
+    public CodingResource useCoding() {
+        return new DefaultCodingResource();
     }
 
     @Override

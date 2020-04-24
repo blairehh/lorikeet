@@ -10,20 +10,19 @@ import lorikeet.http.HttpReject;
 import lorikeet.http.HttpResource;
 import lorikeet.http.HttpServerInsignia;
 import lorikeet.http.HttpReply;
+import lorikeet.http.HttpStatus;
 import lorikeet.http.HttpWrite;
 import lorikeet.http.OutgoingHttpSgnl;
 import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.lobe.ProvidesHttpReceptors;
 import lorikeet.lobe.ProvidesTract;
 import lorikeet.lobe.Tract;
 import lorikeet.lobe.TractSession;
 import lorikeet.lobe.UsesHttpServer;
 import lorikeet.lobe.UsesLogging;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends ProvidesHttpReceptors<R> & ProvidesTract<R>>
     implements HttpResource {
@@ -51,15 +50,10 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
         final HttpDirective directive = this.directiveForSignal(application, incoming, tract);
 
         if (directive.failure()) {
-            if (directive.hasError(HttpMethodDoesNotMatchRequest.class)) {
-                exchange.setStatusCode(405);
-                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                exchange.getResponseSender().send("bad method");
-            } else {
-                exchange.setStatusCode(404);
-                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                exchange.getResponseSender().send("not found");
-            }
+            final HttpStatus status = statusFor(directive.errors());
+            exchange.setStatusCode(status.code());
+            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+            exchange.getResponseSender().send(status.name());
         } else {
             final HttpReply reply = directive.orPanic().reply();
             if (reply instanceof HttpWrite) {
@@ -70,7 +64,7 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
     }
 
     private HttpDirective directiveForSignal(A application, IncomingHttpSgnl incoming, Tract<R> tract) {
-        Seq<Exception> errors = new SeqOf<>();
+        Seq<IncomingHttpSgnlError> errors = new SeqOf<>();
 
         for (HttpReceptor<R> receptor : application.provideHttpReceptors().receptors()) {
             final HttpDirective directive = receptor.junction(tract, incoming);
@@ -84,5 +78,16 @@ public class UndertowResource<R extends UsesLogging & UsesHttpServer, A extends 
         }
 
         return new HttpReject(errors);
+    }
+
+    private HttpStatus statusFor(Seq<? extends IncomingHttpSgnlError> errors) {
+        final Seq<HttpStatus> statuses = errors.remodel(IncomingHttpSgnlError::rejectStatus);
+        if (statuses.count((s) -> s.equals(HttpStatus.NOT_FOUND)) == statuses.count()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (statuses.contains(HttpStatus.METHOD_NOT_ALLOWED)) {
+            return HttpStatus.METHOD_NOT_ALLOWED;
+        }
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }

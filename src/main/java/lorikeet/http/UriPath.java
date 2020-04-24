@@ -1,47 +1,45 @@
 package lorikeet.http;
 
-import lorikeet.core.Bug;
 import lorikeet.core.DictOf;
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.foreign.UrlMatch;
 import lorikeet.foreign.UrlPattern;
 import lorikeet.http.error.BadUriPattern;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.UriPatternDoesNotMatchUri;
 import lorikeet.http.internal.HttpMsgPath;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-public class UriPath implements IncludableFallible<HttpMsgPath> {
-    private final IncomingHttpSgnl request;
+public class UriPath implements IncomingHttpSgnlStreamInclude<HttpMsgPath> {
     private final String uriPattern;
 
-    public UriPath(IncomingHttpSgnl request, String uriPattern) {
-        this.request = request;
+    public UriPath(String uriPattern) {
         this.uriPattern = uriPattern;
     }
 
     @Override
-    public Fallible<HttpMsgPath> include() {
+    public FallibleResult<HttpMsgPath, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.uriPattern == null || this.uriPattern.isBlank()) {
-            return new Err<>(new BadUriPattern(this.uriPattern));
+            return new ErrResult<>(new BadUriPattern(this.uriPattern));
         }
         try {
             final UrlPattern pattern = new UrlPattern(this.uriPattern);
-            final UrlMatch match = pattern.match(this.request.uri().toString());
+            final UrlMatch match = pattern.match(request.uri().toString());
             if (match == null) {
-                return new Err<>(new UriPatternDoesNotMatchUri(this.uriPattern, this.request.uri().toASCIIString()));
+                return new ErrResult<>(new UriPatternDoesNotMatchUri(this.uriPattern, request.uri().toASCIIString()));
             }
             final Map<String, String> variables = match.parameterSet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            return new Ok<>(new HttpMsgPath(this.request.uri(), new DictOf<>(variables)));
+            return new OkResult<>(new HttpMsgPath(request.uri(), new DictOf<>(variables)));
         } catch (PatternSyntaxException e) {
-            return new Bug<>(new BadUriPattern(this.uriPattern, e));
+            return new ErrResult<>(new BadUriPattern(this.uriPattern, e));
         }
     }
 

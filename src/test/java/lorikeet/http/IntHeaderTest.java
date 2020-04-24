@@ -13,36 +13,36 @@ public class IntHeaderTest {
 
     @Test
     public void testNotFound() {
-        final IntHeader notFound = new IntHeader(sgnl, "not-there");
+        final IntHeader notFound = new IntHeader("not-there");
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 
     @Test
     public void testBadValue() {
-        final IntHeader notFound = new IntHeader(sgnl, "bad");
+        final IntHeader notFound = new IntHeader("bad");
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 
     @Test
     public void testIsPresent() {
-        final IntHeader notFound = new IntHeader(sgnl, "good");
+        final IntHeader notFound = new IntHeader("good");
 
-        assertThat(notFound.include().orPanic()).isEqualTo(1);
+        assertThat(notFound.include(sgnl).orPanic()).isEqualTo(1);
     }
 
     @Test
     public void testUsesDefaultIfNotPresent() {
-        final IntHeader notFound = new IntHeader(sgnl, "not-here-but-default", 100);
+        final IntHeader notFound = new IntHeader("not-here-but-default", 100);
 
-        assertThat(notFound.include().orPanic()).isEqualTo(100);
+        assertThat(notFound.include(sgnl).orPanic()).isEqualTo(100);
     }
 
     @Test
     public void testDoesNotUseDefaultIfBadValue() {
-        final IntHeader notFound = new IntHeader(sgnl, "bad", 100);
+        final IntHeader notFound = new IntHeader("bad", 100);
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 }

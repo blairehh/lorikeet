@@ -267,8 +267,8 @@ public class HttpMsgTest {
 
     @Test
     public void testInitiateWithOneHeader() {
-        SingleHeader msg = new HttpMsg<>(incoming, SingleHeader.class)
-            .include()
+        SingleHeader msg = new HttpMsg<>(SingleHeader.class)
+            .include(incoming)
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -276,8 +276,8 @@ public class HttpMsgTest {
 
     @Test
     public void testTypeMustHaveMsgCtor() {
-        Exception error = new HttpMsg<>(incoming, SingleHeaderNoCtor.class)
-            .include()
+        Exception error = new HttpMsg<>(SingleHeaderNoCtor.class)
+            .include(incoming)
             .errors()
             .first()
             .orElseThrow();
@@ -287,8 +287,8 @@ public class HttpMsgTest {
 
     @Test
     public void testRejectsUnsupportedHeaderType() {
-        Exception error = new HttpMsg<>(incoming, UnsupportedHeaderType.class)
-            .include()
+        Exception error = new HttpMsg<>(UnsupportedHeaderType.class)
+            .include(incoming)
             .errors()
             .first()
             .orElseThrow();
@@ -298,8 +298,8 @@ public class HttpMsgTest {
 
     @Test
     public void testWithMultipleHeaders() {
-        MultiHeader msg = new HttpMsg<>(incoming, MultiHeader.class)
-            .include()
+        MultiHeader msg = new HttpMsg<>(MultiHeader.class)
+            .include(incoming)
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -310,8 +310,8 @@ public class HttpMsgTest {
 
     @Test
     public void testAllHeaders() {
-        AllHeaders msg = new HttpMsg<>(incoming, AllHeaders.class)
-            .include()
+        AllHeaders msg = new HttpMsg<>(AllHeaders.class)
+            .include(incoming)
             .orPanic();
 
         assertThat(msg.headers.getAny("name")).isEqualTo("Bob Doe");
@@ -323,8 +323,8 @@ public class HttpMsgTest {
 
     @Test
     public void testStandardHeaders() {
-        StandardHeaders msg = new HttpMsg<>(incoming, StandardHeaders.class)
-            .include()
+        StandardHeaders msg = new HttpMsg<>(StandardHeaders.class)
+            .include(incoming)
             .orPanic();
 
         assertThat(msg.contentType).isEqualTo("application/json");
@@ -334,8 +334,8 @@ public class HttpMsgTest {
 
     @Test
     public void testAllHeadersWithInvalidType() {
-        boolean failed = new HttpMsg<>(incoming, AllHeadersAsDict.class)
-            .include()
+        boolean failed = new HttpMsg<>(AllHeadersAsDict.class)
+            .include(incoming)
             .failure();
 
         assertThat(failed).isTrue();
@@ -344,9 +344,9 @@ public class HttpMsgTest {
     @Test
     public void testWithMultipleHeadersWithCustomAnnotationAndPrimitives() {
         MultiHeaderWithCustomAnnotationAndPrimitives msg = new HttpMsg<>(
-            incoming, MultiHeaderWithCustomAnnotationAndPrimitives.class
+            MultiHeaderWithCustomAnnotationAndPrimitives.class
         )
-            .include()
+            .include(incoming)
             .orPanic();
 
         assertThat(msg.name).isEqualTo("Bob Doe");
@@ -357,8 +357,8 @@ public class HttpMsgTest {
 
     @Test
     public void testBestBadHeaderValue() {
-        boolean failed = new HttpMsg<>(incoming, BadHeaderValue.class)
-            .include()
+        boolean failed = new HttpMsg<>(BadHeaderValue.class)
+            .include(incoming)
             .failure();
 
         assertThat(failed).isTrue();
@@ -366,8 +366,8 @@ public class HttpMsgTest {
 
     @Test
     public void testPath() {
-        boolean succeeded = new HttpMsg<>(incoming, MsgWithJustPath.class)
-            .include()
+        boolean succeeded = new HttpMsg<>(MsgWithJustPath.class)
+            .include(incoming)
             .success();
 
         assertThat(succeeded).isTrue();
@@ -375,8 +375,8 @@ public class HttpMsgTest {
 
     @Test
     public void testPathNotMatching() {
-        boolean succeeded = new HttpMsg<>(incoming, MsgWithJustNonMatchingPath.class)
-            .include()
+        boolean succeeded = new HttpMsg<>(MsgWithJustNonMatchingPath.class)
+            .include(incoming)
             .success();
 
         assertThat(succeeded).isFalse();
@@ -384,8 +384,8 @@ public class HttpMsgTest {
 
     @Test
     public void testPathVars() {
-        MsgWithPathVars msg = new HttpMsg<>(incomingMultiPathVar, MsgWithPathVars.class)
-            .include()
+        MsgWithPathVars msg = new HttpMsg<>(MsgWithPathVars.class)
+            .include(incomingMultiPathVar)
             .orPanic();
 
         assertThat(msg.id).isEqualTo(123);
@@ -394,8 +394,8 @@ public class HttpMsgTest {
 
     @Test
     public void testMissingPathVars() {
-        boolean failed = new HttpMsg<>(incomingMultiPathVar, MsgWithMissingPathVars.class)
-            .include()
+        boolean failed = new HttpMsg<>(MsgWithMissingPathVars.class)
+            .include(incomingMultiPathVar)
             .failure();
 
         assertThat(failed).isTrue();
@@ -404,8 +404,8 @@ public class HttpMsgTest {
     @Test
     public void testOneQueryParam() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100");
-        OneQueryParam msg = new HttpMsg<>(request, OneQueryParam.class)
-            .include()
+        OneQueryParam msg = new HttpMsg<>(OneQueryParam.class)
+            .include(request)
             .orPanic();
 
         assertThat(msg.max).isEqualTo(100);
@@ -414,8 +414,8 @@ public class HttpMsgTest {
     @Test
     public void testQueryParamNotFound() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?min=100");
-        boolean failed = new HttpMsg<>(request, OneQueryParam.class)
-            .include()
+        boolean failed = new HttpMsg<>(OneQueryParam.class)
+            .include(request)
             .failure();
 
         assertThat(failed).isTrue();
@@ -424,8 +424,8 @@ public class HttpMsgTest {
     @Test
     public void testMultipleQueryParams() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/user/56?max=100&zone=FOO&active=false");
-        MultipleQueryParams msg = new HttpMsg<>(request, MultipleQueryParams.class)
-            .include()
+        MultipleQueryParams msg = new HttpMsg<>(MultipleQueryParams.class)
+            .include(request)
             .orPanic();
 
         assertThat(msg.max).isEqualTo(100);
@@ -436,26 +436,26 @@ public class HttpMsgTest {
     @Test
     public void testHttpMethod() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl(HttpMethod.DELETE, "/user/56");
-        boolean success = new HttpMsg<>(request, DeleteRequest.class)
-            .include()
+        boolean success = new HttpMsg<>(DeleteRequest.class)
+            .include(request)
             .success();
 
         assertThat(success).isTrue();
 
-        success = new HttpMsg<>(request, PutRequest.class)
-            .include()
+        success = new HttpMsg<>( PutRequest.class)
+            .include(request)
             .success();
 
         assertThat(success).isFalse();
 
-        success = new HttpMsg<>(request, PatchRequest.class)
-            .include()
+        success = new HttpMsg<>(PatchRequest.class)
+            .include(request)
             .success();
 
         assertThat(success).isFalse();
 
-        success = new HttpMsg<>(request, GetRequest.class)
-            .include()
+        success = new HttpMsg<>(GetRequest.class)
+            .include(request)
             .success();
 
         assertThat(success).isFalse();

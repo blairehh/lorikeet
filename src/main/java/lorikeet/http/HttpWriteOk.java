@@ -1,10 +1,10 @@
 package lorikeet.http;
 
-import lorikeet.core.AnOk;
+import lorikeet.core.BasicOk;
 
 import java.util.Objects;
 
-public class HttpWriteOk implements AnOk<Boolean>, HttpWriteResult {
+public class HttpWriteOk extends BasicOk<Boolean> implements HttpWriteResult {
     private final int statusCode;
 
     public HttpWriteOk(int statusCode) {

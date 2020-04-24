@@ -1,15 +1,18 @@
 package lorikeet.http;
 
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.http.error.BadPathVariableName;
 import lorikeet.http.error.BadPathVariableValue;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.PathVarNotFound;
 import lorikeet.http.internal.HttpMsgPath;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
-public class BoolPathVar implements IncludableFallible<Boolean> {
+import java.util.Objects;
+
+public class BoolPathVar implements IncomingHttpSgnlStreamInclude<Boolean> {
     private final HttpMsgPath path;
     private final String pathVarName;
 
@@ -19,9 +22,9 @@ public class BoolPathVar implements IncludableFallible<Boolean> {
     }
 
     @Override
-    public Fallible<Boolean> include() {
+    public FallibleResult<Boolean, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.pathVarName == null || this.pathVarName.isBlank()) {
-            return new Err<>(new BadPathVariableName(this.pathVarName));
+            return new ErrResult<>(new BadPathVariableName(this.pathVarName));
         }
 
         final String value = path.pathVariables()
@@ -29,13 +32,34 @@ public class BoolPathVar implements IncludableFallible<Boolean> {
             .orElse(null);
 
         if (value == null) {
-            return new Err<>(new PathVarNotFound(this.pathVarName));
+            return new ErrResult<>(new PathVarNotFound(this.pathVarName));
         }
 
         if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
-            return new Ok<>(value.equalsIgnoreCase("true"));
+            return new OkResult<>(value.equalsIgnoreCase("true"));
         }
 
-        return new Err<>(new BadPathVariableValue(value, Boolean.class));
+        return new ErrResult<>(new BadPathVariableValue(value, Boolean.class));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        BoolPathVar that = (BoolPathVar) o;
+
+        return Objects.equals(this.path, that.path)
+            && Objects.equals(this.pathVarName, that.pathVarName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.path, this.pathVarName);
     }
 }

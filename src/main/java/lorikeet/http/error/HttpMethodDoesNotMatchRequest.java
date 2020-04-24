@@ -1,10 +1,17 @@
 package lorikeet.http.error;
 
-public class HttpMethodDoesNotMatchRequest extends RuntimeException {
+import lorikeet.http.HttpStatus;
+
+public class HttpMethodDoesNotMatchRequest extends IncomingHttpSgnlError {
 
     @Override
     public boolean equals(Object obj) {
         return obj != null && obj.getClass().equals(HttpMethodDoesNotMatchRequest.class);
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.METHOD_NOT_ALLOWED;
     }
 
     @Override

@@ -6,6 +6,7 @@ import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.internal.UriHelper;
 
+import java.io.InputStream;
 import java.net.URI;
 
 public class MockIncomingHttpSgnl implements IncomingHttpSgnl {
@@ -54,5 +55,10 @@ public class MockIncomingHttpSgnl implements IncomingHttpSgnl {
     @Override
     public Dict<String, Seq<String>> queryParameters() {
         return this.queryParameters;
+    }
+
+    @Override
+    public InputStream body() {
+        return null;
     }
 }

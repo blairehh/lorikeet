@@ -11,18 +11,21 @@ import lorikeet.http.HeaderSet;
 import lorikeet.http.HttpMethod;
 import lorikeet.http.IncomingHttpSgnl;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UndertowIncomingMsg implements IncomingHttpSgnl {
+    private final InputStream bodyInputStream;
     private final HttpMethod method;
     private final URI uri;
     private final HeaderSet headers;
     private final Dict<String, Seq<String>> queryParameters;
 
     public UndertowIncomingMsg(HttpServerExchange exchange) {
+        this.bodyInputStream = exchange.getInputStream();
         this.method = HttpMethod.fromString(exchange.getRequestMethod().toString()).orElseThrow();
         this.uri = URI.create(exchange.getRequestURI());
         this.headers = headers(exchange);
@@ -68,6 +71,11 @@ public class UndertowIncomingMsg implements IncomingHttpSgnl {
     @Override
     public Dict<String, Seq<String>> queryParameters() {
         return this.queryParameters;
+    }
+
+    @Override
+    public InputStream body() {
+        return this.bodyInputStream;
     }
 
     @Override

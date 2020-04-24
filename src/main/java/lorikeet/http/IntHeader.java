@@ -1,19 +1,19 @@
 package lorikeet.http;
 
 public class IntHeader extends NumberHeader<Integer> {
-    public IntHeader(IncomingHttpSgnl msg, String headerName, Integer defaultValue) {
-        super(msg, headerName, Integer::parseInt, defaultValue);
+    public IntHeader(String headerName, Integer defaultValue) {
+        super(headerName, Integer::parseInt, defaultValue);
     }
 
-    public IntHeader(IncomingHttpSgnl msg, String headerName) {
-        super(msg, headerName, Integer::parseInt);
+    public IntHeader(String headerName) {
+        super(headerName, Integer::parseInt);
     }
 
-    public IntHeader(IncomingHttpSgnl msg, HeaderField header, Integer defaultValue) {
-        super(msg, header, Integer::parseInt, defaultValue);
+    public IntHeader(HeaderField header, Integer defaultValue) {
+        super(header, Integer::parseInt, defaultValue);
     }
 
-    public IntHeader(IncomingHttpSgnl msg, HeaderField header) {
-        super(msg, header, Integer::parseInt);
+    public IntHeader(HeaderField header) {
+        super(header, Integer::parseInt);
     }
 }

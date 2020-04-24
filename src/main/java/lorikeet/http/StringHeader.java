@@ -1,61 +1,55 @@
 package lorikeet.http;
 
-import lorikeet.core.Bug;
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
-import lorikeet.core.Seq;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.http.error.BadHeaderName;
 import lorikeet.http.error.HeaderNotFound;
+import lorikeet.http.error.IncomingHttpSgnlError;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
 import java.util.Objects;
 
-public class StringHeader implements IncludableFallible<String> {
-    private final IncomingHttpSgnl msg;
+public class StringHeader implements IncomingHttpSgnlStreamInclude<String> {
     private final String headerName;
     private final String defaultValue;
 
-    public StringHeader(IncomingHttpSgnl msg, String headerName, String defaultValue) {
-        this.msg = msg;
+    public StringHeader(String headerName, String defaultValue) {
         this.headerName = headerName;
         this.defaultValue = defaultValue;
     }
 
-    public StringHeader(IncomingHttpSgnl msg, String headerName) {
-        this.msg = msg;
+    public StringHeader(String headerName) {
         this.headerName = headerName;
         this.defaultValue = null;
     }
 
-    public StringHeader(IncomingHttpSgnl msg, HeaderField header, String defaultValue) {
-        this.msg = msg;
+    public StringHeader(HeaderField header, String defaultValue) {
         this.headerName = header.key();
         this.defaultValue = defaultValue;
     }
 
-    public StringHeader(IncomingHttpSgnl msg, HeaderField header) {
-        this.msg = msg;
+    public StringHeader(HeaderField header) {
         this.headerName = header.key();
         this.defaultValue = null;
     }
 
     @Override
-    public Fallible<String> include() {
+    public FallibleResult<String, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.headerName.isBlank()) {
-            return new Bug<>(new BadHeaderName(this.headerName));
+            return new ErrResult<>(new BadHeaderName(this.headerName));
         }
 
-        final String value = this.msg.headers().getAny(this.headerName);
+        final String value = request.headers().getAny(this.headerName);
 
         if (value.isBlank() && this.defaultValue == null) {
-            return new Err<>(new HeaderNotFound(this.headerName));
+            return new ErrResult<>(new HeaderNotFound(this.headerName));
         }
 
         if (value.isBlank()) {
-            return new Ok<>(this.defaultValue);
+            return new OkResult<>(this.defaultValue);
         }
-       return new Ok<>(value);
+       return new OkResult<>(value);
     }
 
     @Override
@@ -70,13 +64,12 @@ public class StringHeader implements IncludableFallible<String> {
 
         StringHeader that = (StringHeader) o;
 
-        return Objects.equals(this.msg, that.msg)
-            && Objects.equals(this.headerName, that.headerName)
+        return Objects.equals(this.headerName, that.headerName)
             && Objects.equals(this.defaultValue, that.defaultValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.msg, this.headerName, this.defaultValue);
+        return Objects.hash(this.headerName, this.defaultValue);
     }
 }

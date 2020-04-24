@@ -19,7 +19,7 @@ public class StringPathVarTest {
     @Test
     public void testNullName() {
         boolean succeeded = new StringPathVar(path, null)
-            .include()
+            .include(null)
             .success();
 
         assertThat(succeeded).isFalse();
@@ -28,7 +28,7 @@ public class StringPathVarTest {
     @Test
     public void testPathVarNotFound() {
         boolean succeeded = new StringPathVar(path, "not-there")
-            .include()
+            .include(null)
             .success();
 
         assertThat(succeeded).isFalse();
@@ -36,7 +36,7 @@ public class StringPathVarTest {
     @Test
     public void testFindsPathVar() {
         String value = new StringPathVar(path, "id")
-            .include()
+            .include(null)
             .orPanic();
 
         assertThat(value).isEqualTo("1234");

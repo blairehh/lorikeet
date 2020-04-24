@@ -2,7 +2,7 @@ package lorikeet.core;
 
 import java.util.Objects;
 
-public class Err<T> implements AnErr<T> {
+public class Err<T> extends BasicErr<T> {
 
     private final Seq<? extends Exception> exceptions;
 

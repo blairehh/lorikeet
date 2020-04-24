@@ -18,7 +18,7 @@ public class IntPathVarTest {
     @Test
     public void testValidVariable() {
         final Integer value = new IntPathVar(path, "id")
-            .include()
+            .include(null)
             .orPanic();
 
         assertThat(value).isEqualTo(1234);
@@ -27,7 +27,7 @@ public class IntPathVarTest {
     @Test
     public void testNotFound() {
         final boolean success = new IntPathVar(path, "not-there")
-            .include()
+            .include(null)
             .success();
 
         assertThat(success).isFalse();
@@ -36,7 +36,7 @@ public class IntPathVarTest {
     @Test
     public void testNotAValidNumber() {
         final boolean success = new IntPathVar(path, "a-string")
-            .include()
+            .include(null)
             .success();
 
         assertThat(success).isFalse();
@@ -45,7 +45,7 @@ public class IntPathVarTest {
     @Test
     public void testNotAValidPathVarName() {
         final boolean success = new IntPathVar(path, "")
-            .include()
+            .include(null)
             .success();
 
         assertThat(success).isFalse();

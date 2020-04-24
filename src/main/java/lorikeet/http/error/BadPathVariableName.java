@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class BadPathVariableName extends RuntimeException {
+public class BadPathVariableName extends IncomingHttpSgnlError {
     private final String name;
 
     public BadPathVariableName(String name) {
         super(String.format("Path variable name '%s' is not valid", name));
         this.name = name;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

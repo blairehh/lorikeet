@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class FailedToConstructHttpMsg extends RuntimeException {
+public class FailedToConstructHttpMsg extends IncomingHttpSgnlError {
     private final Class<?> klass;
 
     public FailedToConstructHttpMsg(Class<?> klass, Throwable cause) {
         super(String.format("Failed to construct instance of '%s'", klass.getCanonicalName()), cause);
         this.klass = klass;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

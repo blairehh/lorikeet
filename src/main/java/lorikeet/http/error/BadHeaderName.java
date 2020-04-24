@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class BadHeaderName extends RuntimeException {
+public class BadHeaderName extends IncomingHttpSgnlError {
     private final String headerName;
 
     public BadHeaderName(String name) {
         super(String.format("Bad header name '%s'", name));
         this.headerName = name;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

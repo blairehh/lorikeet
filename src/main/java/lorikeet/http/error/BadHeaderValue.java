@@ -1,8 +1,10 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class BadHeaderValue extends RuntimeException {
+public class BadHeaderValue extends IncomingHttpSgnlError {
     private final String headerName;
     private final String expectedValuePattern;
 
@@ -10,6 +12,11 @@ public class BadHeaderValue extends RuntimeException {
         super(String.format("Expected header '%s' to have value of pattern '%s'", headerName, expectedValuePattern));
         this.headerName = headerName;
         this.expectedValuePattern = expectedValuePattern;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.BAD_REQUEST;
     }
 
     @Override

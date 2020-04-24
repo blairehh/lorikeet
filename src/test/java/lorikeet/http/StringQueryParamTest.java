@@ -10,8 +10,8 @@ public class StringQueryParamTest {
     public void testNotFound() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/test?name=foo");
 
-        boolean failed = new StringQueryParam(request, "surname")
-            .include()
+        boolean failed = new StringQueryParam("surname")
+            .include(request)
             .failure();
 
         assertThat(failed).isTrue();
@@ -21,8 +21,8 @@ public class StringQueryParamTest {
     public void testValid() {
         IncomingHttpSgnl request = new MockIncomingHttpSgnl("/test?name=foo");
 
-        String value = new StringQueryParam(request, "name")
-            .include()
+        String value = new StringQueryParam("name")
+            .include(request)
             .orPanic();
 
         assertThat(value).isEqualTo("foo");

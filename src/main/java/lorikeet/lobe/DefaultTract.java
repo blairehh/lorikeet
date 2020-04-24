@@ -41,6 +41,16 @@ public class DefaultTract<R extends UsesLogging> implements Tract<R> {
     }
 
     @Override
+    public <O> O encode(EncodeAgent<R, O> encode) {
+        return encode.junction(this.resources);
+    }
+
+    @Override
+    public <O> O decode(DecodeAgent<R, O> decode) {
+        return decode.junction(this.resources);
+    }
+
+    @Override
     public <O> O invoke(LorikeetAction<R, O> action) {
         return action.junction(this);
     }

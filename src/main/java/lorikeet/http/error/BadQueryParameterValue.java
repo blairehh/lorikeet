@@ -1,8 +1,10 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class BadQueryParameterValue extends RuntimeException {
+public class BadQueryParameterValue extends IncomingHttpSgnlError {
     private final String value;
     private final Class<?> valueType;
 
@@ -10,6 +12,11 @@ public class BadQueryParameterValue extends RuntimeException {
         super(String.format("Query parameter value '%s' is not valid for type '%s'", value, valueType));
         this.value = value;
         this.valueType = valueType;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.BAD_REQUEST;
     }
 
     @Override

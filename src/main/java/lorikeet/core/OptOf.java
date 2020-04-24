@@ -68,6 +68,14 @@ public class OptOf<T> implements Fallible<T> {
     }
 
     @Override
+    public <X> FallibleResult<X, Exception> proceed(Function<T, FallibleResult<X, Exception>> then) {
+        if (this.optional.isPresent()) {
+            return then.apply(this.optional.orElseThrow());
+        }
+        return new ErrResult<>(this.exception);
+    }
+
+    @Override
     public Fallible<T> onSuccess(Consumer<T> consumer) {
         this.optional.ifPresent(consumer);
         return this;

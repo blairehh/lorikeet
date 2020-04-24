@@ -1,25 +1,26 @@
 package lorikeet.http;
 
-import lorikeet.core.AnErr;
+import lorikeet.core.BasicErrResult;
 import lorikeet.core.Seq;
+import lorikeet.http.error.IncomingHttpSgnlError;
 
 import java.util.Objects;
 
-public class HttpReject implements AnErr<HttpReplier>, HttpDirective {
+public class HttpReject extends BasicErrResult<HttpReplier, IncomingHttpSgnlError> implements HttpDirective {
 
-    private final Seq<Exception> errors;
+    private final Seq<IncomingHttpSgnlError> errors;
 
-    public HttpReject(Seq<Exception> errors) {
+    public HttpReject(Seq<IncomingHttpSgnlError> errors) {
         this.errors = errors;
     }
 
     @Override
-    public Exception exception() {
+    public IncomingHttpSgnlError exception() {
         return this.errors.first().orElseThrow();
     }
 
     @Override
-    public Seq<? extends Exception> errors() {
+    public Seq<? extends IncomingHttpSgnlError> errors() {
         return this.errors;
     }
 

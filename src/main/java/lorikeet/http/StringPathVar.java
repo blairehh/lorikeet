@@ -1,14 +1,17 @@
 package lorikeet.http;
 
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.http.error.BadPathVariableName;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.PathVarNotFound;
 import lorikeet.http.internal.HttpMsgPath;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
-public class StringPathVar implements IncludableFallible<String> {
+import java.util.Objects;
+
+public class StringPathVar implements IncomingHttpSgnlStreamInclude<String> {
     private final HttpMsgPath path;
     private final String name;
 
@@ -18,9 +21,9 @@ public class StringPathVar implements IncludableFallible<String> {
     }
 
     @Override
-    public Fallible<String> include() {
+    public FallibleResult<String, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.name == null || this.name.isBlank()) {
-            return new Err<>(new BadPathVariableName(this.name));
+            return new ErrResult<>(new BadPathVariableName(this.name));
         }
 
         final String value = path.pathVariables()
@@ -28,9 +31,30 @@ public class StringPathVar implements IncludableFallible<String> {
             .orElse(null);
 
         if (value == null) {
-            return new Err<>(new PathVarNotFound(this.name));
+            return new ErrResult<>(new PathVarNotFound(this.name));
         }
 
-        return new Ok<>(value);
+        return new OkResult<>(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        StringPathVar that = (StringPathVar) o;
+
+        return Objects.equals(this.path, that.path)
+            && Objects.equals(this.name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.path, this.name);
     }
 }

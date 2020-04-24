@@ -2,7 +2,8 @@ package lorikeet.core;
 
 import java.util.Objects;
 
-public class Bug<T> implements AnErr<T> {
+// @TODO remove this class
+public class Bug<T> extends BasicErr<T> {
     private final Exception exception;
 
     public Bug(Exception exception) {

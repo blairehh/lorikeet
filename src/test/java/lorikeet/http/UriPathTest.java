@@ -11,8 +11,8 @@ public class UriPathTest {
     public void testMatchesUri() {
         var request = new MockIncomingHttpSgnl("/orders/1475/parcels");
 
-        boolean matched = new UriPath(request, "/orders/{id}/parcels")
-            .include()
+        boolean matched = new UriPath("/orders/{id}/parcels")
+            .include(request)
             .success();
 
         assertThat(matched).isTrue();
@@ -22,8 +22,8 @@ public class UriPathTest {
     public void testNotMatchesUri() {
         var request = new MockIncomingHttpSgnl("/orders/1475/updates");
 
-        boolean matched = new UriPath(request, "/orders/{id}/parcels")
-            .include()
+        boolean matched = new UriPath("/orders/{id}/parcels")
+            .include(request)
             .success();
 
         assertThat(matched).isFalse();
@@ -33,8 +33,8 @@ public class UriPathTest {
     public void testInvalidUriPattern() {
         var request = new MockIncomingHttpSgnl("/orders/1475/updates");
 
-        boolean matched = new UriPath(request, "/orders/{id/parcels")
-            .include()
+        boolean matched = new UriPath("/orders/{id/parcels")
+            .include(request)
             .success();
 
         assertThat(matched).isFalse();

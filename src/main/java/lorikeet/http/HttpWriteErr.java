@@ -1,12 +1,12 @@
 package lorikeet.http;
 
-import lorikeet.core.AnErr;
+import lorikeet.core.BasicErr;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 
 import java.util.Objects;
 
-public class HttpWriteErr implements AnErr<Boolean>, HttpWriteResult {
+public class HttpWriteErr extends BasicErr<Boolean> implements HttpWriteResult {
     private final Exception exception;
     private final int statusCode;
 

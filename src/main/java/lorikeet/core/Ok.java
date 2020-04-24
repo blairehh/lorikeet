@@ -2,7 +2,7 @@ package lorikeet.core;
 
 import java.util.Objects;
 
-public class Ok<T> implements AnOk<T> {
+public class Ok<T> extends BasicOk<T> {
 
     private final T value;
 
@@ -13,6 +13,11 @@ public class Ok<T> implements AnOk<T> {
     @Override
     public T value() {
         return this.value;
+    }
+
+    public FallibleStream.FS1<T, Exception> stream() {
+        return new FallibleStream<>()
+            .include(this.value);
     }
 
     @Override

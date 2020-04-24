@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class BadQueryParameterName extends RuntimeException {
+public class BadQueryParameterName extends IncomingHttpSgnlError {
     private final String queryParameterName;
 
     public BadQueryParameterName(String queryParameterName) {
         super(String.format("Query parameter name '%s' is not valid", queryParameterName));
         this.queryParameterName = queryParameterName;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

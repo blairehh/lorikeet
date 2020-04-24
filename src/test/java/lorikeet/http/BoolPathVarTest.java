@@ -23,7 +23,7 @@ public class BoolPathVarTest {
     @Test
     public void testNullName() {
         boolean succeeded = new BoolPathVar(path, null)
-            .include()
+            .include(null)
             .success();
 
         assertThat(succeeded).isFalse();
@@ -32,7 +32,7 @@ public class BoolPathVarTest {
     @Test
     public void testPathVarNotFound() {
         boolean succeeded = new BoolPathVar(path, "not-there")
-            .include()
+            .include(null)
             .success();
 
         assertThat(succeeded).isFalse();
@@ -41,7 +41,7 @@ public class BoolPathVarTest {
     @Test
     public void testFindsTruePathVar() {
         boolean value = new BoolPathVar(path, "enabled")
-            .include()
+            .include(null)
             .orPanic();
 
         assertThat(value).isTrue();
@@ -50,7 +50,7 @@ public class BoolPathVarTest {
     @Test
     public void testFindsFalsePathVar() {
         boolean value = new BoolPathVar(path, "disabled")
-            .include()
+            .include(null)
             .orPanic();
 
         assertThat(value).isFalse();
@@ -59,7 +59,7 @@ public class BoolPathVarTest {
     @Test
     public void testPathVarWithBadValue() {
         boolean succeeded = new BoolPathVar(path, "name")
-            .include()
+            .include(null)
             .success();
 
         assertThat(succeeded).isFalse();

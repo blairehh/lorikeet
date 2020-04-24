@@ -1,12 +1,11 @@
 package lorikeet.lobe;
 
 import lorikeet.api.FileRef;
-import lorikeet.core.AnOk;
+import lorikeet.core.BasicOk;
 
-import java.net.URI;
 import java.util.Objects;
 
-public class DiskWriteOk implements AnOk<Boolean>, DiskWriteResult {
+public class DiskWriteOk extends BasicOk<Boolean> implements DiskWriteResult {
 
     private final FileRef fileRef;
     private final long bytesWritten;

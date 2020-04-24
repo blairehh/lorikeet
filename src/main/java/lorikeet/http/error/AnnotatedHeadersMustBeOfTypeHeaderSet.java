@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class AnnotatedHeadersMustBeOfTypeHeaderSet extends RuntimeException {
+public class AnnotatedHeadersMustBeOfTypeHeaderSet extends IncomingHttpSgnlError {
     private final Class<?> msgType;
 
     public AnnotatedHeadersMustBeOfTypeHeaderSet(Class<?> msgType) {
         super(String.format("Annotated with @Headers must be of type HeaderSet in '%s'", msgType.getCanonicalName()));
         this.msgType = msgType;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

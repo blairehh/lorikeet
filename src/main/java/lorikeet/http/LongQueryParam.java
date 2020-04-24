@@ -1,7 +1,7 @@
 package lorikeet.http;
 
 public class LongQueryParam extends NumberQueryParam<Long> {
-    public LongQueryParam(IncomingHttpSgnl request, String queryParamName) {
-        super(request, queryParamName, Long::parseLong, Long.class);
+    public LongQueryParam(String queryParamName) {
+        super(queryParamName, Long::parseLong, Long.class);
     }
 }

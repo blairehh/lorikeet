@@ -13,36 +13,36 @@ public class BoolHeaderTest {
 
     @Test
     public void testNotFound() {
-        final BoolHeader notFound = new BoolHeader(sgnl, "not-there");
+        final BoolHeader notFound = new BoolHeader("not-there");
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 
     @Test
     public void testBadValue() {
-        final BoolHeader notFound = new BoolHeader(sgnl, "bad");
+        final BoolHeader notFound = new BoolHeader("bad");
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 
     @Test
     public void testIsPresent() {
-        final BoolHeader notFound = new BoolHeader(sgnl, "good");
+        final BoolHeader notFound = new BoolHeader("good");
 
-        assertThat(notFound.include().orPanic()).isTrue();
+        assertThat(notFound.include(sgnl).orPanic()).isTrue();
     }
 
     @Test
     public void testUsesDefaultIfNotPresent() {
-        final BoolHeader notFound = new BoolHeader(sgnl, "not-here-but-default", false);
+        final BoolHeader notFound = new BoolHeader("not-here-but-default", false);
 
-        assertThat(notFound.include().orPanic()).isFalse();
+        assertThat(notFound.include(sgnl).orPanic()).isFalse();
     }
 
     @Test
     public void testDoesNotUseDefaultIfBadValue() {
-        final BoolHeader notFound = new BoolHeader(sgnl, "bad", true);
+        final BoolHeader notFound = new BoolHeader("bad", true);
 
-        assertThat(notFound.include().failure()).isTrue();
+        assertThat(notFound.include(sgnl).failure()).isTrue();
     }
 }

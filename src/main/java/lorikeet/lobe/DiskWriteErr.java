@@ -1,14 +1,13 @@
 package lorikeet.lobe;
 
 import lorikeet.api.FileRef;
-import lorikeet.core.AnErr;
+import lorikeet.core.BasicErr;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 
-import java.net.URI;
 import java.util.Objects;
 
-public class DiskWriteErr implements AnErr<Boolean>, DiskWriteResult {
+public class DiskWriteErr extends BasicErr<Boolean> implements DiskWriteResult {
     
     private final FileRef fileRef;
     private final Seq<? extends Exception> exceptions;

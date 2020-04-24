@@ -1,10 +1,12 @@
 package lorikeet.http;
 
-import lorikeet.core.AnOk;
+
+import lorikeet.core.BasicOkResult;
+import lorikeet.http.error.IncomingHttpSgnlError;
 
 import java.util.Objects;
 
-public class HttpResolve implements AnOk<HttpReplier>, HttpDirective {
+public class HttpResolve extends BasicOkResult<HttpReplier, IncomingHttpSgnlError> implements HttpDirective {
     private final HttpReplier replier;
 
     public HttpResolve(HttpReplier replier) {

@@ -22,8 +22,8 @@ public class HttpMsgReceptorWrapper<R extends UsesLogging, Msg> implements HttpR
 
     @Override
     public HttpDirective junction(Tract<R> tract, IncomingHttpSgnl request) {
-        return new HttpMsg<>(request, this.msgClass)
-            .include()
+        return new HttpMsg<>(this.msgClass)
+            .include(request)
             .map((msg) -> (HttpDirective)new HttpResolve(() -> this.msgReceptor.accept(tract, msg)))
             .orGive((errors) -> new HttpReject(new SeqOf<>(errors)));
     }

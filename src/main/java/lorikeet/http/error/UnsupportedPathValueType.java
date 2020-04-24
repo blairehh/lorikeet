@@ -1,13 +1,20 @@
 package lorikeet.http.error;
 
+import lorikeet.http.HttpStatus;
+
 import java.util.Objects;
 
-public class UnsupportedPathValueType extends RuntimeException {
+public class UnsupportedPathValueType extends IncomingHttpSgnlError {
     private final Class<?> valueType;
 
     public UnsupportedPathValueType(Class<?> valueType) {
         super(String.format("Type '%s' is not a valid path type", valueType));
         this.valueType = valueType;
+    }
+
+    @Override
+    public HttpStatus rejectStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     @Override

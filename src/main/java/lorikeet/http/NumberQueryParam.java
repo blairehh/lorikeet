@@ -1,48 +1,69 @@
 package lorikeet.http;
 
 import lorikeet.core.Dict;
-import lorikeet.core.Err;
-import lorikeet.core.Fallible;
-import lorikeet.core.IncludableFallible;
-import lorikeet.core.Ok;
+import lorikeet.core.ErrResult;
+import lorikeet.core.FallibleResult;
+import lorikeet.core.OkResult;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
 import lorikeet.http.error.BadQueryParameterName;
 import lorikeet.http.error.BadQueryParameterValue;
+import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.error.QueryParameterNotFound;
+import lorikeet.http.internal.IncomingHttpSgnlStreamInclude;
 
+import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class NumberQueryParam<T extends Number> implements IncludableFallible<T> {
-    private final IncomingHttpSgnl msg;
+public abstract class NumberQueryParam<T extends Number> implements IncomingHttpSgnlStreamInclude<T> {
     private final String queryParamName;
     private final Function<String, T> parser;
     private final Class<T> valueType;
 
-    public NumberQueryParam(IncomingHttpSgnl msg, String queryParamName, Function<String, T> parser, Class<T> valueType) {
-        this.msg = msg;
+    public NumberQueryParam(String queryParamName, Function<String, T> parser, Class<T> valueType) {
         this.queryParamName = queryParamName;
         this.parser = parser;
         this.valueType = valueType;
     }
 
     @Override
-    public Fallible<T> include() {
+    public FallibleResult<T, IncomingHttpSgnlError> include(IncomingHttpSgnl request) {
         if (this.queryParamName == null || this.queryParamName.isBlank()) {
-            return new Err<>(new BadQueryParameterName(this.queryParamName));
+            return new ErrResult<>(new BadQueryParameterName(this.queryParamName));
         }
-        final Dict<String, Seq<String>> queryParams = this.msg.queryParameters();
+        final Dict<String, Seq<String>> queryParams = request.queryParameters();
         final Seq<String> values = queryParams.pick(this.queryParamName)
             .orElse(new SeqOf<>());
         if (values.isEmpty()) {
-            return new Err<>(new QueryParameterNotFound(this.queryParamName));
+            return new ErrResult<>(new QueryParameterNotFound(this.queryParamName));
         }
 
         try {
-            return new Ok<>(this.parser.apply(values.pick(0).orElseThrow()));
+            return new OkResult<>(this.parser.apply(values.pick(0).orElseThrow()));
         } catch (NumberFormatException e) {
-            return new Err<>(new BadQueryParameterValue(values.pick(0).orElseThrow(), this.valueType));
+            return new ErrResult<>(new BadQueryParameterValue(values.pick(0).orElseThrow(), this.valueType));
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || !this.getClass().equals(o.getClass())) {
+            return false;
+        }
+
+        NumberQueryParam<?> that = (NumberQueryParam<?>) o;
+
+        return Objects.equals(this.queryParamName, that.queryParamName)
+            && Objects.equals(this.parser, that.parser)
+            && Objects.equals(this.valueType, that.valueType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.queryParamName, this.parser, this.valueType);
+    }
 }
