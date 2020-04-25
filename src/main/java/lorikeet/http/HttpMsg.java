@@ -23,6 +23,7 @@ import lorikeet.http.error.MsgTypeDidNotHaveAnnotatedCtor;
 import lorikeet.http.error.UnsupportedHeaderValueType;
 import lorikeet.http.error.UnsupportedPathValueType;
 import lorikeet.http.error.UnsupportedQueryParameterValueType;
+import lorikeet.http.internal.BodyAnnotation;
 import lorikeet.http.internal.HeaderAnnotation;
 import lorikeet.http.internal.HttpMsgPath;
 import lorikeet.http.internal.IdentifierAnnotation;
@@ -107,7 +108,7 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
                 parameterValues[i] = result.orPanic();
                 continue;
             }
-            final Body body = parameter.getAnnotation(Body.class);
+            final BodyAnnotation body = this.retrieveBodyAnnotation(parameter);
             if (body != null) {
                 final FallibleResult<?, IncomingHttpSgnlError> result = this.handleBody(tract, request, parameter, body);
                 if (result.failure()) {
@@ -136,9 +137,10 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
         Tract<R> tract,
         IncomingHttpSgnl request,
         Parameter parameter,
-        Body body
+        BodyAnnotation body
     ) {
-        return new RequestBody<Object, R>(body.value(), (Class<Object>)parameter.getType()).include(request, tract);
+        return new RequestBody<Object, R>(body.getMediaType(), (Class<Object>)parameter.getType())
+            .include(request, tract);
     }
 
     private FallibleResult<?, IncomingHttpSgnlError> handleHeader(
@@ -246,6 +248,20 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
         }
 
         return Optional.empty();
+    }
+
+    private BodyAnnotation retrieveBodyAnnotation(Parameter parameter) {
+        final Body body = parameter.getAnnotation(Body.class);
+        if (body != null && !body.value().trim().isBlank()) {
+            return new BodyAnnotation(body.value());
+        }
+
+        final ContentType contentType = this.msgClass.getAnnotation(ContentType.class);
+        if (contentType != null && !contentType.value().trim().isBlank()) {
+            return new BodyAnnotation(contentType.value());
+        }
+
+        return null;
     }
 
     private HeaderAnnotation retrieveHeaderAnnotation(Parameter parameter) {

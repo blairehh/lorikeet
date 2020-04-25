@@ -257,8 +257,19 @@ class PostWithPayload {
 
     @MsgCtor
     public PostWithPayload(
-        @Body(InternetMediaType.APPLICATION_JSON) SampleJson json
+        @Body("application/json") SampleJson json
     ) {
+        this.json = json;
+    }
+}
+
+@Post("/users")
+@ContentType("application/json")
+class PostWithPayloadAndContentTypeOnClass {
+    final SampleJson json;
+
+    @MsgCtor
+    public PostWithPayloadAndContentTypeOnClass(@Body SampleJson json) {
         this.json = json;
     }
 }
@@ -501,6 +512,23 @@ public class HttpMsgTest {
         );
 
         PostWithPayload result = new HttpMsg<>(PostWithPayload.class)
+            .include(request, tract())
+            .orPanic();
+
+        assertThat(result.json.id).isEqualTo(1);
+        assertThat(result.json.name).isEqualTo("Bob");
+        assertThat(result.json.active).isTrue();
+    }
+
+    @Test
+    public void testPostWithJsonAndContentTypeOnClass() {
+        IncomingHttpSgnl request = new MockIncomingHttpSgnl(
+            HttpMethod.POST,
+            "/users",
+            new StringInputStream("{\"id\": 1, \"name\": \"Bob\", \"active\": true}")
+        );
+
+        PostWithPayloadAndContentTypeOnClass result = new HttpMsg<>(PostWithPayloadAndContentTypeOnClass.class)
             .include(request, tract())
             .orPanic();
 
