@@ -2,6 +2,7 @@ package lorikeet.resource;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.util.Headers;
 import lorikeet.core.Seq;
 import lorikeet.core.SeqOf;
@@ -30,7 +31,7 @@ public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServe
     public void start(R resources, A application) {
         Undertow server = Undertow.builder()
             .addHttpListener(config.port(), config.host())
-            .setHandler((exchange) -> this.handleRequest(exchange, resources, application))
+            .setHandler(new BlockingHandler((exchange) -> this.handleRequest(exchange, resources, application)))
             .build();
         server.start();
     }

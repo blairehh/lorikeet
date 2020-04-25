@@ -8,6 +8,6 @@ import lorikeet.lobe.Tract;
 public class RunProgramPostMsgReceptor implements HttpMsgReceptor<Tutorial, RunProgramPostMsg> {
     @Override
     public HttpReply accept(Tract<Tutorial> tract, RunProgramPostMsg runProgramMsg) {
-         return new Http200<>("post" + runProgramMsg.getTimeout());
+         return new Http200<>("run " + runProgramMsg.getTimeout() + " " + runProgramMsg.getUser().getName());
     }
 }
