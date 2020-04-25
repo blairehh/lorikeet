@@ -7,6 +7,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface Seq<T> extends List<T> {
+    boolean only(T value);
+    boolean onlyEither(T a, T b);
+    boolean uniform();
     long count();
     long count(Predicate<? super T> countPredicate);
 

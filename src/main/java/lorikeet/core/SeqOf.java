@@ -52,6 +52,27 @@ public class SeqOf<T> implements Seq<T> {
     }
 
     @Override
+    public boolean only(T value) {
+        return this.stream().allMatch((item) -> item.equals(value));
+    }
+
+    @Override
+    public boolean onlyEither(T a, T b) {
+        return this.stream().allMatch((item) -> item.equals(a) || item.equals(b));
+    }
+
+    @Override
+    public boolean uniform() {
+        if (this.vector.isEmpty()) {
+            return false;
+        }
+        if (this.vector.size() == 1) {
+            return true;
+        }
+        return this.only(this.vector.get(0));
+    }
+
+    @Override
     public final long count() {
         return this.vector.size();
     }

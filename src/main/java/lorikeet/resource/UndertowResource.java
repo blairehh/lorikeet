@@ -18,10 +18,12 @@ import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.http.error.IncomingHttpSgnlError;
+import lorikeet.http.internal.Utils;
 import lorikeet.lobe.*;
 
 public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServer, A extends ProvidesHttpReceptors<R> & ProvidesTract<R>>
     implements HttpResource {
+    private final Utils utils = new Utils();
     private final UndertowConfig config;
 
     public UndertowResource(ConfiguresUndertow config) {
@@ -46,7 +48,7 @@ public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServe
         final HttpDirective directive = this.directiveForSignal(application, incoming, tract);
 
         if (directive.failure()) {
-            final HttpStatus status = statusFor(directive.errors());
+            final HttpStatus status = this.utils.statusFor(directive.errors());
             exchange.setStatusCode(status.code());
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
             exchange.getResponseSender().send(status.name());
@@ -74,16 +76,5 @@ public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServe
         }
 
         return new HttpReject(errors);
-    }
-
-    private HttpStatus statusFor(Seq<? extends IncomingHttpSgnlError> errors) {
-        final Seq<HttpStatus> statuses = errors.remodel(IncomingHttpSgnlError::rejectStatus);
-        if (statuses.count((s) -> s.equals(HttpStatus.NOT_FOUND)) == statuses.count()) {
-            return HttpStatus.NOT_FOUND;
-        }
-        if (statuses.contains(HttpStatus.METHOD_NOT_ALLOWED)) {
-            return HttpStatus.METHOD_NOT_ALLOWED;
-        }
-        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
