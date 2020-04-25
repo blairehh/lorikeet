@@ -17,6 +17,11 @@ public class MockOutgoingHttpSgnl implements OutgoingHttpSgnl {
     }
 
     @Override
+    public OutgoingHttpSgnl header(HeaderField header, String value) {
+        return this.header(header.key(), value);
+    }
+
+    @Override
     public OutgoingHttpSgnl writeBody(String content) {
         return this;
     }

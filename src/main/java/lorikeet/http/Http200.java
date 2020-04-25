@@ -1,19 +1,30 @@
 package lorikeet.http;
 
+import lorikeet.coding.TextEncode;
+import lorikeet.core.Fallible;
 import lorikeet.http.error.HttpAgentIsMissingSession;
 import lorikeet.http.error.InvalidHttpSessionObject;
+import lorikeet.lobe.EncodeAgent;
+import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesHttpServer;
+import lorikeet.lobe.UsesLogging;
+import lorikeet.lobe.WriteAgent;
 
-public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
+public class Http200<R extends UsesHttpServer & UsesLogging & UsesCoding> implements HttpWrite<R> {
     private final Object session;
-    private final String body;
+    private final EncodeAgent<R, Fallible<String>> body;
 
     public Http200(String body) {
+        this.session = null;
+        this.body = new TextEncode<>(body);
+    }
+
+    public Http200(EncodeAgent<R, Fallible<String>> body) {
         this.session = null;
         this.body = body;
     }
 
-    private Http200(Object session, String body) {
+    private Http200(Object session, EncodeAgent<R, Fallible<String>> body) {
         this.session = session;
         this.body = body;
     }
@@ -28,7 +39,9 @@ public class Http200<R extends UsesHttpServer> implements HttpWrite<R> {
         }
         final OutgoingHttpSgnl outgoing = (OutgoingHttpSgnl)this.session;
         outgoing.statusCode(200);
-        outgoing.writeBody(this.body);
+        this.body.mediaType().ifPresent((value) -> outgoing.header(HeaderField.CONTENT_TYPE, value));
+        this.body.junction(resources).onSuccess(outgoing::writeBody);
+
         return new HttpWriteOk(200);
     }
 

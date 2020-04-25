@@ -2,8 +2,10 @@ package lorikeet.resource;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
+import lorikeet.http.HeaderField;
 import lorikeet.http.OutgoingHttpSgnl;
 
+import java.io.OutputStreamWriter;
 import java.util.Objects;
 
 public class UndertowOutgoingSgnl implements OutgoingHttpSgnl {
@@ -23,6 +25,11 @@ public class UndertowOutgoingSgnl implements OutgoingHttpSgnl {
     public OutgoingHttpSgnl header(String name, String value) {
         this.exchange.getResponseHeaders().put(HttpString.tryFromString(name), value);
         return this;
+    }
+
+    @Override
+    public OutgoingHttpSgnl header(HeaderField header, String value) {
+        return this.header(header.key(), value);
     }
 
     @Override
