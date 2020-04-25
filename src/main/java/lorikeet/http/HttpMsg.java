@@ -344,16 +344,6 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
             return new HeaderAnnotation(HeaderField.ACCESS_CONTROL_REQUEST_METHOD);
         }
 
-        annotation = parameter.getAnnotation(Age.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.AGE);
-        }
-
-        annotation = parameter.getAnnotation(AIM.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.A_IM);
-        }
-
         annotation = parameter.getAnnotation(Allow.class);
         if (annotation != null) {
             return new HeaderAnnotation(HeaderField.ALLOW);
@@ -434,11 +424,6 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
             return new HeaderAnnotation(HeaderField.DATE);
         }
 
-        annotation = parameter.getAnnotation(DeltaBase.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.DELTA_BASE);
-        }
-
         annotation = parameter.getAnnotation(Dnt.class);
         if (annotation != null) {
             return new HeaderAnnotation(HeaderField.DNT);
@@ -502,11 +487,6 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
         annotation = parameter.getAnnotation(IfUnmodifiedSince.class);
         if (annotation != null) {
             return new HeaderAnnotation(HeaderField.IF_UNMODIFIED_SINCE);
-        }
-
-        annotation = parameter.getAnnotation(IM.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.IM);
         }
 
         annotation = parameter.getAnnotation(LastModified.class);
@@ -609,24 +589,9 @@ public class HttpMsg<T, R extends UsesLogging & UsesCoding> implements IncomingH
             return new HeaderAnnotation(HeaderField.STRICT_TRANSPORT_SECURITY);
         }
 
-        annotation = parameter.getAnnotation(Te.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.TE);
-        }
-
         annotation = parameter.getAnnotation(TimingAllowOrigin.class);
         if (annotation != null) {
             return new HeaderAnnotation(HeaderField.TIMING_ALLOW_ORIGIN);
-        }
-
-        annotation = parameter.getAnnotation(Tk.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.TK);
-        }
-
-        annotation = parameter.getAnnotation(Trailer.class);
-        if (annotation != null) {
-            return new HeaderAnnotation(HeaderField.TRAILER);
         }
 
         annotation = parameter.getAnnotation(TransferEncoding.class);
