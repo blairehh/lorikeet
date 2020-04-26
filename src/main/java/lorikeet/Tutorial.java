@@ -54,8 +54,8 @@ public class Tutorial implements
 
     @Override
     public HttpRouter<Tutorial> httpRouter() {
-        return new RunProgramRouter()
-            .router();
+        return new HttpRouter<Tutorial>()
+            .route(new RunProgramRouter());
     }
 
     @Override

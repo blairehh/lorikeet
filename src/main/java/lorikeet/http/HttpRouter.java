@@ -31,6 +31,10 @@ public class HttpRouter<R extends UsesLogging & UsesCoding> {
         return new HttpRouter<>(this.receptors.affix(router.receptors()));
     }
 
+    public HttpRouter<R> route(HttpRouteProvider<R> provider) {
+        return this.route(provider.router());
+    }
+
     public Seq<HttpReceptor<R>> receptors() {
         return this.receptors;
     }
