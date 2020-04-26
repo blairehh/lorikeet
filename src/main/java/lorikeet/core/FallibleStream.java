@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+// @TODO rename this Algorithm
 // @TODO rename include(...) to yield(...)
 public class FallibleStream<ErrorT extends Exception> {
 
@@ -207,7 +208,7 @@ public class FallibleStream<ErrorT extends Exception> {
     }
 
     public static class FS3<A, B, C, ErrorT extends Exception> {
-        interface FN3<A, B, C, D> {
+        public interface FN3<A, B, C, D> {
             D apply(A a, B b, C c);
         }
 
@@ -314,7 +315,7 @@ public class FallibleStream<ErrorT extends Exception> {
     }
 
     public static class FS4<A, B, C, D, ErrorT extends Exception> {
-        interface FN4<A, B, C, D, E> {
+        public interface FN4<A, B, C, D, E> {
             E apply(A a, B b, C c, D d);
         }
 

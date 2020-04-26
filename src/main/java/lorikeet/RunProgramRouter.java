@@ -16,7 +16,7 @@ import lorikeet.lobe.Tract;
 class RunProgramReceptor implements HttpReceptor<Tutorial> {
     @Override
     public HttpDirective junction(Tract<Tutorial> tract, IncomingHttpSgnl signal) {
-        return new HttpResolve(() -> new HttpNoOp());
+        return new HttpResolve(() -> new Http200<>("GET REQUEST"));
     }
 }
 
@@ -38,8 +38,9 @@ public class RunProgramRouter implements HttpRouteProvider<Tutorial> {
     @Override
     public HttpRouter<Tutorial> router() {
         return new HttpRouter<Tutorial>()
-            .route(new RunProgramMsgReceptor(), RunProgramMsg.class)
-            .route(this::post, RunProgramPostMsg.class);
+            //.route(new RunProgramMsgReceptor(), RunProgramMsg.class)
+            .get("/run-program", new RunProgramReceptor())
+            .route(new RunProgramPostMsgReceptor(), RunProgramPostMsg.class);
     }
 
     public HttpReply post(Tract<Tutorial> tract, RunProgramPostMsg runProgramMsg) {
