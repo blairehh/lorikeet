@@ -1,6 +1,6 @@
 package lorikeet;
 
-import lorikeet.http.ReceptorBundle;
+import lorikeet.http.HttpRouter;
 import lorikeet.lobe.CodingResource;
 import lorikeet.lobe.DefaultDiskResource;
 import lorikeet.lobe.DefaultTract;
@@ -53,10 +53,9 @@ public class Tutorial implements
     }
 
     @Override
-    public ReceptorBundle<Tutorial> provideHttpReceptors() {
-        return new ReceptorBundle<Tutorial>()
-            .add(new RunProgramMsgReceptor(), RunProgramMsg.class)
-            .add(new RunProgramPostMsgReceptor(), RunProgramPostMsg.class);
+    public HttpRouter<Tutorial> httpRouter() {
+        return new RunProgramRouter()
+            .router();
     }
 
     @Override

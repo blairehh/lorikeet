@@ -16,7 +16,6 @@ import lorikeet.http.HttpWrite;
 import lorikeet.http.OutgoingHttpSgnl;
 import lorikeet.http.HttpReceptor;
 import lorikeet.http.IncomingHttpSgnl;
-import lorikeet.http.error.HttpMethodDoesNotMatchRequest;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.internal.Utils;
 import lorikeet.lobe.*;
@@ -64,7 +63,7 @@ public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServe
     private HttpDirective directiveForSignal(A application, IncomingHttpSgnl incoming, Tract<R> tract) {
         Seq<IncomingHttpSgnlError> errors = new SeqOf<>();
 
-        for (HttpReceptor<R> receptor : application.provideHttpReceptors().receptors()) {
+        for (HttpReceptor<R> receptor : application.httpRouter().receptors()) {
             final HttpDirective directive = receptor.junction(tract, incoming);
             if (!directive.errors().isEmpty()) {
                 errors = errors.affix(directive.errors());

@@ -8,27 +8,27 @@ import lorikeet.lobe.UsesLogging;
 
 import java.util.Objects;
 
-public class ReceptorBundle<R extends UsesLogging & UsesCoding> {
+public class HttpRouter<R extends UsesLogging & UsesCoding> {
     private final Seq<HttpReceptor<R>> receptors;
 
-    public ReceptorBundle() {
+    public HttpRouter() {
         this.receptors = new SeqOf<>();
     }
 
-    public ReceptorBundle(Seq<HttpReceptor<R>> receptors) {
+    public HttpRouter(Seq<HttpReceptor<R>> receptors) {
         this.receptors = receptors;
     }
 
-    public ReceptorBundle<R> add(HttpReceptor<R> receptor) {
-        return new ReceptorBundle<>(this.receptors.affix(receptor));
+    public HttpRouter<R> route(HttpReceptor<R> receptor) {
+        return new HttpRouter<>(this.receptors.affix(receptor));
     }
 
-    public <Msg> ReceptorBundle<R> add(HttpMsgReceptor<R, Msg> msgReceptor, Class<Msg> msgClass) {
-        return new ReceptorBundle<>(this.receptors.affix(new HttpMsgReceptorWrapper<>(msgReceptor, msgClass)));
+    public <Msg> HttpRouter<R> route(HttpMsgReceptor<R, Msg> msgReceptor, Class<Msg> msgClass) {
+        return new HttpRouter<>(this.receptors.affix(new HttpMsgReceptorWrapper<>(msgReceptor, msgClass)));
     }
 
-    public ReceptorBundle<R> add(ReceptorBundle<R> bundle) {
-        return new ReceptorBundle<>(this.receptors.affix(bundle.receptors()));
+    public HttpRouter<R> route(HttpRouter<R> router) {
+        return new HttpRouter<>(this.receptors.affix(router.receptors()));
     }
 
     public Seq<HttpReceptor<R>> receptors() {
@@ -45,7 +45,7 @@ public class ReceptorBundle<R extends UsesLogging & UsesCoding> {
             return false;
         }
 
-        ReceptorBundle<?> that = (ReceptorBundle<?>) o;
+        HttpRouter<?> that = (HttpRouter<?>) o;
 
         return Objects.equals(this.receptors(), that.receptors());
     }
