@@ -14,13 +14,13 @@ import lorikeet.http.HttpReply;
 import lorikeet.http.HttpStatus;
 import lorikeet.http.HttpWrite;
 import lorikeet.http.OutgoingHttpSgnl;
-import lorikeet.http.HttpReceptor;
+import lorikeet.http.HttpController;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.http.error.IncomingHttpSgnlError;
 import lorikeet.http.internal.Utils;
 import lorikeet.lobe.*;
 
-public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServer, A extends ProvidesHttpReceptors<R> & ProvidesTract<R>>
+public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServer, A extends ProvidesHttpRouter<R> & ProvidesTract<R>>
     implements HttpResource {
     private final Utils utils = new Utils();
     private final UndertowConfig config;
@@ -63,8 +63,8 @@ public class UndertowResource<R extends UsesLogging & UsesCoding & UsesHttpServe
     private HttpDirective directiveForSignal(A application, IncomingHttpSgnl incoming, Tract<R> tract) {
         Seq<IncomingHttpSgnlError> errors = new SeqOf<>();
 
-        for (HttpReceptor<R> receptor : application.httpRouter().receptors()) {
-            final HttpDirective directive = receptor.junction(tract, incoming);
+        for (HttpController<R> controller : application.httpRouter().controllers()) {
+            final HttpDirective directive = controller.junction(tract, incoming);
             if (!directive.errors().isEmpty()) {
                 errors = errors.affix(directive.errors());
             }

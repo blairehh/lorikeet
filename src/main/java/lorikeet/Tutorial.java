@@ -6,7 +6,7 @@ import lorikeet.lobe.DefaultDiskResource;
 import lorikeet.lobe.DefaultTract;
 import lorikeet.lobe.DiskResource;
 import lorikeet.lobe.LoggingResource;
-import lorikeet.lobe.ProvidesHttpReceptors;
+import lorikeet.lobe.ProvidesHttpRouter;
 import lorikeet.lobe.ProvidesTract;
 import lorikeet.lobe.StdOutLoggingResource;
 import lorikeet.lobe.Tract;
@@ -22,7 +22,7 @@ public class Tutorial implements
     UsesDisk,
     UsesCoding,
     UsesUndertow<Tutorial, Tutorial>,
-    ProvidesHttpReceptors<Tutorial>,
+    ProvidesHttpRouter<Tutorial>,
     ProvidesTract<Tutorial>
 {
 
