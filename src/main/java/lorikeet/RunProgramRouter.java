@@ -34,9 +34,8 @@ public class RunProgramRouter implements HttpRouteProvider<Tutorial> {
     @Override
     public HttpRouter<Tutorial> router() {
         return new HttpRouter<Tutorial>()
-            //.route(new RunProgramMsgController(), RunProgramMsg.class)
             .get("/run-program", new RunProgramEndpoint())
-            .route(new RunProgramPostMsgEndpoint(), RunProgramPostMsg.class);
+            .msg(RunProgramPostMsg.class, new RunProgramPostMsgEndpoint());
     }
 
     public HttpReply post(Tract<Tutorial> tract, RunProgramPostMsg runProgramMsg) {

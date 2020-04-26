@@ -25,16 +25,16 @@ public class HttpRouter<R extends UsesLogging & UsesCoding> {
         return new HttpRouter<>(this.controllers.affix(controller));
     }
 
-    public <Msg> HttpRouter<R> route(HttpEndpoint<R, Msg> msgEndpoint, Class<Msg> msgClass) {
+    public <Msg> HttpRouter<R> msg(Class<Msg> msgClass, HttpEndpoint<R, Msg> msgEndpoint) {
         return new HttpRouter<>(this.controllers.affix(new HttpMsgControllerWrapper<>(msgEndpoint, msgClass)));
     }
 
-    public HttpRouter<R> route(HttpRouter<R> router) {
+    public HttpRouter<R> include(HttpRouter<R> router) {
         return new HttpRouter<>(this.controllers.affix(router.controllers()));
     }
 
-    public HttpRouter<R> route(HttpRouteProvider<R> provider) {
-        return this.route(provider.router());
+    public HttpRouter<R> include(HttpRouteProvider<R> provider) {
+        return this.include(provider.router());
     }
 
     public HttpRouter<R> get(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
