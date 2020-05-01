@@ -3,8 +3,8 @@ plugins {
 }
 
 apply plugin: 'java'
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.14
+targetCompatibility = 1.14
 
 allprojects {
     repositories {
@@ -29,14 +29,14 @@ dependencies {
     testCompile "org.assertj:assertj-core:3.11.1"
 }
 
-//tasks.withType(JavaCompile) {
-//    options.compilerArgs += "--enable-preview"
-//}
-//
-//tasks.withType(Test) {
-//    jvmArgs += "--enable-preview"
-//}
-//
-//tasks.withType(JavaExec) {
-//    jvmArgs += '--enable-preview'
-//}
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}

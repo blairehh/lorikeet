@@ -9,6 +9,7 @@ import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesLogging;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 public class HttpRouter<R extends UsesLogging & UsesCoding> {
     private final Seq<HttpController<R>> controllers;
@@ -25,7 +26,7 @@ public class HttpRouter<R extends UsesLogging & UsesCoding> {
         return new HttpRouter<>(this.controllers.affix(controller));
     }
 
-    public <Msg> HttpRouter<R> msg(Class<Msg> msgClass, HttpEndpoint<R, Msg> msgEndpoint) {
+    public <Msg> HttpRouter<R> msg(Class<Msg> msgClass, Function<Msg, HttpEndpoint<R>> msgEndpoint) {
         return new HttpRouter<>(this.controllers.affix(new HttpMsgControllerWrapper<>(msgEndpoint, msgClass)));
     }
 
@@ -37,33 +38,33 @@ public class HttpRouter<R extends UsesLogging & UsesCoding> {
         return this.include(provider.router());
     }
 
-    public HttpRouter<R> get(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> get(String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         return this.route(HttpMethod.GET, path, endpoint);
     }
 
-    public HttpRouter<R> post(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> post(String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         return this.route(HttpMethod.POST, path, endpoint);
     }
 
-    public HttpRouter<R> put(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> put(String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         return this.route(HttpMethod.PUT, path, endpoint);
     }
 
-    public HttpRouter<R> patch(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> patch(String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         return this.route(HttpMethod.PATCH, path, endpoint);
     }
 
-    public HttpRouter<R> delete(String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> delete(String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         return this.route(HttpMethod.DELETE, path, endpoint);
     }
 
-    public HttpRouter<R> route(HttpMethod method, String path, HttpEndpoint<R, IncomingHttpSgnl> endpoint) {
+    public HttpRouter<R> route(HttpMethod method, String path, Function<IncomingHttpSgnl, HttpEndpoint<R>> endpoint) {
         final HttpController<R> controller =  (tract, sgnl) -> new FallibleStream<IncomingHttpSgnlError>()
             .include(sgnl)
             .include((a) -> tract)
             .include(new UriPath(path))
             .include(new RequestMethod(method))
-            .coalesce((a, b, c, d) -> (HttpDirective)new HttpResolve(() -> endpoint.accept(tract, sgnl)))
+            .coalesce((a, b, c, d) -> (HttpDirective)new HttpResolve(() -> endpoint.apply(sgnl).accept(tract)))
             .orGive((e) -> new HttpReject(new SeqOf<>(e)));
 
         return this.route(controller);

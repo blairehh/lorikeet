@@ -9,33 +9,34 @@ import lorikeet.http.HttpRouter;
 import lorikeet.http.IncomingHttpSgnl;
 import lorikeet.lobe.Tract;
 
-class RunProgramEndpoint implements HttpEndpoint<Tutorial, IncomingHttpSgnl> {
+record RunProgramEndpoint(IncomingHttpSgnl request) implements HttpEndpoint<Tutorial> {
     @Override
-    public HttpReply accept(Tract<Tutorial> tract, IncomingHttpSgnl signal) {
+    public HttpReply accept(Tract<Tutorial> tract) {
         return new Http200<>("GET REQUEST");
     }
 }
 
-class RunProgramPostMsgEndpoint implements HttpEndpoint<Tutorial, RunProgramPostMsg> {
+record RunProgramPostMsgEndpoint(RunProgramPostMsg runProgramMsg) implements HttpEndpoint<Tutorial> {
     @Override
-    public HttpReply accept(Tract<Tutorial> tract, RunProgramPostMsg runProgramMsg) {
+    public HttpReply accept(Tract<Tutorial> tract) {
         return new Http200<>(new JsonEncode<>(runProgramMsg.getUser()));
     }
 }
 
-class RunProgramMsgEndpoint implements HttpEndpoint<Tutorial, RunProgramMsg> {
+record RunProgramMsgEndpoint(RunProgramMsg runProgramMsg) implements HttpEndpoint<Tutorial> {
     @Override
-    public HttpReply accept(Tract<Tutorial> tract, RunProgramMsg runProgramMsg) {
+    public HttpReply accept(Tract<Tutorial> tract) {
         return new Http200<>("get  " + runProgramMsg.getTimeout());
     }
 }
+
 
 public class RunProgramRouter implements HttpRouteProvider<Tutorial> {
     @Override
     public HttpRouter<Tutorial> router() {
         return new HttpRouter<Tutorial>()
-            .get("/run-program", new RunProgramEndpoint())
-            .msg(RunProgramPostMsg.class, new RunProgramPostMsgEndpoint());
+            .get("/run-program", RunProgramEndpoint::new)
+            .msg(RunProgramPostMsg.class, RunProgramPostMsgEndpoint::new);
     }
 
     public HttpReply post(Tract<Tutorial> tract, RunProgramPostMsg runProgramMsg) {

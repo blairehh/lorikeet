@@ -12,11 +12,13 @@ import lorikeet.lobe.Tract;
 import lorikeet.lobe.UsesCoding;
 import lorikeet.lobe.UsesLogging;
 
+import java.util.function.Function;
+
 public class HttpMsgControllerWrapper<R extends UsesLogging & UsesCoding, Msg> implements HttpController<R> {
-    private final HttpEndpoint<R, Msg> endpoint;
+    private final Function<Msg, HttpEndpoint<R>> endpoint;
     private final Class<Msg> msgClass;
 
-    public HttpMsgControllerWrapper(HttpEndpoint<R, Msg> endpoint, Class<Msg> msgClass) {
+    public HttpMsgControllerWrapper(Function<Msg, HttpEndpoint<R>> endpoint, Class<Msg> msgClass) {
         this.endpoint = endpoint;
         this.msgClass = msgClass;
     }
@@ -32,7 +34,7 @@ public class HttpMsgControllerWrapper<R extends UsesLogging & UsesCoding, Msg> i
     public HttpDirective junction(Tract<R> tract, IncomingHttpSgnl request) {
         return new HttpMsg<>(this.msgClass)
             .include(request, tract(tract))
-            .map((msg) -> (HttpDirective)new HttpResolve(() -> this.endpoint.accept(tract, msg)))
+            .map((msg) -> (HttpDirective)new HttpResolve(() -> this.endpoint.apply(msg).accept(tract)))
             .orGive((errors) -> new HttpReject(new SeqOf<>(errors)));
     }
 }
